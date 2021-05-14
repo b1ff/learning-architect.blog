@@ -10,8 +10,11 @@ jobs:
         with:
           node-version: 16.x
       - run: npm ci
-      - run: npm run build
-      - run: npm run deploy
-        if: ${{ github.ref == 'refs/heads/main' }}
+      - run: npm run build -- --prefix-paths
+      - name: Deploy to gh pages
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: public
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
