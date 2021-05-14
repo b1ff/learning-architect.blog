@@ -2,6 +2,7 @@ module.exports = {
   siteMetadata: {
     title: "learning-architect.blog",
     siteUrl: `http://learning-architect.blog`,
+    pathPrefix: "/learning-architect.blog/"
   },
   plugins: [
     "gatsby-plugin-sass",
