@@ -1,5 +1,4 @@
 import * as React from 'react';
-import './RecentPublications.scss';
 
 export function RecentPublications() {
 	return <nav className={'recent-publications'}>
