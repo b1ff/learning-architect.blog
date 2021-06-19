@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.headline,
+.article h1 {
+    @apply text-3xl leading-9 pb-4 text-gray-900 tracking-tight sm:text-4xl sm:leading-10 md:text-6xl
+}
+
+.secondary-h,
+.article h2 {
+    @apply text-2xl leading-8 tracking-tight text-yellow-600 hover:text-gray-600 pt-3;
+}
+
+.article p {
+    @apply pt-3;
+}
+
+.article ul {
+    @apply list-disc ml-6;
+}
+
+.article ol {
+    @apply list-decimal ml-6;
+}

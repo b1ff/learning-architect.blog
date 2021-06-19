@@ -1,12 +1,14 @@
 import * as React from "react"
 import { WithSidebarLayout } from '../components/WithSidebarLayout';
+import { graphql } from 'gatsby';
 
-const IndexPage = () => {
+const IndexPage = (props) => {
+	const posts: BlogsNode[] = props.data.allMdx.nodes;
 	return (
 		<WithSidebarLayout>
 			<section className="hero">
 				<title>Блог обучающегося архитектора</title>
-				<h1 className='text-3xl leading-9 pb-4 text-gray-900 tracking-tight sm:text-4xl sm:leading-10 md:text-6xl md:leading-14'>
+				<h1 className='heading'>
 					Блог обучающегося архитектора
 				</h1>
 				<h3 className='text-lg leading-7 text-gray-500'>
@@ -15,31 +17,27 @@ const IndexPage = () => {
 			</section>
 			<section className="">
 				<ul>
-					<li className='py-12'>
-						<article>
-							<h2 className='text-2xl leading-8 tracking-tight text-yellow-600 hover:text-gray-600'>
-								<a href="./architect-team-discussions-part-1/">
-									Подход к дискуссии в команде архитекторов
-								</a>
-							</h2>
-							<div className='text-gray-500 py-2'>
-								Май 5 / автор <span className='text-gray-700'>Евгений</span>
-							</div>
-							<p className='pt-2'>
-								Думаю, многие из вас работали в команде и сталкивались с горячими дискуссиями при принятии
-								того или иного решения. Обычно в команде есть человек, за которым финальное слово, например
-								тех лид. Но иногда бывают разногласия достаточно тяжелые, потому что команда состоит из
-								сеньйорных людей, где у каждого найдется много аргументов почему стоит прислушаться к его
-								мнению.</p>
-							<p className='pt-2'>Если архитектор на проекте один, то в его работе такая проблема менее выражена, потому что
-								есть опция, в случае равнозначных решений, сохранить за собой последнее слово. Не всегда,
-								свою опцию, но важно, что есть возможность прекратить спор, если таков имеется.
-							</p>
-							<div className='mt-4'>
-								<a className="text-yellow-600 hover:text-gray-600" href="./architect-team-discussions-part-1/">Читать дальше →</a>
-							</div>
-						</article>
-					</li>
+					{posts.map(post => (
+						<li className={'py-12'} key={post.slug}>
+							<article>
+								<h2 className='secondary-h'>
+									<a href={`./${post.slug}/`}>
+										{post.headings[0].value}
+									</a>
+								</h2>
+								<div className='text-gray-500 py-2'>
+									{new Date(post.frontmatter.date).toLocaleString()} / автор <span
+									className='text-gray-700'>Евгений</span>
+								</div>
+								<p>
+									{post.excerpt}
+								</p>
+								<div className='mt-4'>
+									<a className="text-yellow-600 hover:text-gray-600"
+										href={`./${post.slug}/`}>Читать дальше →</a>
+								</div>
+							</article>
+						</li>))}
 				</ul>
 			</section>
 		</WithSidebarLayout>
@@ -47,3 +45,41 @@ const IndexPage = () => {
 }
 
 export default IndexPage
+
+interface BlogsNode {
+	id: string;
+	excerpt: string;
+	headings: [{ value: string }];
+	slug: string;
+	frontmatter: {
+		date: string;
+		author: string;
+	}
+}
+
+export const pageQuery = graphql`
+  query blogPageQuery {
+    site {
+      siteMetadata {
+        title
+      }
+    }
+    allMdx(
+      sort: { fields: [frontmatter___date], order: DESC }
+    ) {
+	  nodes {
+	  	 id
+		 excerpt(pruneLength: 650)
+		 headings(depth: h1) {
+		 	value
+		 }
+		 slug
+		 frontmatter {
+			date
+			title
+			author
+		 }
+	  }
+    }
+  }
+`
