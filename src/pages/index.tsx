@@ -8,10 +8,10 @@ const IndexPage = (props) => {
 		<WithSidebarLayout>
 			<section className="hero">
 				<title>Блог обучающегося архитектора</title>
-				<h1 className='heading'>
+				<h1 className="headline">
 					Блог обучающегося архитектора
 				</h1>
-				<h3 className='text-lg leading-7 text-gray-500'>
+				<h3 className='sub-h'>
 					Всё около программной архитектуры чему обучаюсь во время работы и не только.
 				</h3>
 			</section>
@@ -33,7 +33,7 @@ const IndexPage = (props) => {
 									{post.excerpt}
 								</p>
 								<div className='mt-4'>
-									<a className="text-yellow-600 hover:text-gray-600"
+									<a className="link-default"
 										href={`./${post.slug}/`}>Читать дальше →</a>
 								</div>
 							</article>

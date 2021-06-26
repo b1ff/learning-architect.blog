@@ -13,7 +13,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
 			: ''
 
 		createNodeField({
-			name: `snippet`,
+				name: `snippet`,
 			node,
 			value: snippet,
 		})

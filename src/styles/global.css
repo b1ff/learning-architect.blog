@@ -12,6 +12,10 @@
     @apply text-2xl leading-8 tracking-tight text-yellow-600 hover:text-gray-600 pt-3;
 }
 
+.sub-h {
+    @apply text-xl leading-5 text-gray-500 pt-3;
+}
+
 .article p {
     @apply pt-3;
 }
@@ -22,4 +26,9 @@
 
 .article ol {
     @apply list-decimal ml-6;
+}
+
+
+.link-default {
+    @apply text-yellow-600 hover:text-gray-600;
 }
