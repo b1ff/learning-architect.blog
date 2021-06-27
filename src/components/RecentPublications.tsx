@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
+import { formatDate } from '../common/formatDate';
 
 export function RecentPublications() {
 	const data = useStaticQuery(graphql`
@@ -29,7 +30,7 @@ export function RecentPublications() {
 			{posts.map(post => {
 				return (
 					<li>
-						{post.frontmatter.date} - <a className={'link-default'} href={`/${post.slug}/`}>{post.headings[0].value}</a>
+						<span className="text-gray-500">{formatDate(post.frontmatter.date)} - </span><a className={'link-default'} href={`/${post.slug}/`}>{post.headings[0].value}</a>
 						<hr className="mb-3 mt-3"/>
 					</li>
 				)

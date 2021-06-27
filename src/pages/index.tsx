@@ -1,6 +1,7 @@
 import * as React from "react"
 import { WithSidebarLayout } from '../components/WithSidebarLayout';
 import { graphql } from 'gatsby';
+import { formatDate } from '../common/formatDate';
 
 const IndexPage = (props) => {
 	const posts: BlogsNode[] = props.data.allMdx.nodes;
@@ -26,7 +27,7 @@ const IndexPage = (props) => {
 									</a>
 								</h2>
 								<div className='text-gray-500 py-2'>
-									{new Date(post.frontmatter.date).toLocaleString()} / автор <span
+									{formatDate(post.frontmatter.date)} / автор <span
 									className='text-gray-700'>Евгений</span>
 								</div>
 								<p>
