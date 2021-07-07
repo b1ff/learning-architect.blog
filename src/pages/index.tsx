@@ -19,7 +19,7 @@ const IndexPage = (props) => {
 			<section className="">
 				<ul>
 					{posts.map(post => (
-						<li className={'py-12'} key={post.slug}>
+						<li className={'pt-12'} key={post.slug}>
 							<article>
 								<h2 className='secondary-h'>
 									<a href={`./${post.slug}/`}>
