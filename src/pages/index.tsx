@@ -27,8 +27,8 @@ const IndexPage = (props) => {
 									</a>
 								</h2>
 								<div className='text-gray-500 py-2'>
-									{formatDate(post.frontmatter.date)} / автор <span
-									className='text-gray-700'>Евгений</span>
+									{formatDate(post.frontmatter.date)} / автор
+									<span className='text-gray-700'> Евгений</span> / минут на прочтение <span className="text-gray-700">{post.timeToRead}</span>
 								</div>
 								<div className="article-summary" dangerouslySetInnerHTML={{ __html: post.fields.articleCut }}/>
 								<div className='mt-4'>
@@ -49,6 +49,7 @@ interface BlogsNode {
 	id: string;
 	excerpt: string;
 	headings: [{ value: string }];
+	timeToRead: number;
 	slug: string;
 	html: string;
 	fields: {
@@ -72,6 +73,7 @@ export const pageQuery = graphql`
     ) {
 	  nodes {
 	  	 id
+	  	 timeToRead
 		 headings(depth: h1) {
 		 	value
 		 }
