@@ -20,7 +20,7 @@ const IndexPage = (props) => {
 				<ul>
 					{posts.map(post => (
 						<li className={'pt-12'} key={post.slug}>
-							<article>
+							<article className={'article'}>
 								<h2 className='secondary-h'>
 									<a href={`./${post.slug}/`}>
 										{post.headings[0].value}
@@ -30,9 +30,7 @@ const IndexPage = (props) => {
 									{formatDate(post.frontmatter.date)} / автор <span
 									className='text-gray-700'>Евгений</span>
 								</div>
-								<p>
-									{post.excerpt}
-								</p>
+								<div className="article-summary" dangerouslySetInnerHTML={{ __html: post.fields.articleCut }}/>
 								<div className='mt-4'>
 									<a className="link-default"
 										href={`./${post.slug}/`}>Читать дальше →</a>
@@ -52,6 +50,10 @@ interface BlogsNode {
 	excerpt: string;
 	headings: [{ value: string }];
 	slug: string;
+	html: string;
+	fields: {
+		articleCut: string;
+	}
 	frontmatter: {
 		date: string;
 		author: string;
@@ -70,9 +72,11 @@ export const pageQuery = graphql`
     ) {
 	  nodes {
 	  	 id
-		 excerpt(pruneLength: 650)
 		 headings(depth: h1) {
 		 	value
+		 }
+		 fields {
+		 	articleCut
 		 }
 		 slug
 		 frontmatter {

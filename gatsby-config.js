@@ -22,17 +22,9 @@ module.exports = {
 			options: {
 				defaultLayouts: {
 					default: require.resolve(`./src/components/DefaultPageLayout.tsx`),
-
-					excerpt_separator: `<!-- excerpt -->`,
 				},
 			}
 		},
-		// {
-		// 	resolve: `gatsby-plugin-excerpts`,
-		// 	options: {
-		//
-		// 	}
-		// },
 		"gatsby-plugin-sharp",
 		"gatsby-transformer-sharp",
 		{
