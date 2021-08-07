@@ -1,7 +1,6 @@
 import * as React from "react"
 import { WithSidebarLayout } from '../components/WithSidebarLayout';
 import { graphql } from 'gatsby';
-import { Helmet } from 'react-helmet';
 import { formatDate } from '../common/formatDate';
 import { description, title } from '../components/Heading';
 

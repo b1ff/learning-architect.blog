@@ -70,6 +70,7 @@ module.exports = {
 								return Object.assign({}, node.frontmatter, {
 									description: node.fields.articleCut,
 									date: node.frontmatter.date,
+									title: node.headings[0].value,
 									url: site.siteMetadata.siteUrl + node.fields.slug,
 									guid: site.siteMetadata.siteUrl + node.fields.slug
 								})
