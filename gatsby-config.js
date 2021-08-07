@@ -71,8 +71,8 @@ module.exports = {
 									description: node.fields.articleCut,
 									date: node.frontmatter.date,
 									title: node.headings[0].value,
-									url: site.siteMetadata.siteUrl + node.fields.slug,
-									guid: site.siteMetadata.siteUrl + node.fields.slug
+									url: `${site.siteMetadata.siteUrl}/${node.slug}/`,
+									guid: `${site.siteMetadata.siteUrl}/${node.slug}/`
 								})
 							})
 						},
