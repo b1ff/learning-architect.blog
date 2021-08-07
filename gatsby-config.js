@@ -1,8 +1,7 @@
 module.exports = {
 	siteMetadata: {
-		title: "learning-architect.blog",
-		siteUrl: `http://learning-architect.blog`,
-		pathPrefix: "/learning-architect.blog/"
+		title: "Блог обучающегося архитектора",
+		siteUrl: `https://learning-architect.blog`,
 	},
 	plugins: [
 		"gatsby-plugin-sass",
@@ -15,7 +14,7 @@ module.exports = {
 			},
 		},
 		"gatsby-plugin-react-helmet",
-		// "gatsby-plugin-sitemap", // todo it requires fine tuning, need to understand how to make it work
+		"gatsby-plugin-sitemap", // todo it requires fine tuning, need to understand how to make it work
 		"gatsby-transformer-remark",
 		{
 			resolve: "gatsby-plugin-mdx",
@@ -43,5 +42,6 @@ module.exports = {
 			},
 			__key: "pages",
 		},
+		'gatsby-plugin-robots-txt'
 	],
 };
