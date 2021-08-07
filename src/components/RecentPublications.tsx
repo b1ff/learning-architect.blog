@@ -36,6 +36,7 @@ export function RecentPublications() {
 				)
 			})}
 			<li><a className={'link-default'} href="/">К списку тем</a></li>
+			<li><a className={'link-default'} href="/rss.xml">RSS</a></li>
 		</ul>
 	</nav>;
 }

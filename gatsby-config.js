@@ -14,7 +14,12 @@ module.exports = {
 			},
 		},
 		"gatsby-plugin-react-helmet",
-		"gatsby-plugin-sitemap", // todo it requires fine tuning, need to understand how to make it work
+		{
+			resolve: "gatsby-plugin-sitemap",
+			options: {
+				output: '/sitemap'
+			}
+		},
 		"gatsby-transformer-remark",
 		{
 			resolve: "gatsby-plugin-mdx",
@@ -42,6 +47,62 @@ module.exports = {
 			},
 			__key: "pages",
 		},
-		'gatsby-plugin-robots-txt'
+		'gatsby-plugin-robots-txt',
+		{
+			resolve: `gatsby-plugin-feed`,
+			options: {
+				query: `
+          {
+            site {
+              siteMetadata {
+                title
+                description
+                siteUrl
+                site_url: siteUrl
+              }
+            }
+          }
+        `,
+				feeds: [
+					{
+						serialize: ({query: {site, allMdx}}) => {
+							return allMdx.nodes.map(node => {
+								return Object.assign({}, node.frontmatter, {
+									description: node.fields.articleCut,
+									date: node.frontmatter.date,
+									url: site.siteMetadata.siteUrl + node.fields.slug,
+									guid: site.siteMetadata.siteUrl + node.fields.slug
+								})
+							})
+						},
+						query: `
+              {
+                allMdx(
+                  sort: { fields: [frontmatter___date], order: DESC }
+                ) {
+                  nodes {
+				     id
+					 headings(depth: h1) {
+					    value
+					 }
+					 fields {
+					    articleCut
+					 }
+					 slug
+					 frontmatter {
+						date
+						title
+						author
+					 }
+				  }
+                }
+              }
+            `,
+						output: "/rss.xml",
+						title: "Learning Architect blog RSS Feed",
+					},
+				],
+			},
+		}
 	],
 };
