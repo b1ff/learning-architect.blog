@@ -29,7 +29,7 @@ export function RecentPublications() {
 			<li><hr className="mb-3 mt-3"/></li>
 			{posts.map(post => {
 				return (
-					<li>
+					<li key={post.frontmatter.date}>
 						<span className="text-gray-500">{formatDate(post.frontmatter.date)} - </span><a className={'link-default'} href={`/${post.slug}/`}>{post.headings[0].value}</a>
 						<hr className="mb-3 mt-3"/>
 					</li>

@@ -1,19 +1,20 @@
 import * as React from "react"
 import { WithSidebarLayout } from '../components/WithSidebarLayout';
 import { graphql } from 'gatsby';
+import { Helmet } from 'react-helmet';
 import { formatDate } from '../common/formatDate';
+import { description, title } from '../components/Heading';
 
 const IndexPage = (props) => {
 	const posts: BlogsNode[] = props.data.allMdx.nodes;
 	return (
 		<WithSidebarLayout>
 			<section className="hero">
-				<title>Блог обучающегося архитектора</title>
 				<h1 className="headline">
-					Блог обучающегося архитектора
+					{title}
 				</h1>
 				<h3 className='sub-h'>
-					Всё около программной архитектуры чему обучаюсь во время работы и не только.
+					{description}
 				</h3>
 			</section>
 			<section className="">
@@ -28,7 +29,8 @@ const IndexPage = (props) => {
 								</h2>
 								<div className='text-gray-500 py-2'>
 									{formatDate(post.frontmatter.date)} / автор
-									<span className='text-gray-700'> Евгений</span> / минут на прочтение <span className="text-gray-700">{post.timeToRead}</span>
+									<span className='text-gray-700'> Евгений</span> / минут на прочтение <span
+									className="text-gray-700">{post.timeToRead}</span>
 								</div>
 								<div className="article-summary" dangerouslySetInnerHTML={{ __html: post.fields.articleCut }}/>
 								<div className='mt-4'>
