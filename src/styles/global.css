@@ -39,6 +39,7 @@
     @apply list-decimal ml-6;
 }
 
-.link-default {
+.link-default,
+.article a {
     @apply text-yellow-600 hover:text-gray-600;
 }
