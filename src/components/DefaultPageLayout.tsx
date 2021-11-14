@@ -1,9 +1,11 @@
 import * as React from "react"
 import { WithSidebarLayout } from './WithSidebarLayout';
 
-const Layout = ({ children }) => {
+const Layout = (props) => {
+	const children = props.children;
+	console.log(props.pageContext.frontmatter);
 	return (
-		<WithSidebarLayout>
+		<WithSidebarLayout additionalKeywords={props.pageContext.frontmatter.keywords}>
 			<article className="article">
 				{children}
 			</article>

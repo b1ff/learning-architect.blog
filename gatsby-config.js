@@ -94,6 +94,7 @@ module.exports = {
 						date
 						title
 						author
+						keywords
 					 }
 				  }
                 }
