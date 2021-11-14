@@ -27,8 +27,9 @@
     @apply leading-4 text-gray-400 pt-2;
 }
 
-.article p {
-    @apply pt-3;
+.article p,
+.article table {
+    @apply mt-3;
 }
 
 .article ul {
@@ -42,4 +43,19 @@
 .link-default,
 .article a {
     @apply text-yellow-600 hover:text-gray-600;
+}
+
+.article table {
+    @apply border-separate border border-yellow-400 border-collapse table-fixed;
+    border-spacing: 0;
+}
+
+.article table th {
+    @apply bg-yellow-100 text-left;
+}
+
+.article table th,
+.article table td
+{
+    @apply border-separate border border-yellow-300 border-collapse px-3 py-1.5 w-1/2;
 }
