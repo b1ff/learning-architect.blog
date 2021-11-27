@@ -3,7 +3,6 @@ import { WithSidebarLayout } from './WithSidebarLayout';
 
 const Layout = (props) => {
 	const children = props.children;
-	console.log(props.pageContext.frontmatter);
 	return (
 		<WithSidebarLayout additionalKeywords={props.pageContext.frontmatter.keywords}>
 			<article className="article">
