@@ -27,6 +27,11 @@ export function RecentPublications() {
 		<h3 className={'sub-h'}>Последние публикации</h3>
 		<ul>
 			<li><hr className="mb-3 mt-3"/></li>
+			<li>
+				<a className={'link-default'} href="/">К списку тем</a>
+				<hr className="mb-3 mt-3"/>
+			</li>
+
 			{posts.map(post => {
 				return (
 					<li key={post.frontmatter.date}>
@@ -35,7 +40,6 @@ export function RecentPublications() {
 					</li>
 				)
 			})}
-			<li><a className={'link-default'} href="/">К списку тем</a></li>
 			<li><a className={'link-default'} href="/rss.xml">RSS</a></li>
 		</ul>
 	</nav>;
