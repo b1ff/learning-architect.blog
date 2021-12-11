@@ -9,14 +9,14 @@
 
 .secondary-h,
 .article h2 {
-    @apply text-2xl leading-8 tracking-tight text-yellow-600 hover:text-gray-600 pt-3;
+    @apply text-2xl leading-8 tracking-tight text-yellow-600 hover:text-gray-600 pt-7;
 }
 
 .sub-h,
 .article h3,
 .article-summary h2
 {
-    @apply text-xl leading-5 text-gray-500 pt-3;
+    @apply text-xl leading-5 text-gray-500 pt-6;
 }
 
 .article h3 {
@@ -24,7 +24,7 @@
 }
 
 .article h4 {
-    @apply leading-4 text-gray-400 pt-2;
+    @apply leading-4 text-gray-400 pt-4;
 }
 
 .article p,

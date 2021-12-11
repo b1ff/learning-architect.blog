@@ -15,7 +15,7 @@ export function WithSidebarLayout({ children, additionalKeywords = undefined }) 
 						<RecentPublications/>
 					</div>
 				</div>
-				<main className="col-span-8 p-6">
+				<main className="col-span-9 py-6 pl-6 pr-10">
 					{children}
 				</main>
 			</div>
