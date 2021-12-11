@@ -24,7 +24,7 @@
 }
 
 .article h4 {
-    @apply leading-4 text-gray-400 pt-2;
+    @apply leading-4 text-gray-400 pt-4;
 }
 
 .article p,
