@@ -1,192 +1,158 @@
 ---
 slug: "/architect-learning/"
 date: "2021-11-28"
-author: "Евгений"
-keywords: architecture,архитектура,обучение архитектора,командные процессы
+author: "Eugene"
+keywords: architecture,architecture learning,team processes
 ---
-# Как стать архитектором в компании
+# How to become an architect in a company
 
 <!-- cut -->
-Рано или поздно в компании приходит момент когда архитекторы нужны, но при этом нанять на рынке тяжело и приходиться обучать своих.
-Обучение происходит когда кто-то внутри компании хочет двигаться в сторону архитектуры, или когда находятся перспективные людей на рынке труда, если например, человек немного не дотягивают до нужной позиции.
-Как по мне обучать архитекторов - достаточно сложное задание, потому что архитектура слабо формализирована и сильно зависит от контекста организации.
-Так как я не считаю себя специалистом в обучении, то это пост будет меняться время от времени, по мере того как я буду ошибаться и находить подходы лучше.
+Sooner or later, companies reach a point where architects are needed, but it can be difficult to hire them on the market, so they have to be trained in-house. Training takes place when someone within the company wants to move towards architecture or when promising people are found in the labor market, if, for example, a person falls slightly short of the required position.
+
+Teaching architects is, in my opinion, a rather difficult task because architecture is poorly formalized and heavily dependent on the organization's context. Since I do not consider myself a specialist in training, this post will change from time to time as I make mistakes and find better approaches.
 <!-- cut -->
 
-<h2 id={"who-is-architect"}><a href={"#who-is-architect"}>Кто такой архитектор?</a></h2>
+<h2 id={"who-is-architect"}><a href={"#who-is-architect"}>Who is an architect?</a></h2>
 
-Для того что бы понять чему обучаться, надо сразу понять кто есть архитектор.
-Сразу скажу это достаточно не тривиальное определение, так как очень-очень сильно зависит от организации, но всё же я постараюсь как то обобщить.
+To understand what to learn, you need to understand who an architect is.
 
-И так, архитектор - это роль, которая решает бизнес задачи с учетом текущего устройства организации и текущей технической составляющей.
-Выглядит как описание любого разработчика, правда?
+I must say that this is a rather non-trivial definition, as it strongly depends on the organization. Nevertheless, I will try to generalize it.
 
-Так в чем же разница?
-Обычно разница заключается в двух задачах.
+So, an architect is a role that solves business problems taking into account the current structure of the organization and its current technical components. Sounds like a description of any developer, right?
 
-Первая задача - это оперирование на более высоких уровнях абстракции. На том уровне абстракции который затрагивает две или более подсистемы и взаимодействия между ними.
-Часто это включает под собой подсистемы, которые находятся во владении более чем одной команды разработки.
-Конечно встречаются и случаи когда команда, которая реализует всё - одна. В таком случае архитектор несет роль самого опытного разработчика в этой команде, который определяет как сделать систему.
+So what's the difference?
+Usually, the difference lies in two tasks.
 
-Вторая задача - это вырабатывания виденья системы и понимания как она будет развиваться на временном отрезке, который важен для развития и поддержки.
-Проще говоря архитектор должен понять что нужно создать, когда вообще ничего нет.
+The first task is operating at higher levels of abstraction. At the level of abstraction that affects two or more subsystems and their interactions. This often includes subsystems that are owned by more than one development team.
+Of course, there are cases where the team that implements everything is one. In this case, the architect takes on the role of the most experienced developer in the team who determines how to build the system.
 
-И да, архитекторы могут быть разные, например, solution, enterprise, information, data, infrastructure, и так далее.
-Я пытаюсь описать общий случай и справедливые вещи для усредненного случая архитектора в компании, но если проще подразумевать какой-то определенный тип архитектора, то давайте подразумевать solution architect в данной статье.
+The second task is to develop a vision of the system and an understanding of how it will evolve over the time frame that is important for development and support.
+In other words, the architect must understand what needs to be created when there is nothing at all.
 
-<h2 id={"starting-point"}><a href={"#starting-point"}>Что должно быть для начала?</a></h2>
+And yes, there can be different types of architects, such as solution, enterprise, information, data, infrastructure, and so on. I'm trying to describe the general case and fair things for the average company architect, but if it's easier to assume a specific type of architect, let's assume a solution architect in this article.
 
-Первое - это хорошая техническая база. Это должен быть человек который **уже эффективно и качественно решал технические проблемы**.
-Всё-таки ошибки в архитектуре могут стоить дорого.
-Качество не должно быть компромиссом между скоростью, для такого человека.
-При этом фундаментальные знания должны цениться больше чем знания определенных технологий.
-То-есть, если человек хорошо знает структуры данных, сети, и базы данных - для позиции архитектора это больше ценности чем хорошее знание Java.
-Конечно уверенные знания определенной технологии плюс в карму, но не обязательное условие.
-Я не имею в виду полное знание конкретных технологий, конечно человек проработав долгое время инженером, должен разбираться в технологии, с которой он провел достаточно долго времени.
-Я имею в виду, что у вас может использоватся Java, а человек разбирается в dotnet. Это не означает что автоматически такой кандидат не подходит, особенно если у него хорошие фундаментальные знания.
+<h2 id={"starting-point"}><a href={"#starting-point"}>What should be the starting point?</a></h2>
 
-Второе - это опыт. Увы, но опыт важен для позиции. Человек должен понимать как работает композиция систем, и какие последствия могут быть у принятых технических решений.
-Важно что бы опыт был максимально практичным и приближенным к продакшену. То-есть, если человек мало работал в производственной среде, то
-очень тяжело будет вырастить архитектора, который будет ответственно подходить к техническим решениям.
-Человек же почувствовавший прелести производственной среды, будет подходить к решению технических проблем с эмпатией к команде или командам которые всё это будут реализовывать.
+The first thing is a strong technical foundation. It should be a person who has **effectively and qualitatively solved technical problems**. After all, architecture errors can be costly. Quality should not be compromised for speed for such a person. At the same time, fundamental knowledge should be valued more than knowledge of specific technologies. That is, if a person knows data structures, networks, and databases well, it is more valuable for an architect position than good knowledge of Java. Of course, confident knowledge of a specific technology is a plus, but not a mandatory condition. I do not mean complete knowledge of specific technologies. Of course, a person who has been an engineer for a long time should understand the technology he has worked with for a long time. I mean that you may use Java, and the candidate understands dotnet. This does not mean that such a candidate is automatically unsuitable, especially if he has good fundamental knowledge.
 
-<h2 id={"areas-to-learn"}><a href={"#areas-to-learn"}>План по обучению</a></h2>
+The second thing is experience. Unfortunately, experience is important for the position. A person should understand how the composition of systems works and what consequences technical decisions can have. It is important that the experience is as practical and production-oriented as possible. That is, if a person has little experience in a production environment, it will be very difficult to grow an architect who will approach technical solutions responsibly. A person who has experienced the benefits of a production environment will approach solving technical problems with empathy for the team or teams that will implement it.
 
-Далее я описываю основные умения, которые на мой взгляд надо развивать, для того что бы можно было эффективно работать архитектором и взаимодействовать с командами.
+<h2 id={"areas-to-learn"}><a href={"#areas-to-learn"}>Learning plan</a></h2>
 
-### Работа с требованиями
+Next, I describe the main skills that, in my opinion, need to be developed in order to be able to work effectively as an architect and interact with teams.
 
-Как мне кажется из опыта чуть ли не основное умение. И да, это я про архитектора, а не бизнес аналитика или менеджера продукта.
+### Working with requirements
 
-Почему это важно?
+As I see it from experience, this is one of the most important skills for an architect. And yes, I'm talking about the architect, not the business analyst or product manager.
 
-Потому что архитектура начинается в первую очередь с осмысленных требований.
-Я достаточно часто слышу от команд разработки, что требований не точные, или недостаточно специфицированные.
-В случае архитектора говорить так, это не позволительная роскошь. Нужно развить в себе умение работать с достаточно не определенными и размытыми требованиями в самом начале.
+Why is this important?
 
-Что важно это уметь переводить из языка бизнеса на функциональные и не-функциональные требования.
-При этом, как я упомянул выше, это статья не про бизнес аналитика, по этому нам не нужна подробная спецификация с требованиями.
-Как минимум, большинство компаний сейчас работает с agile методологиями, и создание подробной спецификации не позволительная роскошь,
-так как время и усилия которые нужны на создание подробной спецификации могут сильно затормозить быстро двигающихся команды разработки.
+Because architecture begins with meaningful requirements.
+I often hear from development teams that the requirements are not precise enough or not sufficiently specified.
+In the case of an architect, this is not an acceptable luxury. You need to develop the ability to work with sufficiently vague and fuzzy requirements at the very beginning.
 
-Основываясь на вводных данных от бизнеса, нужно уметь выделять архитектурно значимые требования.
-Архитектурно значимые - это требования, которые влияют или на количество подсистем или на количество связей на выбранном уровне абстракции, или на аттрибуты качества системы.
-При этом нужно правильно задавать вопросы бизнесу, и делать из ответов правильные выводы.
-Например, спрашивать у нового бизнеса количество запросов в секунду или же ожидаемое количество пользователей в часто бессмысленно.
-Конечно это шикарная ситуация, если бизнес может на это ответить, но в большинстве случаев лучше спросить о том, как собираются привлекать пользователей, какие масштабы маркетинговых и рекламных кампаний.
-Исходя из ответов, можно сделать выводы по планируемой нагрузке, а так же о требованиях по маштабируемости, пропускной способности и эластичности, что более ценно чем просто случайно подобранное число пользователей.
+What is important is the ability to translate from the language of business to functional and non-functional requirements.
+As I mentioned earlier, this article is not about business analysis, so we don't need a detailed specification of the requirements.
+At a minimum, most companies now work with agile methodologies, and creating a detailed specification is not an acceptable luxury because the time and effort required to create a detailed specification can seriously slow down fast-moving development teams.
 
-То есть с точки зрения обучения, нужно:
+Based on the input from the business, you need to be able to identify architecturally significant requirements.
+Architecturally significant requirements are those that affect either the number of subsystems or the number of connections at the chosen level of abstraction, or the quality attributes of the system.
+At the same time, you need to ask the right questions of the business and make the right conclusions from the answers.
+For example, asking a new business about the number of requests per second or the expected number of users is often meaningless.
+Of course, it is a great situation if the business can answer this question, but in most cases it is better to ask about how they plan to attract users, what the scale of marketing and advertising campaigns will be.
+Based on the answers, you can draw conclusions about the expected load, as well as requirements for scalability, throughput, and elasticity, which is more valuable than just a randomly selected number of users.
 
-1. Выяснять требования бизнеса, задавать правильные вопросы
-1. Выделять архитектурно значимые функциональных требования
-1. Выделять архитектурно значимые не-функциональных требования
-1. Понимать, что такое аттрибуты качества и выделение аттрибутов качества из вводных данных и организационной специфики
-1. Анализировать компромиссы, принимать решение на основе компромиссов и хорошо их коммуницировать
+In terms of learning, you need to:
 
-Ресурсы:
+1. Clarify business requirements and ask the right questions
+2. Identify architecturally significant functional requirements
+3. Identify architecturally significant non-functional requirements
+4. Understand what quality attributes are and how to extract them from input data and organizational specifics
+5. Analyze trade-offs, make decisions based on them, and communicate them effectively
 
-1. [Software architecture in practice](https://www.oreilly.com/library/view/software-architecture-in/9780136885979/) - книга описывающая аттрибуты качества, стратегии их достижения. Достаточно сухая, но при этом помогает структурировать подходы.
-1. [ISO 25010](https://iso25000.com/index.php/en/iso-25000-standards/iso-25010) - стандарт для аттрибутов качества, можно пользоваться как каталогом, что бы не забыть ничего важного при определении требований.
-1. [Fundamentals of Software Architecture](https://www.oreilly.com/library/view/fundamentals-of-software/9781492043447/) - книга котора описывает основы архитектуры. Что важно с точки зрений требований, что книга содержит примеры архитектурных задач, практикуясь на которых можно понять логику того как определять требования из достаточно сжатых вводных.
+Resources:
 
-### Широта технических знаний и умений
+1. "Software Architecture in Practice" - a book that describes quality attributes and strategies for achieving them. It's quite dry, but it helps structure approaches.
+2. "ISO 25010" - a standard for quality attributes that can be used as a catalog to ensure important aspects are not overlooked when defining requirements.
+3. "Fundamentals of Software Architecture" - a book that describes the basics of architecture. It contains examples of architectural tasks that can help understand how to define requirements from concise inputs.
 
-Я крайне слабо верю в специализацию среду архитекторов.
-Точнее так, есть конечно специфические области в которых нужна специализация, например разработка инструментов под определенную технологию.
-В случаее, если мы разрабатываем систему application performance monitoring (APM), мы можем захотеть иметь .NET архитектора, для развития .NET APM.
-Но в большинстве случаев, широкая специализация более важна чем узко направленные знания. Особенно, я не верю во фронтенд архитекторов в web разработке.
+### Breadth of Technical Knowledge and Skills
 
-Почему так?
+I am extremely skeptical of the specialization of architects.
+To be more precise, there are certainly specific areas that require specialization, such as developing tools for a particular technology.
+For example, if we are developing an application performance monitoring (APM) system, we may want a .NET architect to develop .NET APM.
+But in most cases, broad specialization is more important than narrow knowledge. Especially, I don't believe in front-end architects in web development.
 
-Потому что исходя из определения архитектуры выше, следует что архитектура это решение бизнес проблем.
-А бизнес проблема обычно включает многие части системы, которые только взаимодействуя вместе смогут решить эту самую проблему.
-Изъяв любой элемент решение - бизнес проблема останется. Соответственно, для того что бы иметь возможность решить проблему от начала до конца, нужен широкий кругозор.
+Why is that?
 
-Как его развивать?
+Because based on the definition of architecture above, architecture is a solution to business problems.
+And a business problem usually involves many parts of the system, which can only solve the problem by interacting together.
+Removing any element of the solution will leave the business problem unresolved. Therefore, to have the ability to solve the problem from start to finish, a broad perspective is needed.
 
-Работать с разными технологиями. Решать задачи, которые выходят из одной области. Если работа идёт только на фронтенде - начните решать бэкенд задачи или же, участывать в построение инфраструктуры.
-Если работа идет на бекенде - начните решать инфраструктурные задачи или же задачи на фронтенде. И так далее...
+How to develop it?
 
-Так же важно следить за последними трендами и новостями в широком спектре областей. Подпишитесь на рассылки не только по своим технологиям, но так же и по соседним.
-Несмотря на то, что происходит на текущем месте работы, важно понимать что происходит в мире, какие есть тренды, и что уже не актуально и почему что-то уже не акутально.
-Всё это поможет в текущих задачах, оценить насколько разработка на текущем месте отличается от общемировых трендов,
-понять почему так, является ли то что происходящее осознанным и прагматичным выбором, или же это остановка в развитии без явных на то причин.
+Work with different technologies. Solve tasks that go beyond one area. If the work is only on the frontend, start solving backend tasks or participate in infrastructure development.
+If the work is on the backend, start solving infrastructure tasks or frontend tasks. And so on...
 
-С точки зрения обучения, нужно:
+It is also important to keep up with the latest trends and news in a wide range of areas. Subscribe to newsletters not only in your technologies, but also in adjacent ones.
+Despite what is happening in the current workplace, it is important to understand what is happening in the world, what trends exist, and what is no longer relevant and why something is no longer relevant.
+All of this will help in current tasks to assess how development at the current workplace differs from global trends,
+understand why this is happening, whether what is happening is a conscious and pragmatic choice, or whether it is a stop in development without clear reasons.
 
-1. Начать активно рассматривать смежные с основной специализацией зоны ответственности
-1. Следить за публичными материалами, касающихся различных областей разработки
+From a learning standpoint, you need to:
 
-Ресурсы:
+1. Start actively looking at adjacent areas of responsibility to your main specialization
+1. Keep up with public materials related to various development areas
 
-Тут сложно посоветовать какие-то конкретные ресурсы, но как минимум можно следить за [Technology Radar](https://www.thoughtworks.com/radar).
-Ну и следить за топом на платформах по выбору, таких как InfoQ, DevZone или habr.
+Resources:
 
-### Умение решать эффективно решать технические задачи
+It's hard to recommend any specific resources here, but at least you can keep an eye on the [Technology Radar](https://www.thoughtworks.com/radar).
+And keep an eye on the top on platforms of your choice, such as InfoQ or DevZone.
 
-Хотя я и поставил на третье место, но это достаточно очевидное умение, без которого работа архитектора не возможна.
-Основное чем придется заниматься, прямо или не прямо решать технические задачи.
-Что имеется ввиду под "не прямо" - это, любые активности, в которых приходиться решать технически проблемы,
-но основная работа лежит не на архитекторе, например ревью кода, менторинг других архитекторов, менторинг команд и так далее.
+### Effective Technical Problem Solving
 
-Что под собой подразумевает решение задач?
+Although I ranked it third, this is a critical skill that is essential for any architect. Whether directly or indirectly, architects must solve technical problems. "Indirectly" refers to any activity that requires resolving technical issues but does not primarily lie with the architect, such as code reviews, mentoring other architects or teams, and so on.
 
-1. Понять, что нужно решать. Это то, что описано выше в блоке про требования. Достаем из бизнеса требования, дописываем требования исходя из организационной составляющей.
-1. Умение декомпозировать задачу, на понятные и ясные части и решения которые надо принять.
-1. Основываясь на всем что выше, оформить само решение задачи в подходящий артефакт, будь то документация или же код.
-1. Презентовать решение всем, кто участвует в разработке и является заинтересованным лицом.
-1. Последнее это контроль реализации. Убеждение в том, что цели которые были выставленные архитектурой, были достигнуты при реализации.
-Так же эта в этой часте важно принимать фидбек обратно, о том что архитектура в каких то местах не была идеально продумана и не подходит под реалии системы.
-Принимая обратную связь нужно вносить правки в архитектурный артефакт и подстраивать его под реальность, параллельно учась на таких прецедентах.
+What does solving a problem entail?
 
-На конференции Software Architecture от O'Reilly докладчик Eltjo Poort отлично описал это как maturity model в виде пятиугольника. Для решения задачи я немного по другому определяю грани, как изображенно на рисунке ниже.
+1. Understand what needs to be resolved. This refers to the requirements described in the requirements section above. Extract the requirements from the business and add requirements based on the organizational aspects.
+2. Ability to break down the problem into clear and concise parts and make decisions accordingly.
+3. Based on all of the above, create a suitable artifact for the problem resolution, be it documentation or code.
+4. Present the solution to everyone involved in development and interested parties.
+5. Finally, control the implementation. Ensure that the goals set by the architecture have been achieved during implementation. It's also essential to accept feedback, especially if some parts of the architecture weren't adequately thought out, and make necessary corrections to the architectural artifact while learning from such experiences.
 
-![Пятиугольник решения технических задач.](../images/task-solving-model.png)
+At the Software Architecture conference by O'Reilly, Eltjo Poort described this as a maturity model in the form of a pentagon. However, for problem-solving, I define the edges a little differently, as shown in the diagram below.
 
-По этому пятиугольнику можно оценивать свое текущее умение, так же как понять куда нужно стремиться.
+![Task Solving Model](../images/task-solving-model.png)
 
-Ресурсы:
+This pentagon can help assess your current skills and determine where you should aim to be.
 
-1. [Fundamentals of Software Architecture](https://www.oreilly.com/library/view/fundamentals-of-software/9781492043447/) - книга котора описывает основы архитектуры. Что важно с точки решения - что книга содержит примеры архитектурных задач, а так же описание архитектур которые можно применять в тех или иных ситуациях.
-1. [Designing Data-Intensive Applications](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/) - книга отлично описывает различные модели того как можно подходить к данным.
-1. [Designing Data-Intensive Applications](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/) - книга отлично описывает различные модели того как можно подходить к данным.
-1. Курсы, книги и сборники по системному дизайну. Тут у меня нет конкретной ссылки на ресурс, но в интернете полно примеров того как делать system design в открытом доступе.
+Resources:
 
-### Общие софт-скилы
+1. [Fundamentals of Software Architecture](https://www.oreilly.com/library/view/fundamentals-of-software/9781492043447/) - This book describes the fundamentals of architecture and provides examples of architectural tasks, as well as descriptions of architectures that can be applied in different situations.
+2. [Designing Data-Intensive Applications](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/) - This book provides a great description of different data models.
+3. Courses, books, and collections on system design. I don't have a specific resource link, but there are plenty of examples of how to do system design available online.
 
-Еще несколько небольших софт скиллов, которые мне кажутся важными для работы архитектором.
-Вы можете быть грамотным технически, но если следующие софт скиллы отсутсвуют, то будет крайне тяжело выполнять свою работу.
+### General Soft Skills
 
-#### Правильно доносить мысль и презентовать работу
+Here are a few additional soft skills that I consider essential for an architect. You could be technically proficient, but without these skills, it can be challenging to perform your duties.
 
-Так как работая архитектором придется много общаться с людми которые исполняют очень разные роли в организации, очень важно уметь доносить свою мысль так что бы вас понимали.
-Это оначает что в разговорах нужно понимать с кем вы общаетесь и подстраиваться в аргументах и речи под контекст собеседника.
-Например, если вы общаетесь с командой разработки можно использовать глубоко технические термины. Если общаться об той же теме с менеджером продукта, вероятно надо подымать уровень абстракции и избегать глубоко технических терминов.
-Менеджеру продукта нужно обьяснить всю логическую цепочку, когда технической команде можно опустить некоторые звенья, так как они находятся глубоко в контексте технологий.
+#### Articulating Ideas and Presenting Work Effectively
 
-#### Умение договариваться
+Since architects must communicate with people in various roles within an organization, it's essential to convey your thoughts clearly and concisely. This means that during conversations, you need to understand who you're speaking with and tailor your arguments and language to suit the context of the person you're speaking with. For example, when communicating with a development team, you can use deeply technical terms. However, when discussing the same topic with a product manager, you may need to raise the level of abstraction and avoid deep technical terms. You need to explain the entire logical chain to the product manager, while the technical team can omit some links as they are deeply rooted in technology context.
 
-Опять-таки, работа архитектора многогранна. К сожалению, такие моменты как конфликты или компромиссы - это ситуации которые время от времени происходят.
-Часто компромиссы вовлекают разные роли и разных людей, у которых могут быть разные точки зрения.
-Даже при имении своего, четко сформированного мнения, нужно уметь убедить в нем всех участников с которыми приходится договариваться.
-Другой пример ситуации, в которой важно уметь договариваться это ситуации где нужно доносить решения, приводящие к кардинальному сдвигу или к инвестициям в разработку.
+#### Negotiation skills
 
-Есть отличная книга, которая мне в свое время помогла прокачаться в этом направлении - [Everything is Negotiable](https://www.amazon.com/Everything-Negotiable-4th-Gavin-Kennedy-ebook/dp/B008BSS578).
-Ее достаточно легко читать и она описывает различные ситуации переговоров и как из них выходить победителем.
+Once again, the work of an architect is multifaceted. Unfortunately, situations such as conflicts or compromises are inevitable from time to time. Compromises often involve different roles and different people who may have different points of view. Even when you have a clear, well-formed opinion, you need to be able to convince all stakeholders with whom you need to negotiate. Another example of a situation where negotiation skills are essential is situations where decisions that lead to a significant shift or investment in development need to be conveyed.
 
-#### Прагматичность
+There is an excellent book that helped me develop my negotiation skills - [Everything is Negotiable](https://www.amazon.com/Everything-Negotiable-4th-Gavin-Kennedy-ebook/dp/B008BSS578). It's easy to read, and it describes various negotiation situations and how to come out on top.
 
-Всем хочется пощупать что-то новое, сделать что-то рискованное, сделать так как описанно в популярной статье на популярном ресурсе или же было рассказано в докладе на модной конференции.
-Но увы все мы знаем истории с тем что быстро стало легаси, например MeteorJS учит нас что хайп хорошо, но при каком либо выборе стоит учитывать и другие факторы, кроме модности технологии.
-Сейчас проекты на MeteorJS это легаси, которое надо поддерживать. Я не пытаюсь сказать что MeteorJS плохая технология, я больше о том что подходить к выбору нужно прагматично, оценивая риски и текущий контекст.
-Иногда это может привести к непониманию команды или же к демотивации некоторых людей. Зачем нам надо использовать PostgreSQL, если есть модные NoSqL решения?
+#### Pragmatism
 
-Ошибки в архитектуре могут быть дорогими. Нужно уметь находить ту грань где мы принимаем рискованные решения, а где выбираем проверенное временем решение, потому что оно прямо подходит под задачу.
-Иногда конечно можно использовать рискованные технологии, но нужно понять что есть задачи, где это уместно, а есть задачи где нужно придерживаться прагматических решений.
+Everyone wants to try something new, do something risky, follow what's described in a popular article on a popular resource, or was talked about at a trendy conference. But unfortunately, we all know stories about what quickly became legacy, such as MeteorJS teaching us that hype is good, but when making a choice, it's worth considering other factors besides the technology's trendiness. Projects on MeteorJS are now legacy, which needs to be maintained. I'm not trying to say that MeteorJS is a bad technology; I'm more about approaching the choice pragmatically, evaluating risks and the current context. Sometimes, this can lead to a lack of understanding within the team or the demotivation of some people. Why do we need to use PostgreSQL if there are trendy NoSQL solutions?
 
-## Заключение
+Mistakes in architecture can be costly. You need to be able to find the line where you make risky decisions and where you choose a time-tested solution because it fits the task directly. Sometimes, of course, you can use risky technologies, but you need to understand that there are tasks where it is appropriate, and there are tasks where you need to stick to pragmatic solutions.
 
-Я надеюсь этота статья поможет инженерам с организацией обучения или же своего, или же для того, кого вы выбираете как перспективного кандидата на архитектора.
-Важно помнить что ошибки в архитектуре могут стоить дорого и обучение на архитектора это достаточно сложная область.
-По этому нам всем нужно подходить к обучению, с достаточным усилием и тщательностью.
+## Conclusion
+
+I hope this article will help engineers with organizing their learning, or for those of you who are choosing a promising candidate for an architect position. It's essential to remember that architecture mistakes can be costly, and learning to be an architect is a complex field. Therefore, we all need to approach learning with sufficient effort and thoroughness.
