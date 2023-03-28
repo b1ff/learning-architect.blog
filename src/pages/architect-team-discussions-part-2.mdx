@@ -1,123 +1,113 @@
 ---
 slug: "/blog/architect-team-discussions-part-2"
 date: "2021-09-19"
-author: "Евгений"
-keywords: архитектура,команда архитекторов,solution architecture,software architect,командные процессы,конфликты,требования
+author: "Eugene"
+keywords: architecture,architecture team,solution architecture,software architect,team processes,conflicts,requirements
 ---
 
-# Подход к дискуссии в команде архитекторов. Часть 2
+# Approach to Team Discussion: Part 2
 
-*Статья получилась длинная, поэтому я разбил ее на 2 части. В первой части фокус на важности
-абстрагировании от конкретики в начале рассмотрения проблемы. Как свернуть дискуссию в конструктивное
-русло и получить максимум для принятия решения. В этой части описано что делать, когда
-требования согласовали внутри и дискуссия возвращается к решению, и что делать если есть несколько
-равнозначных решений.*
+*The article turned out to be long, so I split it into 2 parts. The focus of the first part is on the importance of abstracting from specifics at the beginning of problem discussion. How to turn the discussion into a constructive stream and get the maximum for decision-making. This part describes what to do when requirements are agreed upon internally and the discussion returns to decision-making, and what to do if there are several equivalent solutions.*
 
-## Переходим к решениям
+## Moving on to solutions
 
 <!-- cut -->
-И так мы пришли к тому что в начале мы обсуждаем те требования которые надо учесть в решении,
-до того как идти в какую то технологическую специфику.
-Командой договорились о целях и о тех пунктах которых надо достичь. Теперь нам таки надой пойти в решение,
-и обсудить ту или иную идею.
+So, we came to the point where at the beginning we discuss the requirements that need to be taken into account in the decision before going into any technological specifics.
+The team agreed on the goals and the points that need to be achieved. Now we finally need to move on to the solution and discuss one or another idea.
 
-Предположим у нас есть несколько решений и все они уже попадают в требования. Те решения, которые не налазят на требования, мы не рассматриваем по умолчанию.
-Точнее если представлять себе коллективную работу - то мы мягко напоминаем, что некоторое требование не учтено в решении и его надо или расширить,
-или же не рассматривать.
+Suppose we have several solutions and all of them already meet the requirements. Solutions that do not meet the requirements are not considered by default.
+More precisely, if we imagine collective work - then we gently remind that some requirement is not considered in the solution and it needs to be either expanded or not considered.
 <!-- cut -->
 
-## Подробнее о ситуации
+## More about the situation
 
-Для тех кто никогда не был в такой ситуации - представьте что у вас есть какое-то решение по требованиям. Но есть предлагаемые альтернативы.
-Эти альтернативы могут выглядеть как и концептуально другое предложение, так и просто предложение подправить изначальное решение.
-Например, у вас есть предложение сделать систему из 3‑х компонент, а кто-то предлагает один из компонентов разнести еще на 2 части, таким образом
-задизайнив систему из 4-х компонент.
-Грубо говоря спрашивают: "А почему не сделать Х?"
-При том что предыдущая система удовлетворяла требования. Или нет...?
+For those who have never been in such a situation - imagine that you have some solution based on requirements. But there are proposed alternatives.
+These alternatives may look like a conceptually different proposal or just a proposal to adjust the initial solution.
+For example, you have a proposal to create a system consisting of 3 components, and someone suggests splitting one of the components into 2 parts, thereby designing a system consisting of 4 components.
+Roughly speaking, they ask: "Why not do X?"
+While the previous system satisfied the requirements. Or did it not...?
 
-## Почему появляются альтернативы
+## Why alternatives arise
 
-Если подумать немного, то все мы люди :) Ваш кэп.
+If you think about it a little, we are all humans :) Your captain.
 
-Всегда существует множество решений для одной и той же проблемы.
+There are always many solutions to the same problem.
 
-Что важно понять - это то что когда ты начинаешь практиковать не накатанный, не инерционный подход, всегда получается не на 100% идеально.
-Я бы сказал что первые попытки хорошо если будут получаться на 50%.
+What is important to understand is that when you start practicing a non-routine, non-inertial approach, it always turns out not 100% perfect.
+I would say that the first attempts are good if they work out 50%.
 
-Люди, которые предлагают альтернативы, думают что у них появился вариант как учесть больше.
-То-есть у них **рождается новое требование, которое как кажется, должно улучшить дизайн и учесть больше возможных развитий событий.**
-Или меньше, потому что кому-то может показаться, что текущее решение излишне сложно.
-На каждом этапе предложения альтернативы главное это постоянно возращатся с уровня решения на уровень требований. Опять-таки, понимаем почему решение лучше через призму дополнительных аттрибутов качества которые они добавляют в систему.
+People who offer alternatives think that they have come up with a way to take more into account.
+That is, they **come up with a new requirement that, as it seems, should improve the design and take into account more possible developments.**
+Or less, because someone might think that the current solution is unnecessarily complicated.
+At each stage of proposing an alternative, the most important thing is to constantly return from the solution level to the requirements level. Again, we understand why the solution is better through the prism of additional quality attributes they add to the system.
 
-## Как понять какое решение выбрать
+## How to decide which solution to choose
 
-Если они равнозначны, то можно конечно бросить монетку. Шутка.
+If the alternatives are equivalent, you can of course flip a coin. Just kidding.
 
-Лучше подойти к этому процессу более осознанно и вынести выгоду из ситуации.
-Если альтернативы вносят какие-то поправки в требования, то коллективно принимаем решение о том нужно ли это требование или нет.
-Обычно это достаточно просто сделать, если в команде все адекватные люди.
-Например, можно сделать простой pros and cons анализ.
-На основе анализа можно понять дает ли требование выгоду с учётом всех компромиссов.
+It's better to approach this process more consciously and get some benefit from the situation.
+If the alternatives make some changes to the requirements, then we make a collective decision whether this requirement is necessary or not.
+Usually this is quite easy to do if everyone on the team is reasonable.
+For example, you can do a simple pros and cons analysis.
+Based on the analysis, you can understand whether the requirement provides benefits considering all compromises.
 
-## Пример
+## Example
 
-Представим себе ситуацию, когда у нас есть задача сделать дизайн для коммуникации между несколькими сервисами.
-Есть предложенный вариант использовать HTTPS и request-response который удовлетворяет всем изначальным требованиям.
-Но при этом, кто-то из команды предлагает поставить очередь между сервисами.
+Let's imagine a situation where we have a task to design communication between several services.
+There is a proposed option to use HTTPS and request-response that satisfies all initial requirements.
+But at the same time, someone on the team suggests putting a queue between the services.
 
-Приводим разговор в плоскость требований. Что предлагающий хочет учесть посредством очереди?
-Получаем следующий ответ:
-- надежное приложение. Очередь может выступать буфером и в случае отказа одного из компонентов.
-- коммуникация толерантная к всплескам нагрузки. Опять-таки, очередь выступает буфером и позволяет подождать пока всё сообщения будут обработаны, или уже устроить умное масштабирование по размеру очереди.
+We bring the conversation to the level of requirements. What does the proposer want to take into account through the queue?
+We get the following answer:
+- Reliable application. The queue can act as a buffer and in case of failure of one of the components.
+- Communication tolerant to load spikes. Again, the queue acts as a buffer and allows you to wait until all messages are processed, or already provide smart scaling based on the size of the queue.
 
-Хорошо, мы получили требования. Теперь обсуждаем нужны ли они нам? Являются ли они обязательными?
+Okay, we got the requirements. Now we discuss whether we need them or not. Are they mandatory?
 
-- Обсуждаем надежность - выглядит как что-то нужное. Но у надежности есть различные уровни такие как доступность, отказоустойчивость, возможность к восстановлению.
-Договариваемся что достаточно будет 99.95% доступности, отказоустойчивость к выходу из строя нескольких запущенных копий приложения.
-- Далее обсуждаем коммуникацию толерантную к всплескам нагрузки. Говорим о том что, иметь такую характеристику было бы хорошо, если есть условно дешевый способ, но это не принципиально для наших текущих требований. Намного важнее возможность к восстановлению после всплесков нагрузки.
+- We discuss reliability - it looks like something necessary. But there are various levels of reliability such as availability, fault tolerance, and recoverability.
+We agree that 99.95% availability, fault tolerance in case of failure of several running copies of the application will be sufficient.
+- Next, we discuss communication tolerant to load spikes. We say that having such a characteristic would be good if there is a conditionally cheap way, but it is not critical for our current requirements. Much more important is the ability to recover after load spikes.
 
-Теперь у нас есть дополненные требования и 2 решения которые подходят под все требования. Делаем теперь на pros & cons анализ.
+Now we have updated requirements and 2 solutions that fit all the requirements. Let's now make a pros & cons analysis.
 
-### Берём HTTPS request-response
+### Choosing HTTPS request-response
 
-| pros | cons |
+| Pros | Cons |
 |---|---|
-| Коммуникация которая натурально поддерживается в браузерах | Нету встроенного механизма повтора |
-| Понятная обработка ошибок | Обработка сообщения не гарантированна |
-| Достаточно простой способ общения для разработчиков |  |
-| Наличие готового инструментария для тестирования и отладки |  |
+| Communication that is naturally supported in browsers | No built-in retry mechanism |
+| Clear error handling | Message processing is not guaranteed |
+| Simple way of communication for developers |  |
+| Availability of ready-made tools for testing and debugging |  |
 
-### Теперь очередь
+### Choosing Queue
 
-| pros | cons |
+| Pros | Cons |
 |---|---|
-| Гарантии обработки сообщения | Сложная обработка ошибок |
-| Есть буфер для сообщений в случае нештатных ситуаций | Для браузера требует отдельного UX и технологий для доставки ответов |
-|  | Требует дополнительных слоев логики связанных с транспортом, такие как идемпотентность обработчиков и роутинг |
-|  | Требует дополнительных инструментов для тестирования и отладки |
+| Guaranteed message processing | Complex error handling |
+| Provides a message buffer in case of abnormal situations | Requires a separate UX and technologies for delivering responses for browsers |
+|  | Requires additional layers of transport-related logic such as idempotent handlers and routing |
+|  | Requires additional tools for testing and debugging |
 
-Смотрим на pros & cons анализ и решаем что для нас скорость старта и простота для разработчиков важнее чем преимущества, которые дает очередь.
-И останавливаемся на request-response.
+We look at the pros and cons analysis and decide that for us, speed of development and simplicity for developers is more important than the advantages that a queue provides. Therefore, we choose the HTTPS request-response.
 
-Что важно, это то что в процессе pros & cons анализа, мы так же вывели еще одно - простота для разработки несет важную роль для текущих условий.
+It is important to note that during the pros and cons analysis, we also identified another important factor - simplicity for development plays an important role in the current conditions.
 
-## Расширяем требования
+## Expanding the requirements
 
-После всех обсуждений хорошо бы задокументировать решения и требования которые мы вывели по итогу.
+After all the discussions, it would be good to document the solutions and requirements that we have derived as a result.
 
-Всё это можно сразу вносить в документацию походу обсуждения.
-Хорошо бы так же задокументировать что было отвергнуто и почему, т.к. это поможет ускорить дальнейшие разговоры. Чем больше требований будет описано или отвергнуто, тем проще будет строить решение, которое подходит под всё.
+All of this can be immediately included in the documentation as we discuss. It would also be good to document what was rejected and why, as it will help to expedite further discussions. The more requirements that are described or rejected, the easier it will be to build a solution that fits everything.
 
-## Проверяем решение
+## Checking the Solution
 
-Обычно реальная жизнь сложнее чем отдельно взятый пример для статьи. Разговоров и задокументированных требований может быть значительно больше.
-Из практики иногда требовалось часа 4-6 обсуждать сложные решения.
-После всех изменений хорошо бы перепроверить что, то решение которое получилось в конце всё еще удовлетворяет всем выведенным требованиям, ограничениям и тд.
-Для этого можно взять формальные методы traceability требований, или хотя бы разок пройтись по требованиям глазами отвечая на вопрос "Как оно воплощенно в решении?".
-Если ответ есть, то всё хорошо, если ответ затруднительный или его нет - то стоит подправить решение, до того момента пока все требования не окажутся покрытыми.
+Usually, real life is more complex than a single example taken for an article. There may be much more discussions and documented requirements.
+From practice, sometimes it took 4-6 hours to discuss complex solutions.
+After all the changes, it is a good idea to recheck whether the solution obtained at the end still satisfies all the requirements, constraints, etc.
+To do this, you can take formal methods of traceability of requirements, or at least once go through the requirements visually answering the question "How is it embodied in the solution?".
+If the answer is there, then everything is good, if the answer is difficult or absent, then it is worth adjusting the solution until all the requirements are covered.
 
-## Резюме
+## Summary
 
-В двух частях рассмотрен процесс того как можно в команде, коллективно обсуждать, находить консенсус и приходить к более качественным и прагматичным решениям.
-Надеюсь что это поможет кому-то избежать конфликтов, не продуманных решений и вообще построить более осознанный подход к архитектуре у себя.
-Как минимум мне в свое время это помогло немного улучшить процессы. А этой статьей я постарался структурировать сделанное.
+In two parts, the process of how a team can collectively discuss, find consensus and come up with more quality and pragmatic solutions has been considered.
+I hope that this will help someone avoid conflicts, unthoughtful solutions, and generally build a more conscious approach to architecture.
+At least for me, this helped improve the processes a little in my time. And with this article, I tried to structure what has been done.
