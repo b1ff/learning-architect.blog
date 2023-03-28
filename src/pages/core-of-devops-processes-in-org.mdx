@@ -1,147 +1,121 @@
 ---
 slug: "/blog/core-of-devops-processes-in-org"
 date: "2021-07-04"
-author: "Евгений"
-keywords: devops,принципы девопс,скорость инфраструктуры,командные процессы
+author: "Eugene"
+keywords: devops,devops principles,infrastructure speed,team processes
 ---
-# Основополагающий принцип DevOps внутри организации
+# The fundamental principle of DevOps within an organization
 
 <!-- cut -->
-Очень часто в организациях наблюдается ситуация, когда происходят локальные конфликты между разработчиками и отделами,
-которые занимаются инфраструктурой. Впоследствии конфликты кому-то надо тушить. Так как меня часто привлекают для тушения
-таких конфликтов, хотелось бы поделится виденьем того, из-за чего эти конфликты появляются и что нужно сделать,
-по моему мнению, чтобы сильно уменьшить их количество.
+Very often, organizations experience local conflicts between developers and infrastructure teams that need to be resolved afterwards.
+Since I am often brought in to resolve such conflicts, I would like to share my view on why these conflicts arise and what needs to be done,
+in my opinion, to significantly reduce their number.
 
-## Как появлялся DevOps?
+## How did DevOps come about?
 
-Все мы ведь знаем зачем было придумано такое маркетинговое название как DevOps. Вдруг кто не знает...
+We all know why such a marketing name as DevOps was invented. In case someone doesn't know...
 <!-- cut -->
-(_Я догадываюсь, как раздражают вступительные слова об одном и том же в текстах как этот.
-Например, давайте в сотый раз нарисуем корабль с контейнерами или набор микро какашек в статье про микросервисы,
-но тут история нужна для дальнейшего повествования, а не, чтобы познакомить в сотый раз с тем, что и так все знают_)
-Так вот, вдруг кто не знает, в далёком 2009 движение DevOps было призвано разорвать метание экскрементов
-между админами и командами разработки в процессе доставки продукта до пользователя.
-Проблема выходила из процесса развертывания приложений в то время. Зачастую команда разработки результатом
-своей деятельности давала некий артефакт (например, .jar файл, .dll, .exe, в некоторых случаях архив с исходным кодом).
-Далее этот артефакт уходил админам, и они должны были запустить его на каком-то окружении,
-будь то продакшн для пользователей или тестовый стенд. И вот тут начиналось самое интересное,
-админы не могут запустить - возвращают артефакт разработчикам, разработчики не знают,
-что там админы делали — возвращают админам со словами “сами вы ***, вот это пробовали?”.
-И так по кругу, пока артефакт не заведется или же у кого-то не кончится терпение.
-Конечно же, ситуации, которые переходили в перебрасывание, не заканчивались одним лишь развёртыванием,
-дальше следовала нагрузка, ошибки, логи и прочие радости эксплуатации,
-в котором одни команды перебрасывали “информацию” другим командам,а те в свою очередь отвечали другой “информацией” в зад.
+(_I can guess how annoying introductory words about the same thing in texts like this are.
+For example, let's draw a ship with containers or a set of micro-poops in an article about microservices for the hundredth time,
+but here the story is needed for further narration, not to introduce something everyone already knows_)
+So, in case someone doesn't know, in distant 2009, the DevOps movement was aimed at stopping the throwing of feces
+between admins and development teams in the process of delivering the product to the user.
+The problem arose from the application deployment process at the time. Often, the development team provided an artifact as a result
+of their activities (for example, a .jar file, .dll, .exe, in some cases an archive with source code).
+Then this artifact went to the admins, and they had to run it on some environment,
+be it production for users or a test environment. And here the most interesting began,
+admins can't run it - they return the artifact to the developers, developers don't know
+what the admins did - they return it to the admins with the words "you do it yourselves, have you tried this?".
+And so on in a circle, until the artifact starts or someone runs out of patience.
+Of course, situations that turned into throwing did not end with just deployment,
+then came load, errors, logs and other joys of operation,
+in which some teams threw "information" to other teams, and they in turn responded with other "information" in response.
 
-И тогда кто-то сказал “хватит!” и придумал маркетинговое название процессу, который положил бы конец чемпионату
-по самому меткому перебрасыванию ответственности в другую команду. Назвали это DevOps, что вкратце означает следующее:
-“команды разработки, давайте вы больше будете вникать в то, как ваше приложение запускается в реальных средах
-и следить за его стабильностью и потребностями, а команды админов со своей стороны,
-давайте вы научитесь понимать потребности команд разработки и научитесь
-автоматизировать с учётом спроса в рамках контекста текущей организации”.
+And then someone said "enough!" and came up with a marketing name for the process that would put an end to the championship
+for the most accurate throwing of responsibility to another team. They called it DevOps, which briefly means the following:
+“development teams, let's delve into how your application runs in real environments
+and monitor its stability and needs, and admin teams, on your side,
+let's learn to understand the needs of development teams and learn
+to automate with regard to demand within the context of the current organization".
 
-## Как на практике это должно было работать?
+## How should it work in practice?
 
-С помощью наших любимых разговоров друг с другом в правильное время.
-Если упрощать, то команда вместо того, чтобы приходить и говорить:
+Through our beloved conversations with each other at the right time.
+To simplify, instead of the team coming and saying:
 
-_“я сделаль, возьми мое язделие и понеси пользователям и помни, что моему язделию нужно 17 ядер,
-проприетарная тайваньская операционная система, 400 энв переменных, 2 конфига в xml,
-один конфиг на прологе, 2 ТБ места на локальном диске и 4 базы данных.
-И да язделие должно быть в проде через 2 дня, а документацию доступна у меня через нейроинтерфейс.”_
+_"I have made it, take my creation and deliver it to the users and remember that my creation requires 17 cores, a proprietary Taiwanese operating system, 400 environment variables, 2 XML configs, one Prolog config, 2 TB of local disk space, and 4 databases.
+And yes, the product must be in production in 2 days, and the documentation is available to me through a neural interface."_
 
-Нужно поменять всего лишь немного:
+We just need to change a little:
 
-_“я **собираюсь** сделять. Моему язделию нужно будет предположительно 17 ядер,
-проприетарная тайваньская операционная система, несколько сотен энв переменных, конфиги на xml и прологе,
-пару ТБ места на локальном диске и 4 разных базы данных.
-И да язделие должно быть в проде к дате дд.мм.гггг. Документацию писать мы пока не планировали.”_
+_"I am **planning** to create it. My creation will require approximately 17 cores, a proprietary Taiwanese operating system, several hundred environment variables, configs in XML and Prolog, a couple of TBs of local disk space, and 4 different databases.
+And yes, the product must be in production by the dd.mm.yyyy date. We have not planned to write documentation yet."_
 
-Ситуация, описанная выше гиперболизирована, но это попытка наглядно показать разницу - вместо того, чтобы ставить перед фактом и передавать что-то в эксплуатацию, мы начинаем разговор перед тем, как что-то делать.
+The situation described above is hyperbolized, but it is an attempt to show the difference visually - instead of putting something in operation and passing it on as a fact, we start the conversation before doing anything.
 
-## Какова цель этого разговора?
+## What is the purpose of this conversation?
 
-Основное --- это админам понять потребности команды разработки и команде разработки понять возможности инфраструктуры.
-Упрощая, поставить себя на место собеседника.
+The main goal is for the admins to understand the needs of the development team and for the development team to understand the infrastructure capabilities. To simplify, put yourself in the other person's shoes.
 
-Всё. Эта цель и есть основа того самого DevOps процесса. На самом деле DevOps просто термин, который придумали, чтобы легко ~~вписать в описание конференции~~ можно было сгруппировать дальнейшие действия,
-в котором будут рождаться процессы и инструменты для решения существующих в то время проблем.
+That's it. This goal is the basis of the DevOps process itself. In fact, DevOps is just a term that was invented to easily ~~fit into a conference description~~ group further actions, in which processes and tools will be born to solve existing problems at that time.
 
-Но если убрать отсюда термин, то описанная выше цель и есть начало здоровой и продуктивной командной разработки.
-*А также причина почему увеличение количества людей не приводит к пропорциональному росту скорости, но это другая история.*
+But if you remove the term from here, the above-described goal is the beginning of healthy and productive team development. *And also the reason why increasing the number of people does not lead to proportional growth in speed, but that's another story.*
 
-И у админов, и у разработчиков есть те самые сакральные знания, которые по умолчанию недоступны другой стороне.
-Понимая и цели, и возможности друг друга, команды смогут прийти к компромиссу, когда одним не нужно жертвовать бизнес требованиями,
-а у других кровь из глаз не льется в попытках понять что происходит и успеть к срокам. Главное сделать глубокий вдох перед началом...
+Both admins and developers have those sacred knowledge that is not available to the other side by default. Understanding each other's goals and capabilities, teams can come to a compromise when one doesn't have to sacrifice business requirements, and the other doesn't bleed from their eyes trying to understand what's going on and meet deadlines. The main thing is to take a deep breath before starting...
 
-## А где же инструменты?
+## Where are the tools?
 
-Инструменты, которыми мы сейчас пользуемся и которые уже принято вкладывать в термин DevOps рождались как раз-таки во время тех самых разговоров.
-Т. е. поднять кубернетисы и запихать всё в контейнеры не является самоцелью процесса. Целью является понять, что команды создают систему именно так,
-потому что у них есть на то причины, и совместно согласиться как спрос на инфраструктуру для этой самой системы может быть покрыт в процессе разработки.
-В результате этих разговоров - обе стороны должны понимать, что дальше делать и причины этих поступков.
-Те самые кубернетисы так и рождались, новые разработчики прибывали, бизнес хотел всё больше,
-а наращивать админов и подходить к настройке каждого сервера с небольшой ноткой романтизма, когда сервера для одного и того же,
-но настроены немного по-разному, не было радикальным ответом на такой рост.
-И тогда же сразу научились паппетами и шефами разливать идентичную инфраструктуру, потом добавили еще динамики и запихали все приложения
-под оркестраторы, в котором целый мир для приложений встроен из коробки.
-Но еще раз, **всё это было ответом на конкретные проблемы, зачастую в контексте конкретных организаций**.
-Конечно, некоторые проблемы были более распространенные, поэтому часть инструментом теперь запихивается по умолчанию во многих проектах.
+The tools we use today, and which are already included in the term DevOps, were born precisely during those same conversations.
+That is, deploying Kubernetes and stuffing everything into containers is not the ultimate goal of the process. The goal is to understand that teams create a system in this way because they have reasons for it, and jointly agree on how the demand for infrastructure for this very system can be covered in the development process.
+As a result of these conversations, both sides should understand what to do next and the reasons behind these actions.
+Kubernetes themselves were born this way. New developers arrived, the business wanted more, and increasing the number of admins and approaching the configuration of each server with a touch of romance when servers for the same thing were configured slightly differently was not a radical response to such growth.
+And then they immediately learned how to use Puppet and Chef to distribute identical infrastructure, then added more dynamics and stuffed all applications under orchestrators, in which a whole world for applications is built-in out of the box.
+But again, **all this was a response to specific problems, often in the context of specific organizations**. Of course, some problems were more common, so some tools are now included by default in many projects.
 
-## Почему кубернетесы с терраформами всё еще не являются решением той самой изначальной проблемы?
+## Why are Kubernetes and Terraform still not a solution to the original problem?
 
-Несмотря на то, что с высоты птичьего полёта проблемы у разных проектов схожие, каждый день мы работаем на более низком уровне.
-Мы не говорим про continuous delivery, как нечто абстрактное. Мы говорим о том, что нам нужно доставлять приложения,
-которые мы делаем **в контексте** текущего проекта, организации, продукта и т. д.
-В одном случае у продукта могут быть сотни запросов в секунду и каждое движение на продакшене нужно делать аккуратно и развозить поэтапно,
-размазывая увеличение нагрузки на новую версию на день или два, в другом случае нам нужно чтобы траффик как можно быстрее пошел на новую версию.
-И в таких случаях мы возвращаемся к тому же взаимодействию, что и в далеком 2009, только предмет разговора немного поменялся.
-Общение ведется не в сторону, а дайте нам серверов разных, да побольше, а дайте нам возможность решить задачу Х,
-так как это нужно для нашего контекста. Несмотря на то, что повсеместное применение публичных облаков сильно смягчает ситуацию,
-такие разговоры всё равно никуда не делись. Причины могут быть разные: наследие в системах, попадание под государственные регуляции,
-поддержка различных стандартов и т. д.
+Despite the fact that from a bird's eye view, the problems of different projects are similar, every day we work at a lower level.
+We are not talking about continuous delivery as something abstract. We are talking about the fact that we need to deliver applications that we make **in the context** of the current project, organization, product, etc.
+In one case, a product may have hundreds of requests per second, and every movement in production needs to be done carefully and distributed step by step, spreading the load increase for the new version over a day or two. In another case, we need the traffic to go to the new version as quickly as possible.
+And in such cases, we return to the same interaction that was present in 2009, only the subject of the conversation has slightly changed.
+Communication is not in the direction of "give us different servers, and as many as possible" or "give us the ability to solve task X because it's necessary for our context". Despite the fact that the widespread use of public clouds greatly softens the situation, such conversations still do not disappear anywhere. The reasons may be different: legacy in systems, falling under government regulations, support for various standards, etc.
 
-## К чему это всё?
+## What does it all mean?
 
-К тому что пока в рамках взаимодействий мы не научимся проводить те самые разговоры, в нужное время и приходить к решению,
-которое устраивает все стороны, то никакого девопса в процессах нету.
-Есть просто набор инструментов, которые решают из коробки какие-то широко распространенные в индустрии проблемы.
+The point is, until we learn to have those very conversations at the right time and come to a decision that satisfies all parties involved,
+there is no DevOps in the processes. There is just a set of tools that out of the box solve some industry-wide problems.
 
-Но если все научатся договариваться между друг-другом, то тогда у нас резко уменьшится количество эффективных менеджеров,
-архитекторов, девопс команд и начнётся реальная производительность и результаты.
+But if everyone learns to communicate with each other, then the number of effective managers, architects, DevOps teams will drastically decrease, and real productivity and results will begin.
 
-Если сильно запутанно — то вот простое правило, с которого можно начать:
+If it's too confusing, here's a simple rule to start with:
 
-***Как результат всех коммуникаций между несколькими заинтересованными сторонами, все стороны должны понимать дальнейшие действия.***
+***As a result of all communication between multiple interested parties, all parties should understand the next steps.***
 
-При этом условное "пойти на ... север" не должно считаться как дальнейшие действия.
+Directions like "please do not touch me..." should not be considered as the next steps.
 
-## Что это всё значит на примерах из жизни?
+## What does this mean in real-life examples?
 
-### Пример. Разрешите этому серверу ходить в эти подсети
+### Example. Allow this server to access these subnets
 
-#### Негативный сценарий:
+#### Negative scenario:
 
-Команда разработки: *нам нужно вызывать API X из сервера Y, но у них нету сетевой связности. Добавьте, пожалуйста, сетевую связность между ними.*
+Development team: *We need to call API X from server Y, but they don't have network connectivity. Please add network connectivity between them.*
 
-Команда инфраструктуры: *нет, эти сети не должны быть связанны.*
+Infrastructure team: *No, these networks should not be connected.*
 
-Занавес... Команда разработки не может достичь бизнес цели, все не довольны. Инфраструктурная команда думает, что они очередной раз спасли от компанию от ереси,
-и представляют разработчиков малыми детьми. А разработчики думают, что админы вообще оторваны от всего что происходит, и не понятно, чем там вообще занимаются,
-кроме того, что запрещают что-то делать. В итоге происходит эскалация, и кто-то начинает вникать в проблемы одних и других и найти решение, которое устроит обоих.
+Curtain... The development team can't achieve the business goal, everyone is unhappy. The infrastructure team thinks they saved the company from heresy again, and they treat developers like little kids. And the developers think that the admins are completely disconnected from what's going on and it's not clear what they are doing except for prohibiting things. As a result, escalation occurs, and someone starts delving into the problems of both sides and finding a solution that will satisfy both.
 
-#### Позитивный сценарий:
+#### Positive scenario:
 
-Команда разработки: *к нам пришла задача, для которой нам надо вызывать API X из сервера Y.
-Но мы обнаружили что между ними нету сетевой связности. Можем ли мы организовать эту связность?*
+Development team: *We have a task that requires us to call API X from server Y.
+But we found that there is no network connectivity between them. Can we organize this connectivity?*
 
-Команда инфраструктуры: *нет, у нас нарезанные уже доверенные сети. Между этими компонентами доверия не должно быть, по планам.
-У вас есть возможность сделать задачу, не общаясь между этими 2мя серверами?*
+Infrastructure team: *No, we already have segmented trusted networks. There should be no trust between these components, according to the plan.
+Do you have the ability to complete the task without communicating between these 2 servers?*
 
-Дальше следует общий мозговой штурм над альтернативами, в итоге понимают, что API не обязательно дергать на сервере,
-и можно вызвать, например из браузера и для этого надо API выставить через gateway и расходятся, продолжая работу над своими задачами.
+Then there is a brainstorming session on alternatives, and they realize that the API doesn't necessarily have to be called on the server, and it can be called, for example, from a browser, and for this, the API needs to be exposed through a gateway, and they part ways, continuing to work on their tasks.
 
-## В качестве заключения
+## In conclusion
 
-Описанные тут слова и примеры могут выглядеть достаточно наивно и очевидно. Но я неоднократно наблюдал и был в похожих ситуациях,
-когда 2-3 стороны заходят в тупик на первом же ветке общения, и нужно быть тем самым промежуточным звеном, которое пытается искать компромисс между всеми.
-Если же мы поменяем немного то, как мы общаемся между инфраструктурой и разработки, то от этого могут получиться отличные решения и, иногда, даже инструменты мирового уровня.
+The words and examples described here may seem naive and obvious. But I have repeatedly observed and been in similar situations where 2-3 parties get stuck on the first branch of communication, and there needs to be that intermediate link that tries to find a compromise between everyone.
+If we change slightly how we communicate between infrastructure and development, then this can lead to excellent solutions and, sometimes, even world-class tools.
