@@ -27,14 +27,14 @@ const IndexPage = (props) => {
 									</a>
 								</h2>
 								<div className='text-gray-500 py-2'>
-									{formatDate(post.frontmatter.date)} / автор
-									<span className='text-gray-700'> Евгений</span> / минут на прочтение <span
+									{formatDate(post.frontmatter.date)} / author
+									<span className='text-gray-700'> Eugene</span> / minutes to read <span
 									className="text-gray-700">{post.timeToRead}</span>
 								</div>
 								<div className="article-summary" dangerouslySetInnerHTML={{ __html: post.fields.articleCut }}/>
 								<div className='mt-4'>
 									<a className="link-default"
-										href={`./${post.slug}/`}>Читать дальше →</a>
+										href={`./${post.slug}/`}>Read full article →</a>
 								</div>
 							</article>
 						</li>))}

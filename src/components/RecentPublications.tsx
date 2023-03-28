@@ -24,11 +24,11 @@ export function RecentPublications() {
 	const posts = data.allMdx.nodes;
 
 	return <nav className={'recent-publications'}>
-		<h3 className={'sub-h'}>Последние публикации</h3>
+		<h3 className={'sub-h'}>Recent articles</h3>
 		<ul>
 			<li><hr className="mb-3 mt-3"/></li>
 			<li>
-				<a className={'link-default'} href="/">К списку тем</a>
+				<a className={'link-default'} href="/">To the list of themes</a>
 				<hr className="mb-3 mt-3"/>
 			</li>
 
