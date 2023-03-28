@@ -2,158 +2,158 @@
 slug: "/blog/tests-is-speed"
 date: "2021-08-13"
 author: "Евгений"
-keywords: unit-tests,тесты,скорость разработки
+keywords: unit-tests,testing,automated testing,speed of development
 ---
-# Тесты нужны для скорости
+# Tests are necessary for speed
 
 <!-- cut -->
-Я постоянно слышу о том что, что бы писать тесты нужно увеличить оценку по времени задачи в 1.2, 1.5, 2, 3 раза.
-Обычно я не спорю с этим, так как команде виднее, но внутри меня частенько бурлит, или как минимум подбурливает.
-Хотел бы объяснить свой взгляд на автоматические тесты, и почему считаю что такое увеличение не совсем корректное.
+I constantly hear that in order to write tests, you need to increase the time estimate for the task by 1.2, 1.5, 2, 3 times.
+Usually, I don't argue with this, since the team knows best, but inside me there is often a simmering feeling, or at least a bubbling one.
+I would like to explain my view on automated tests and why I believe that such an increase is not entirely correct.
 <!-- cut -->
 
-## Как мы обычно разрабатываем
+## How we usually develop
 
-В данном разделе я имею в виду сценарии, при которых нам хотя бы немного важно качество.
-И так, у нас есть какой-то проект, предположим это API. Предположим нам надо расширить тот самый API.
-Так или иначе нам нужно проверить результат, что API отрабатывает как надо.
-Для этого мы после каждого изменения стартуем процесс с API. Заходим в какой-то swagger или postman, делаем запрос с нужными данными и смотрим результат.
+In this section, I mean scenarios where we care at least a little bit about the quality.
+So, we have some project, let's say it's an API. Let's assume we need to extend that very API.
+In any case, we need to check the result, that the API works as intended.
+To do this, after each change, we start the process with the API. We go to some swagger or postman, make a request with the necessary data and check the result.
 
-_Таааак... тут у нас упало... Ага понял где упало, правим. Завелось. Делаем дальнейшую правку... тааааккк опять упало. Не понятно где.
-Пойду ка я в деббагер. Дебаггер покликали, ага стало понятно, делаем правку
-...иии... опять надо пойти пнуть API что бы проверить что правка валидная._
+_So... something went wrong here... Okay, I see where it went wrong, fix it. It's working now. Make further changes... and again, it's failing. Not sure where.
+Let me go to the debugger. Call the debugger, okay, I see what's wrong now, fix it... and again, I need to go and check the API to see if the fix is valid._
 
-Как минимум тут уже несколько переключений контекста. Хорошо если нужно открывать postman, а если браузер.
-Там же нотификации, и хоба почитать почту надо, а тут хоба колокольчик на ютубе.
+At least a few context switches are involved here. It's good if we need to open postman, but if it's a browser.
+There are notifications there, and suddenly we need to read our email or watch a video on YouTube.
 
-А если нужна тяжелая подготовка данных, для которых например надо вызывать еще других API или по добавлять строк в базу данных.
+And if we need to prepare heavy data, for which, for example, we need to call other APIs or add rows to the database.
 
-Еще ситуация усугубляется, когда мы работаем с фронтендом в браузере.
-Там ведь целый дивный мир, если мы не пишем стартовые страницы, то нужно пробираться сквозь дебри интерфейса,
-как минимум проходить авторизацию, как максимум целые пользовательские сценарии из кучи шагов.
+The situation is exacerbated when we work with frontend in the browser.
+There's a whole wonderful world there. If we're not writing starting pages, we need to navigate through the interface,
+at least go through the authorization, at most, complete entire user scenarios with multiple steps.
 
-## Какая есть альтернатива
+## What is the alternative
 
-Как понятно из заголовка статьи - это тесты.
-Имея хорошо настроенное окружение и процесс (об этом ниже), можно отлично войти в поток и просто фигачить качественный код до помутнения сознания.
-Никаких переключений контекста, никаких нажатий мышкой.
-Отвлекаемся на мессенджеры, почту, соцсети, и т.д. только как сами посчитаем нужным это сделать.
+As the title of the article suggests, the alternative is tests.
+With a well-tuned environment and process (more on that below), you can easily get into the flow and just write quality code until your mind goes fuzzy.
+No switching of contexts, no mouse clicks.
+Get distracted by messengers, email, social networks, and so on only when you feel it's necessary.
 
-Основа этому - это *постоянная обратная связь от тестов*. Не нужно переключать контекст, что бы понять мой код работает или нет.
+The basis of this is *continuous feedback from tests*. You don't need to switch contexts to understand whether my code works or not.
 
-И вообще, прикиньте с тестами можно писать код не будучи подключенным к интернету (если не считать отсутствие stackoverflow за блокер).
-Реально, я как то написал нужный кусок функционала для интеграции с командой заказчика, будучи в пути к заказчику без интернета.
-Когда я добрался до рабочего места, я запустил и всё просто работало. До этого я 6 часов просто писал код.
+And you know what? With tests, you can write code without being connected to the internet (if you don't count the absence of Stack Overflow as a blocker).
+I once wrote a necessary piece of functionality for integrating with a customer team while on the way to the customer, without internet access.
+When I got to my workplace, I ran the code and it just worked. Before that, I spent 6 hours just writing code.
 
-Конечно не все тесты работают на продуктивность. Все мы знаем про пирамиду тестирования.
-Так вот чем выше по пирамиде мы карабкаемся, тем меньше вклад тестов в продуктивность разработки и больше в другие характеристики.
-То-есть да, **unit тесты**, которые многие критикуют, как раз **дают наибольший прирост к продуктивности.**
+Of course, not all tests contribute equally to productivity. We all know about the testing pyramid.
+The higher up the pyramid we climb, the less tests contribute to development productivity and the more they contribute to other characteristics.
+In other words, **unit tests**, which many criticize, actually **give the greatest productivity boost.**
 
-На самом деле прогресс шагнул и интеграционные тесты, в этом плане тоже не плохи, в текущее время.
-Но есть конечно, но. Нужно помнить что на настройку интеграционных тестов нужно будет потратить немного больше времени.
-Их нельзя просто сесть и писать. В большинстве своем надо стартануть какой-то процесс и может быть пару зависимостей в докере поднять.
-Но в целом, когда этот этап пройден, написание интеграционных тестов тоже очень и очень помогает ускориться.
+In reality, progress has been made, and integration tests are not bad in this regard at the moment.
+But there is a catch. It's important to remember that setting up integration tests will take a little more time.
+You can't just sit down and write them. In most cases, you need to start some process and maybe bring up a couple of dependencies in Docker.
+But overall, when this stage is passed, writing integration tests also helps speed up the process.
 
-## Тесты как результат планирования
+## Tests as a result of planning
 
-Не знаю как у кого, но у меня при написании кода часто было 2 проблемы:
+I don't know about you, but when I write code, I often have two problems:
 
-1. Надобность закончить педалировать, если задача вылазит за пределы рабочего дня и вспомнить на следующий день где нужно продолжить.
-2. Надобность отвлечься, на митинг, обед и т.д., а потом успешно вернуться и продолжить.
+1. The need to finish pedaling if the task goes beyond the working day and remember where to continue the next day.
+2. The need to get distracted by a meeting, lunch, etc., and then successfully return and continue.
 
-Как видите сводиться всё к одному и тому же, надо иметь возможность остановиться и продолжить с того места где остановился.
+As you can see, everything boils down to the same thing: you need to be able to stop and continue from where you left off.
 
-И тут тесты отлично помогают.
+And this is where tests come in handy. If you write tests, you can stop at any time and continue the next day.
 
 
-## Несколько простых правил для разработки и окружения, что бы скорость действительно была скоростью
+## Some simple rules for development and environment setup to make speed really fast
 
-### 1. Научитесь пользоваться IDE, и желательно без мыши
+### 1. Learn to use the IDE, preferably without a mouse
 
-Я в основном использую IDE от JetBrains (Project Rider, IntelliJ IDEA, WebStorm).
-Один из интересных приемов, которые я применяю в этих IDE - это генерация кода из тестов.
-То есть, вместо того что бы накидывать какой-то дизайн в коде и потом писать на него тесты, я прямо начинаю писать тест.
-Хороший старт, это тест _"Как я хочу использовать, то что мне нужно сделать"_.
-Прямо в тесте начинаем использовать, то чего еще нет.
-Далее идёт магия IDE, которую хорошо бы выучить и довезти до автоматизма.
-IDE подсвечивает что, то что я использую в тесте, еще не существует. Так как использование мне уже нравиться, я просто жму ALT+ENTER
-и вуа-ля мне предлагает создать разные примитивы в языке, класс, интерфейс, функцию, компонент и тд.
+I mostly use IDEs from JetBrains (Project Rider, IntelliJ IDEA, WebStorm).
+One of the interesting techniques that I use in these IDEs is generating code from tests.
+That is, instead of creating some design in code and then writing tests for it, I start writing tests directly.
+A good start is the test _"How I want to use what I need to do"_.
+Right in the test, we start using something that doesn't exist yet.
+Then the magic of the IDE begins, which is good to learn and bring to automation.
+The IDE highlights that what I'm using in the test doesn't exist yet. Since I already like using it, I just press ALT+ENTER
+and voila, it offers to create different language primitives, classes, interfaces, functions, components, etc.
 
-И я не отказываюсь от предложения IDE :)
+And I don't refuse the IDE's offer :)
 
-С радостью соглашаемся на ее предложения. После этого *прямо в тестах* получаем что-то, что уже может вызываться.
-Далее повторяем шаги с разными другими тестами. Когда результат уже выглядит как что-то большое,
-например мы нагенерили несколько классов или что-то законченное,
-например уже есть вполне себе функциональность,
-можно перенести код в те места где он должен обитать. Нажимаем CTRL+SHIFT+O (команда перенести в файл, у вас могут быть другие комбинации), выбираем куда и всё, дальше IDE сама.
+We happily agree to its suggestions. After that, *right in the tests* we get something that can already be called.
+Then we repeat the steps with different other tests. When the result looks like something big,
+for example, we generated several classes or something finished,
+for example, there is already quite functional code,
+we can move the code to where it should reside. Press CTRL+SHIFT+O (move to file command, you may have other combinations), choose where and that's it, the IDE itself does the rest.
 
-Это всё к тому что пользование IDE сильно упрощает и написание тестов и написание кода, а также влияет на скорость, как минимум не нужно будет брать в руки мышь и искать нужное место в интерфейсе что бы что-то нажать.
+All this is to say that using an IDE greatly simplifies writing tests and code, and also affects speed, at least you don't have to pick up the mouse and find the right place in the interface to click on something.
 
-### 2. Настройте тесты так что бы их было легко запускать или перезапускать
+### 2. Set up tests to be easy to run or restart
 
-Важно для всё того же фокуса и получение постоянной обратной связи.
+Important for all the same focus and getting constant feedback.
 
-Как немного в предыдущем разделе - современные IDE умеют это делать с достаточно большим успехом.
-После изменения кода надо видеть упали или прошли тесты, какие тесты упали, как ситуация изменилась от предыдущего запуска.
-И делать перезапуск надо часто, иначе можно пропустить важную обратную связь после очередного изменения, и придется тратить время на дебаг.
-Без этого процесс будет не полноценным. Если понадобится отдельные усилия, что-бы запустить тесты, то увеличение оценок из-за тестирования плавно начнёт возвращаться.
+As a little in the previous section - modern IDEs can do this quite successfully.
+After making changes to the code, you need to see whether the tests passed or failed, which tests failed, and how the situation has changed since the last run.
+And you need to restart often, otherwise you can miss important feedback after the next change, and you will have to spend time debugging.
+Without this, the process will not be complete. If it takes separate efforts to run the tests, the increase in ratings due to testing will gradually return.
 
-Идеальный сценарий, это если тесты перезапускаются сами по изменению. Сделал изменения - ничего не нажал, а тесты тебе отрепортили всё хорошо или что-то нужно править.
+The ideal scenario is when the tests restart themselves on a change. Made a change - didn't press anything, and the tests reported to you that everything is good or something needs to be fixed.
 
-### 3. Настройте тесты так что бы они **быстро** давали обратную связь
 
-Еще не мало важный пункт, это сделать так что бы обратная связь была достаточно быстрой.
-Как сказано в предыдущем разделе, обратная связь важна после каждого маленького изменения в коде.
-Но что делать если тестов очень много или они очень медленно проходят и обратная связь растягивается на пол минуты, минуту или больше.
+### 3. Configure tests to provide **quick** feedback
 
-Первое - убедиться что железа на котором разрабатывается софт достаточно для быстрого запуска тестов.
+Another important point is to make sure that the feedback is fast enough.
+As mentioned in the previous section, feedback is important after every small change in the code.
+But what if there are a lot of tests or they run very slowly, and the feedback takes half a minute, a minute, or more.
 
-Второе - убедиться что тесты распараллеливаются и утилизируют доступные ресурсы железа.
+First - make sure that the hardware on which the software is being developed is sufficient to quickly run tests.
 
-Третье - запускать частями. Реализовать это можно либо же структурно разделив проект и тесты составляющие и запускать тесты, которые относятся только к текущему модулю, пакету или что там поддерживается у языка.
-Еще один способ - это запускать тесты исходя из покрытия. Есть достаточно много инструментов, которые считают покрытия тестами и исходя из покрытия строят карту зависимостей.
-То есть какие куски кода затрагиваются во время запуска того или иного теста. Потом на основании этого запускаются только тесты, которые затрагивают место изменения.
-Примеры таких инструментов:
+Second - make sure that the tests are parallelized and utilize the available hardware resources.
 
-- [JetBrains Project Rider](https://blog.jetbrains.com/dotnet/2018/07/20/unit-test-coverage-continuous-testing-now-rider/) умеет перезапускать тесты исходя из покрытия .NET кода.
-- [NCrunch](https://www.ncrunch.net), нехило платная штука, но тоже позволяет себе устроить непрерывный оптимизированный цикл обратной связи от тестов.
-- [WallabyJS](https://wallabyjs.com) - инструмент для JS который анализирует покрытие кода, и умело перезапускает тесты. Плюс имеет дополнительные возможности, такие как REPL из тестов.
+Third - run tests in parts. This can be implemented by structurally dividing the project and the tests components and running only the tests that relate to the current module, package, or language-supported feature.
+Another way is to run tests based on coverage. There are quite a few tools that calculate test coverage and build a dependency map based on it.
+That is, which pieces of code are touched during the execution of a particular test. Then, based on this, only the tests that affect the modified area are run.
+Examples of such tools:
 
-Да эти примеры платные, но это инвестиция в собственную производительность. Покупая инструменты JetBrains последние 6 лет, я ни разу не пожалел денег потраченных на них.
+- [JetBrains Project Rider](https://blog.jetbrains.com/dotnet/2018/07/20/unit-test-coverage-continuous-testing-now-rider/) can restart tests based on .NET code coverage.
+- [NCrunch](https://www.ncrunch.net), a somewhat expensive tool, but it also allows you to set up a continuous optimized feedback loop from tests.
+- [WallabyJS](https://wallabyjs.com) - a tool for JS that analyzes code coverage and skillfully restarts tests. Plus, it has additional features such as REPL from tests.
 
-### 4. Пишите тесты так что бы было легко понять где и почему падает
+Yes, these examples are paid, but it is an investment in your own productivity. Buying JetBrains tools for the last 6 years, I have never regretted the money spent on them.
+
+## 4. Write tests so that it is easy to understand where and why they fail
 
 _Test_positive failed with reason expected true to be false._
 
-Правда ничего не понятно?
+Doesn't make sense, right?
 
-Особенно если сравнить со следующей строкой:
+Especially when compared to the following string:
 
 _Plain_should_have_needed_attitude_right_after_start failed with reason expected plain.attitude to be 500m but got 120m_
 
-Когда тест падает с результатом из первого примера, с большой долей вероятности придется запускать дебагер, во втором случае можно предположить причину падения и сразу же начать ее чинить получая дальше обратную связь от тестов.
+When a test fails with the result from the first example, it will most likely require debugging. In the second case, you can assume the reason for the failure and immediately start fixing it, getting further feedback from the tests.
 
-### 5. Сделайте тесты не отъемной частью разработки
+## 5. Make tests an integral part of development
 
-Худшее что можно сделать, это писать код и тесты отдельными этапами, например иметь отдельные задачи на написания кода и написание тестов.
+The worst thing you can do is write code and tests as separate stages, for example, have separate tasks for writing code and writing tests.
 
-Это крайне-крайне не производительный подход. Такой подход конечно оправдает и х3 увеличение оценки что-бы писать тесты.
+This is an extremely unproductive approach. Such an approach will certainly justify a x3 increase in estimates to write tests.
 
-Почему это плохо? Да потому что тесты отдельным этапом просто не несут ценности описанной выше, они не дают обратную связь после каждого изменения в коде.
-А как мы уже выяснили обратная связь очень важна что-бы сохранять фокус и быть производительным.
+Why is this bad? Because tests as a separate stage simply do not provide the value described above, they do not provide feedback after each change in the code.
+And as we have already established, feedback is crucial to stay focused and productive.
 
-Идеально конечно, практиковать TDD. Сам процесс настроен на обратную связь, маленькие итерации, и это некий формальный подход которому можно сесть и следовать.
-Если же по какой-то причине, TDD кажется не подходящим, то хотя бы нужно стараться писать тесты вместе с кодом, так что бы тесты отвечали на вопрос, а делает ли код который я **только что написал**, то что задумано.
+Ideally, practice TDD. The process is designed for feedback, small iterations, and is a formal approach that can be learned and followed.
+If, for some reason, TDD does not seem suitable, at least try to write tests along with the code so that the tests answer the question, "does the code I just wrote do what I intended it to do?"
 
-Я считаю что если тесты пишутся отдельным этапом, то лучше этого не делать, потому что это дикая потеря времени. Лучше всего его тратить на тесты которые выше по пирамиде, такие как например end-2-end.
+I believe that if tests are written as a separate stage, it's better not to do it, because it's a waste of time. It's best to spend it on tests that are higher up the pyramid, such as end-to-end tests.
 
-## В заключение
+## Conclusion
 
-Я постарался из своего опыта описать виденье того как перестать умножать свои оценки на некую константу, просто ради того что бы писать тесты.
-Что это не нужно делать, не для того что бы скрыть цену тестов, а для того что бы показать что тесты на самом деле инструмент эффективности, при правильно поставленном процессе конечно.
-Если процесс разработки настроен, то через короткий промежуток разработки оценки будут не увеличиваться, а уменьшатся просто из-за того что не нужно кликать бесконечные
-флоу пользователя ради того что бы починить маленький баг, достаточно написать несколько тестов и раз убедиться что все работает, как и задумано.
+From my experience, I tried to describe a vision of how to stop multiplying estimates by some constant just for the sake of writing tests.
+This is not something that should be done to hide the cost of tests, but to show that tests are actually a tool for efficiency, provided that the development process is set up correctly.
+If the development process is set up properly, then over a short period of development, estimates will not increase, but decrease simply because there is no need to click endless user flows to fix a small bug - it is enough to write a few tests and verify that everything works as intended.
 
-Я умышленно не концентрировался на других характеристиках, которые улучшают или ухудшают тесты, это предмет других разговоров.
+I deliberately did not focus on other characteristics that improve or worsen tests, as this is the subject of other conversations.
 
-В этой же статье я попытался показать эффект от тестов на скорость разработки.
+In this same article, I tried to show the effect of tests on development speed.
+I hope that this will help you to understand that tests are not a burden, but a tool that can help you to be more productive.
