@@ -31,6 +31,11 @@ module.exports = {
 							maxWidth: 1200,
 						},
 					},
+					{
+						resolve: `gatsby-remark-prismjs`,
+						options: {
+						},
+					},
 				],
 				defaultLayouts: {
 					default: require.resolve(`./src/components/DefaultPageLayout.tsx`),

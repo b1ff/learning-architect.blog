@@ -1,0 +1,473 @@
+---
+slug: "/blog/tests-is-speed"
+date: "2023-09-30"
+author: "Eugene"
+keywords: react,mobx,application design,typescript
+---
+# Designing a Type-Safe Asynchronous Data Loading Pattern with React and MobX
+
+<!-- cut -->
+Asynchronous data loading is a pervasive challenge in modern web development.
+When using React and MobX, the complexity can quickly escalate, giving rise to questions about type safety, error handling, and boilerplate code.
+In this article, we won't just talk about these challenges; we'll solve them.
+
+Through a targeted design session, we will dissect the problem and build a type-safe and efficient solution for asynchronous data loading in React and MobX applications.
+
+Additionally, this article aims to offer more than just a solution; it aims to walk you through the thinking process involved in tackling a problem that lies at the intersection of technology and application design.
+
+<!-- cut -->
+
+## Problem statement
+
+First and foremost, this article assumes you have a working knowledge of React, MobX, and TypeScript. If you're not well-versed in these technologies, don't fret; this article can still provide valuable insights into the application-level technical design process.
+
+Every effective design begins with a clear problem statement.
+
+In our case, the challenge lies in constructing a UI that interacts seamlessly with asynchronous processes. These are often encapsulated within promises, which frequently serve as wrappers for network operations like HTTP calls.
+
+Now, let's delve into the conventional workflow for handling asynchronous data loading in React and MobX applications.
+
+```tsx
+import { useEffect } from 'react';
+import { makeAutoObservable, runInAction } from 'mobx';
+import { observer } from 'mobx-react-lite';
+
+// let say some response from API
+type SomeData = {};
+class MyStore {
+    isLoading: boolean = false;
+    data: SomeData | undefined;
+	error: string | undefined;
+
+    constructor() {
+        makeAutoObservable(this);
+    }
+
+    async fetchData() {
+        // typical pattern in loading data
+		// start loading process
+		this.isLoading = true;
+        try {
+			const response = await fetch('https://some-api.com')
+			const data = await response.json()
+			runInAction(() => {
+				// if success - initialize data with response
+				this.data = data;
+			});
+        } catch (error) {
+			// in case of error - show error
+			this.error = 'Unexpected error happened during loading data.';
+            console.error(error);
+		} finally {
+			runInAction(() => {
+				// in all cases finish loading process
+				this.isLoading = false;
+			});
+		}
+    }
+}
+
+const myStore = new MyStore();
+
+const MyComponent = observer(() => {
+	useEffect(() => {
+        // orphan promise, most likely complaint of eslint
+        myStore.fetchData();
+	}, []);
+
+    // now handle all the loading cases in component
+    return (
+		<div>
+			{myStore.isLoading && <div>Loading...</div>}
+			{myStore.error && <div>{myStore.error}</div>}
+			{myStore.data && <div>{myStore.data}</div>}
+		</div>
+	);
+});
+```
+
+So, what are the key issues with the current approach?
+
+1. **Orphan Promise**: ESLint often flags the promise in useEffect as unhandled. Although we can disable the ESLint warning, the code doesn't make it explicit how errors within the promise are managed, introducing unnecessary cognitive load each time the component is reviewed.
+
+1. **Boilerplate Overhead in Components and Stores**: Handling loading states directly within each component and managing the async process in each MobX store can become cumbersome as the application scales. This leads to repetitive and fragmented code across both UI and state management layers.
+
+1. **Lax Error Handling**: The manual handling of loading states doesn't enforce best practices in error handling. It's easy to overlook cases, leaving the user staring at a blank screen or a perpetual loading indicator.
+
+1. **Ambiguous Error Management**: The existing code creates ambiguity about how to deal with errors—should they be logged to the console, displayed to the user, or handled in some other way? This again adds cognitive load to the development process.
+
+1. **MobX Async Complexity**: The current pattern also exposes the inherent intricacies of dealing with asynchronous functions in MobX. For instance, one might forget to invoke `runInAction`, causing unintended behavior.
+
+## Design goals
+
+Now that we've pinpointed the issues with the existing setup, it's time to outline our design objectives. While these goals largely stem from our problem statement, articulating them explicitly adds clarity to our mission.
+
+1. **Type Safety**: Our design should be type-safe to catch errors at compile time rather than at runtime, ensuring robustness. It means that we should make state that is not possible in our subject area impossible to represent in our types.
+
+1. **Error Handling**: The approach must standardize error handling to provide a consistent user experience and ease developer cognitive load.
+
+1. **Boilerplate Minimization**: The solution should aim to reduce boilerplate in both React components and MobX stores, streamlining code maintenance and scalability.
+
+1. **MobX Async Abstraction**: We aim to simplify the complexities tied to handling asynchronous functions in MobX, enhancing code readability and maintainability.
+
+1. **Framework Agnostic**: Although our examples will primarily utilize React, the design should be sufficiently abstract to be applicable to other frameworks. This focus on MobX and TypeScript enables broader usability.
+
+1. **Additional Goals**: The solution should help to build other patterns of async actions, like easy automatic or manual retries, cancellation and immutability where it is needed.
+
+*NOTE: While some may argue that changing UI frameworks is a non-issue, real-world scenarios prove otherwise. At the time of writing this article, I'm work with a company where our website features pages built in almost every major framework—React, Vue 2/3, AngularJS, and Angular.*
+
+## Investigation on ready-to-use solutions
+
+Before we go into the design process, let's take a look at some existing solutions to see if they can meet our needs.
+
+1. <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener">React Suspense</a> - native way to do loading in React. It does not feet design goals in 2 dimensions. First of all it is not framework-agnostic, it could be applied only with React. Second, it does not enforce good practices of loading and error handling.
+
+1. <a href="https://tanstack.com/query/v3/docs/react/overview" target="_blank" rel="noopener">React Query</a> - a hook way to do loading process. Definitely do not fit goals, since it is tight to React and does not enforce good practices of loading and error handling.
+
+1. <a href="https://github.com/mobxjs/mobx-utils#frompromise" target="_blank" rel="noopener">mobx-utils.fromPromise</a> - well this a good one, really a good one. If you need ready-to-go option, I highly recommend to just use *mobx-utils.fromPromise* . But in the sake of demonstrating design process, we will not use it and design own similar thing. Also will add some minor improvements to fromPromise has, like immutability of properties and out-of-the-box retries.
+
+## Design process
+
+Now that we've established our goals and investigated existing solutions, it's time to design our own solution. We'll start by outlining the high-level design and then dive into the details.
+
+We might start from jumping directly into mobx based primitive that looks like
+
+```typescript
+import { makeAutoObservable, action } from 'mobx';
+class MobxAsyncData<T> {
+	data: T | undefined;
+    error: unknown | undefined;
+    isLoading: boolean = true;
+
+    constructor(input: Promise<T>) {
+        makeAutoObservable(this);
+        input.then(
+            action('resolve', (data) => {
+				this.data = data;
+				this.isLoading = false;
+			}),
+			action('reject', (error) => {
+                this.error = error;
+                this.isLoading = false;
+			}));
+    }
+}
+```
+
+While this might look like a good approach, it fails to meet design goals that were defined at the begging.
+Try not to look at the code in the constructor, but rather concentrate on the type definition.
+If we look close this state is possible from the type definition perspective:
+
+```typescript
+const asyncData = {
+    loading: true,
+	data: 'some data',
+	error: 'some error'
+};
+```
+This is not possible case if we are talking about async data loading, since we can not have data and error at the same time.
+
+So first of all lest start from basics and describe state of the loading in typescript terms. Which is close to model our domain.
+
+```typescript
+// This is our success case when we have specific result of async action
+// we explicitly say
+type Success<TData> = Readonly<{
+    kind: 'success';
+    data: TData;
+    loading: false;
+}>;
+
+// This is our error case when we have error of async action
+type Errored = Readonly<{
+    kind: 'error';
+    loading: false;
+    error: unknown;
+    errorMessage?: string;
+}>;
+
+// This is our loading case when we have no result of async action yet
+type LoadingInitiated = Readonly<{
+    kind: 'loading';
+    loading: true;
+}>;
+
+type Unitiated = Readonly<{
+	kind: 'uninitiated';
+	loading: false;
+}>;
+
+// And finally we join them together
+// into discriminated union to represent all the possible states
+type AsyncState<TData> = Success<TData> | Errored | LoadingInitiated | Unitiated;
+
+// Discriminator (kind property) in union
+// gives ability to utilize typescript inference
+// in conditional statements to dispatch correct type
+// and users of the state mostly will be obligated to do that, i.e.
+const state: AsyncState<string> = { kind: 'success', data: 'some data', loading: false };
+if (state.kind === 'success') {
+    state.data	// become available for usage and type is correctly inferred as string
+}
+```
+
+As you might see we define specific type for each possible state of async action and utilize discriminated union to represent all the possible states.
+
+Now we can create helpers to create data record of each type.
+
+```typescript
+const receivedData = <TData>(data: TData): Success<TData> => ({
+	kind: 'success',
+	data,
+	loading: false,
+} as const);
+
+const receivedError = (error: unknown): Errored => ({
+	kind: 'error',
+	error,
+	errorMessage: error instanceof Error ? error.message : typeof error === 'string' ? error : undefined,
+	loading: false,
+} as const);
+
+const newLoading = (): LoadingInitiated => ({
+	kind: 'loading',
+	loading: true,
+} as const);
+
+const uninitiated = (): Unitiated => ({
+	kind: 'uninitiated',
+	loading: false,
+} as const);
+```
+
+Now when our domain is modelled in pure typescript types, we can apply it to next layer of abstraction - mobx entities.
+
+```typescript
+import { makeObservable, runInAction, observable, action } from 'mobx';
+
+export class AsyncData<TData> {
+    public static readonly empty = <TData>() => new AsyncData<TData>(() => { throw new Error('Cannot initiate empty AsyncData') });
+
+    @observable.ref
+    public state: AsyncState<TData> = unitiated();
+
+    // we are passing callback here in order to be able to utilize callback later
+    constructor(private readonly loadCallback: () => Promise<TData>) {
+        makeObservable(this);
+    }
+
+    // here we encapsulate orphaned promise,
+	// and it is safe since we know that all the errors are handled below
+    start = () => {
+        this.load();
+    }
+
+    // here we encapsulate standard async operation representation in any generic UI
+	// with handling all the possible cases
+    @action.bound
+    async load() {
+        if (this.state.kind === 'success') {
+            throw new Error('Cannot initiate already loaded AsyncData');
+        }
+
+        this.state = newLoading();
+        try {
+            const data = await this.loadCallback();
+            runInAction(() => {
+                this.state = receivedData(data);
+            });
+        } catch (e) {
+            runInAction(() => {
+                this.state = receivedError(e);
+            });
+        }
+    }
+
+    // convenience method to bind loading states quickly
+    get loading() {
+        return this.state.loading;
+    }
+}
+```
+
+Perfect, it is something already. Now we can use it in our stores.
+
+```tsx
+import { AsyncData } from './AsyncData';
+import { useEffect } from 'react';
+import { observable, makeObservable } from 'mobx';
+import { observer } from 'mobx-react-lite';
+
+class MyStore {
+    @observable.ref
+	myItems = new AsyncData(() => fetch('https://some-api.com').then((response) => response.json()));
+
+    constructor() {
+        makeObservable(this);
+    }
+}
+
+const myStore = new MyStore();
+
+const MyComponent = observer(() => {
+	useEffect(myStore.myItems.start, []);
+	const { myItems } = myStore;
+
+	// now handle all the loading cases in component
+    return (
+		<div>
+			{myItems.loading && <div>Loading...</div>}
+			{myItems.state.kind === 'error' && <div>{myItems.state.errorMessage ?? 'Unexpected error'}</div>}
+			{myItems.state.kind === 'success' && <div>{myItems.state.data}</div>}
+		</div>
+	);
+});
+```
+
+Well we have some primitives to work with and component look like it handles the different cases.
+
+Let's look at the design goals we set:
+
+1. **Type Safety**: done. It now forces to check state before reaching to a data. Also, specific state is enforced.
+
+1. **Error Handling**: not done yet, component itself looks like it was before.
+
+1. **Boilerplate Minimization**: almost done, we do not have boilerplate in store anymore, but still a little in the component.
+
+1. **MobX Async Abstraction**: done. Async machinery works outside our code and user code works only with observables.
+
+1. **Framework Agnostic**: also done since we used plain typescript and mobx.
+
+
+While it is possible to create pattern on top of what we have now for handling all the states in component, I'll omit this part. You can use it as opportunity to model it further.
+But demonstrate now what we can do with a good foundation we have now.
+
+Let's solve some of the additional goals, let say we want to have retries in our async action.
+I'll demonstrate only changed parts.
+
+```typescript
+interface AsyncDataOptions {
+	// indicates that action could be users might try to retry operation if it is failed
+    manuallyRetriable: boolean;
+}
+
+export class AsyncData<TData> {
+    // ... other code
+    constructor(
+        private loadCallback: () => Promise<TData>,
+        private options?: AsyncDataOptions) { // we have added options
+    }
+
+    get manuallyRetriable() {
+        return this.options?.manuallyRetriable ?? false;
+    }
+
+    @action.bound
+    async load() {
+        if (!this.manuallyRetriable && this.state.kind === 'success') {
+            throw new Error('Cannot initiate already loaded AsyncData. If it should be possible - please indicate that it can be retried manually');
+        }
+
+        // ... other function code
+	}
+
+    // ... class other code
+}
+```
+
+Now, with our design in place, we can invoke the initiate method as many times as needed, provided we've marked our data as retriable. Additional functionalities like automatic retries and operation cancellation can also be seamlessly integrated using the same approach.
+
+But that's not all. The boilerplate code within components still bothers me, and error handling isn't yet fully enforced. Let's tackle this issue from a different angle by introducing a component pattern for our application. Our goal is to create a generic component that leverages AsyncData to manage flow control.
+
+```tsx
+import { AsyncData } from './AsyncData';
+import { Spinner, Alert } from './YourProjectDefaultComponents';
+import React from 'react';
+import { observer } from 'mobx-react-lite';
+
+// here we have a little bit of typescript magic
+// this type maps type of the Data by having array of  AsyncData<TData> as input
+type InferSuccessData<TData extends readonly AsyncData<T[number]>[], T extends readonly unknown[]> =
+    { readonly [P in keyof TData]: TData[P] extends AsyncData<infer R> ? R : never };
+
+type AsyncDataProp<T extends readonly unknown[], TDataCollection extends readonly AsyncData<T[number]>[]> = {
+    asyncData: TDataCollection
+    children: (data: InferSuccessData<TDataCollection, T>) => React.ReactElement
+};
+
+// component works with array (actually tuple) of AsyncData
+// makes standard logic of checking all the states and render default components
+// on success case it delegates rendering to children function
+function AsyncDataPatternRaw<
+	TValues extends readonly unknown[],
+	TDataCollection extends readonly AsyncData<TValues[number]>[]>
+(
+    { asyncData, children }: AsyncDataProp<TValues, TDataCollection>
+) {
+    if (asyncData.some(d => d.state.kind === 'loading')) {
+        return <Spinner>Please wait while all the data is loading</Spinner>
+    }
+
+    if (asyncData.some(d => d.state.kind === 'error')) {
+        return <>
+			<Alert
+	            message="Error loading data"
+	            description="Something went wrong while loading the data. Please try to refresh the page."
+	            type="error"
+	        />
+			{asyncData.some(d => d.manuallyRetriable) &&
+                <button onClick={
+                    () => asyncData.filter(d => d.state.kind === 'error').forEach(d => d.initiate())}
+				>
+					Retry
+                </button>
+            }
+		</>
+		</>
+    }
+
+    return children(asyncData.map(d => d.state.data) as unknown as InferSuccessData<TDataCollection, TValues>);
+}
+
+export const AsyncDataPattern = observer(AsyncDataPatternRaw);
+```
+
+And component can be used as next.
+
+```tsx
+import { AsyncDataPattern } from './AsyncDataPattern';
+
+const MyComponent = () => {
+	return <AsyncDataPattern
+            asyncData={[myStore1.someLoading, myStore2.someUpdate] as const}>
+		{([data1, data2]) => (
+			<div>
+				<div>{data1}</div>
+				<div>{data2}</div>
+			</div>
+		)}
+	</AsyncDataPattern>
+}
+```
+
+As you can see we left as minimum boilerplate in component as possible, and also we have enforced error handling and included default option to retry user actions if some of them failed.
+
+
+## Conclusion
+
+The pattern of thinking presented in this article should helps to build better and scalable applications.
+
+Main takes are next:
+1. Think of what primitives could be extracted and re-used across application.
+1. As soon as you have such primitives, design them following approach described in the article
+	1. Start from defining a problem statement
+    1. Start from clear goals for design to solve defined problems
+	1. Analyze existing approaches and tools to solve the problem. If there is no such - design your own.
+	1. Start from domain modelling as pure as possible, ideally only language abilities. Try to model domain in a way that it is impossible to represent invalid state.
+	1. Then move by the layer of abstractions higher (Mobx -> react), until last one is not reached.
+
+Good design should allow to add new features and change existing ones with minimal effort.
+
+It should be easy to understand and maintain.
+
+It should be easy to test and debug. It should be easy to scale and extend.
