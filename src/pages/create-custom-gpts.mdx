@@ -1,0 +1,214 @@
+---
+slug: "/blog/create-custom-gpts"
+date: "2023-11-14"
+author: "Eugene"
+keywords: AI, OpenAI, GPTs, GPT, assistant
+---
+
+# How to create your own GPTs assistant
+<!-- cut -->
+
+If you missed OpenAI's Dev Days presentation, you missed out on Sam Altman, the CEO, ~~killed many startups~~ has shown updates to OpenAI and ChatGPT.
+
+Haven't seen it? Do yourself a favor and <a href="https://www.youtube.com/watch?v=U9mJuUkhUzk" target="_blank">watch it here</a>. It's not just a presentation; it's a glimpse into the future, at least until the next big thing rolls around.
+
+Post-presentation, like many others, I had a lightbulb moment. Why not feed all our internal organization docs to a GPT and let it do the heavy lifting? Then just kick back, relax, and sip coconuts on an island somewhere.
+
+Turns out, it's not as easy as Sam made it look. If your company's processes and org structure resemble a labyrinth, you'll need to roll up your sleeves. It's not all AI magic and coconut sipping, unfortunately. But at the same time, it is much-much-much-.....-much easier than it was before. We just need a little bit of wizarding around crafting precise instructions to GPT.
+
+As of writing this, internet does not have a lot of takes on how to make it work. So, I decided to put my two cents in and draft one.
+
+<!-- cut -->
+
+## First of all - what is custom GPTs?
+
+Imagine ChatGPT but with a personal twist. OpenAI's new brainchild, custom GPTs, let you mold ChatGPT to do, well, pretty much anything. Need to be a trivia champion or a math tutor for the kids? Custom GPTs have got your back. And no, you don’t need a PhD in computer science to create one – it’s as easy as having a chat.
+
+The GPT Store, coming soon, is like a playground for these custom GPTs. Share your creation, and who knows, it might just be the next thing everyone's talking about. Worried about privacy? Relax, OpenAI’s got it locked down.
+
+As for the future? It's looking like custom GPTs will be doing more real-world tasks. Think of them as your all-knowing digital sidekicks, ready to connect to the world with some API magic.
+
+You read more about in <a href="https://openai.com/blog/introducing-gpts" target="_blank">official release notes on the openai.com</a>.
+
+In the summary, it is the same Chat-GPT but with predefined prompt and with ability to use your own dataset. Which a lot...
+
+## How to create your own GPTs assistant
+
+Creating your own GPT assistant is surprisingly simple, almost too easy. First, you'll need a paid subscription to OpenAI. Once you've done that (and trust me, it's worth every penny), head over to the <a href="https://chat.openai.com/create" target="_blank">GPTs creation wizard</a>. Here, you'll essentially be chatting with ChatGPT to create another, more customized ChatGPT.
+
+The process is pretty slick. It will ask about purpose of this GPT and then suggest an icon using DALL-E 3 model for your new GPT buddy. Then, through a series of questions and answers, it crafts a unique prompt for your custom GPT. If you switch to tab "Configure" you will see that generated prompt.
+
+Next up: uploading your dataset. Ideally, this should be plain or simply formatted text, like Markdown. But hey, ChatGPT now gets PDFs, Word documents, and who knows what else. Some folks on social media even claim it can unzip archives and read the text files inside!
+
+For a lot of use-cases, this setup works like magic, no further tweaking needed.
+
+But, there are a couple of hiccups you might run into:
+
+1. Your dataset might not be exactly GPT-friendly.
+2. It might lack comprehensive answers, which gets tricky if your organization has complex processes. Fine-tuning custom GPTs isn't just a chat away in these cases.
+
+Let's dive deeper into these issues and explore how to tackle them.
+
+## How to make your dataset GPT-friendly
+
+GPTs are trained on a lot of data, and they're pretty good at figuring out what's what. But, they're not perfect. If your dataset is a mess, you'll need to clean it up before feeding it to GPT.
+
+Picture this: I'm knee-deep in a digital desert of documents. I've got a wild bunch of PDF files, a scattering of Markdown files, a few stray Word documents caught in the wind, and a wiki, like a mirage, hosted on-premise. It's a mixed-up, muddled-up, shook-up world of data, and I'm diving in, headfirst.
+
+![Fear and Loathing in Las Vegas](../images/dall-e-gen-las-vegas-illustration.png)
+
+When I first experimented with creating a custom GPT, I fed it raw documents exported from our internal wiki, including some PDFs of notably poor quality. Initially, I didn't realize the impact this would have. The responses from the GPT were often unsatisfactory, and I mistakenly thought the fault lay with ChatGPT's capabilities. However, a deeper dive into preprocessing the knowledge base was revealing.
+
+I used ChatGPT to help with generating JavaScript code to extract text from the PDFs. The output was bizarre and hard to understand, which made it clear: if this was what the AI was processing, it probably couldn't make much sense of it either. The problem wasn't with ChatGPT’s intelligence, but with the quality of the data I was providing.
+
+I developed the following workflow to effectively preprocess our knowledge base:
+
+1. **Export Wiki Pages**: Initially, I exported pages from our wiki into DOC format.
+2. **Format Conversion**: Since DOC files aren't parser-friendly, I converted them to the more manageable DOCX format.
+3. **Extracting Text**: The next step involved transforming the DOCX files into a lighter format. I opted to extract plain text from these documents.
+4. **Content Enhancement**: To refine the content further, I utilized the OpenAI API. This involved crafting a specific prompt for the ChatGPT API, enabling it to process and structure the text input for better indexing and clarity.
+
+Below is a simplified version of the script that I used for this process.
+```js
+const mammoth = require('mammoth'); // package for working with .docx files
+const OpenAi = require('openai'); // openai official client for JS/TS
+const fs = require('fs');
+
+function extractTextFromDocx(filePath) {
+    return new Promise((resolve, reject) => {
+        mammoth.extractRawText({path: filePath})
+            .then(result => resolve(result.value))
+            .catch(err => reject(err));
+    });
+}
+
+const prompt = `
+Convert the html in the next message into a structured markdown document suitable for indexing by a Large Language Model.
+Do not explain anything and return the document as is.
+To categorize projects, consider using generalized terms for technologies or platforms.
+
+For every valuable piece of document generate a markdown record in the response as follows:
+### [The heading of the statement]
+
+**Project**: [Identify the project based on content or specify 'Unknown']
+
+**Type**: [Classify the document as 'troubleshooting', 'guidance', or 'explanation']
+
+**Description**: [Rewrite the content in a meaningful and concise way, maintaining as much of the original text as possible for LLM to use in responding to queries]`;
+
+class OpenAiMarkdownTransformer {
+    constructor(apiKey) {
+        this.openai = new OpenAi({ apiKey });
+    }
+
+    async transformToMarkdown(text) {
+        console.log('Sending text to OpenAI:', text.length, 'characters');
+        const response = await this.openai.chat.completions.create({
+            model: 'gpt-4-1106-preview', // this is just announced turbo model, you can try other available
+            messages: [{ role: 'user', content: prompt }, { role: 'user', content: text }]
+        });
+        return response.choices.map(choice => choice.message.content.trim()).join('\n');
+    }
+}
+
+async function processDocument(filePath) {
+    const apiKey = process.env.OPEN_AI_API_KEY;
+    if (!apiKey) {
+        console.error('Missing API key');
+        process.exit(1);
+    }
+
+    const transformer = new OpenAiMarkdownTransformer(apiKey);
+	// text might be bigger than context window (8k tokens for now, while Chat-GPT turbo with 128k tokens context is not available for everyone)
+	// so you might need to split it before sending to OpenAI
+    const text = await extractTextFromDocx(filePath);
+    const markdown = await transformer.transformToMarkdown(text);
+    fs.writeFileSync('./output.md', markdown);
+    console.log('Markdown file created');
+}
+
+// Replace the file path with your document's path
+processDocument('./path/to/your/document.docx');
+```
+
+This script was instrumental in transforming our proprietary wiki format into a readable and concise knowledge base. While a few Markdown files needed manual tweaking, it was significantly easier than sorting out the initial disarray.
+
+Regarding images in our existing wiki: not all are essential for the knowledge base. However, some key decision trees proved valuable. By leveraging ChatGPT, I could convert these image-based trees into text formats, like <a href="https://mermaid.live/edit" target="_blank">mermaid syntax</a> or even plain text.
+
+Now, we've got a solid knowledge base. But what if it only covers a fraction of our processes? We need to tailor our assistant to specific needs. The initial prompt isn't very rigid or formal, so let's explore how we can refine and proceed with it.
+
+## How to refine your prompt
+
+The prompts auto-generated by leveraging GPT can often be quite broad and non-specific.
+
+Take, for instance, this prompt crafted for an internal platform team's GPT:
+
+```
+As SysBase Assistant, my primary role is to provide first-level assistance to platform teams working on system bases for other technical product teams.
+
+I'll focus on offering guidance, troubleshooting tips, and best practices related to system architecture, configurations, and optimizations.
+
+I will avoid providing advice outside my expertise, like detailed coding solutions or hardware-specific recommendations
+
+When faced with ambiguous queries, I'll ask for clarification to ensure accurate and helpful responses.
+
+My interactions will be professional, informative, and tailored to the technical level of the user.
+```
+
+This example highlights the typical nature of these prompts. They're general, but there's room for refinement to make them more precise and applicable to specific use cases.
+
+What I really needed was a specific process for the GPT to follow, one that minimizes its imaginative leaps about non-existent staff or irrelevant company details.
+
+In such scenarios, the usual user-friendly approach of casually tailoring prompts through chatting with GPT may fall short. This is where the advantages of a human, biologically-based brain come into play. We need the nuanced understanding and contextual awareness that only a human can provide to refine these prompts effectively.
+
+Now a guide from OpenAI team, to build a good instructions to Chat-GPT comes in handy. I really-really recommend to read this guide <a href="https://platform.openai.com/docs/guides/prompt-engineering" target="_blank">on prompt engineering</a>.
+
+In pursuit of a more efficient assistant, my goal was clear: to create a tool that not only precisely uses and leverages the provided knowledgebase but also clearly communicates its limitations to the users. The assistant should explicitly inform users when their queries extend beyond the scope of the knowledgebase, offering suggestions based on its general knowledge as an alternative. If all else fails, it should be capable of generating a relevant search query for the internal wiki, or even a draft ticket for the internal ticketing system, providing a seamless bridge to further assistance.
+
+I eventually crafted a solution that embodied these principles, which looks like this
+
+```
+Platform Assistant is tailored to assist with cloud services, continuous integration, and general system operations issues, focusing on a particular team within a large tech organization.
+
+It relies on internal documentation as its primary knowledge base, gathering error messages, troubleshooting steps, and issue details.
+
+Responses should be action-oriented and concise.
+
+Instructions:
+1. Platform Assistant must search the internal knowledge base before offering general knowledge answers. If information exists there, it should use that precise formulation. Otherwise, it should ask the user before providing general knowledge answers.
+2. It should seek details that help locate issues in the knowledge base, understanding specific project contexts and error forms. Example: if a user reports a specific error, the assistant will first ask about the service generating the error.
+3. The assistant should not assume organizational structures or tools not mentioned in the documentation. For queries outside its scope, it redirects users as outlined in a responsibilities document.
+4. As many development teams lack deep knowledge, the assistant should provide specific, step-by-step instructions rather than vague advice.
+5. In addition to the answer, the assistant generates a link to an internal collaboration tool's search function with a custom query. Use URL https://wiki.yourorg.com/search?q=<Generated Search Tearm by assisant> to search the internal wiki, for example https://wiki.yourorg.com/search?q=how+to+do+work+effectively+if+I+need+to+create+tickets .
+6. If the internal search is unhelpful, the assistant generates a task for the system operations team on an issue tracking platform, following a defined template, including a section for system improvement suggestions.
+
+General information about the teams that reach assistant:
+- Comprises product and system-specific teams.
+- Works on different projects. The assistant distinguishes between these projects: project1, project2, ...
+- Utilizes specific tools for version control (github), continuous integration (github), and deployment (github ..).
+- Services are primarily deployed to a cloud service and container orchestration platforms.
+- Team members have limited permissions, restricting resource access.
+
+Task Template:
+	General Description: <user-provided information>
+	Summary of the conversation: <chat summary>
+	Project: <to be determined by the assistant>
+	Specific logs or exact errors: <URL_to_exception_log>
+	Service name: <affected service>
+```
+
+This custom GPT assistant, powered by the meticulously prepared knowledge base, stands as a robust tool poised to ease the support workload on our team.
+
+Interestingly, during its initial run, I (or rather, the AI through me) managed to resolve an issue while testing the prompt and knowledge base. Despite encountering a few rate limits, the experience was surprisingly enjoyable.
+
+Ultimately, I've consolidated all the scripts, the knowledge base, and the prompt into a GIT repository within our organization. This move sets the stage for collaborative enhancement, allowing us to expand the knowledge base and continuously refine our digital helper.
+
+## Looking further
+
+Next, I'm looking to further refine and automate the AI experience. Here's what I'm considering:
+
+1. **API Integration**: The custom ChatGPT can actually handle API calls. This means integrating an OpenAPI schema (not OpenAI – easy mix-up) to enable real-time API interactions. Imagine it automatically creating tickets and notifying teams.
+
+2. **Enhanced Customization**: These GPTs use OpenAI's latest [Assistant API](https://platform.openai.com/docs/assistants/overview), as introduced at the start of this article. OpenAI also released a [playground](https://platform.openai.com/playground?mode=assistant) for the API, which offers a richer interface for debugging inputs and outputs.
+
+I hope someone finds this guide helpful and is excited to see where this technology can take us.
