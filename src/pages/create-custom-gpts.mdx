@@ -203,6 +203,17 @@ Interestingly, during its initial run, I (or rather, the AI through me) managed 
 
 Ultimately, I've consolidated all the scripts, the knowledge base, and the prompt into a GIT repository within our organization. This move sets the stage for collaborative enhancement, allowing us to expand the knowledge base and continuously refine our digital helper.
 
+## Keeping the Knowledgebase Up-to-Date
+
+As of now, OpenAI doesn't seem to offer an API for updating a custom GPT's knowledgebase directly. Here's my plan for a semi-manual updating process:
+
+1. **Version-Controlled Repository**: A Git repository for all scripts, documentation exports, and post-processing.
+2. **Automated Bundling**: Using CI tools, automatically create and version a knowledgebase bundle, then store it in an artifacts repository.
+3. **Update Notifications**: Implement a system to notify when a new version of the refined data is available.
+4. **Manual Updating**: Unfortunately manually update the GPT with the new knowledgebase bundle as needed.
+
+I'm hopeful OpenAI will introduce an API for seamless knowledgebase updates in the future, enabling full automation.
+
 ## Looking further
 
 Next, I'm looking to further refine and automate the AI experience. Here's what I'm considering:
