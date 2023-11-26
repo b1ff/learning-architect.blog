@@ -17,6 +17,15 @@ export class Heading extends React.Component<Props> {
 			<meta name="description" content={description}/>
 			<meta name="keywords" content={this.props.additionalKeywords ?? defaultKeywords} />
 			<meta name="google-site-verification" content="YKSqM3OOK7MMMO5Do3-ANPak1kGLqXC_NRowlubq0U0" />
+			<script async src="https://www.googletagmanager.com/gtag/js?id=G-2K41KFP1B9"></script>
+			<script>{`
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+				gtag('js', new Date());
+
+				gtag('config', 'G-2K41KFP1B9');
+				`}
+			</script>
 		</Helmet>;
 	}
 }
