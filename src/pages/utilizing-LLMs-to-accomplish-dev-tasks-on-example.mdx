@@ -1,0 +1,185 @@
+---
+slug: "/blog/using-llm-for-dev-tasks-on-example"
+date: "2024-09-08"
+author: "Eugene"
+keywords: ai,LLM,Chat-GTP,speed of development,claude,OpenAI,Cursor Editor,development experience
+---
+# Exploring how to utilize LLMs to speedup development
+
+<!-- cut -->
+Recently, I got tasked with integrating another internal API into an LLM-based agent that I was working on. The application already had several APIs connected, but this new addition was crucial, and I was looking for a way to automate the integration process. The challenge wasn’t just about hooking up the API—it was about transforming the complex internal structures into something more digestible for the LLM. Basically, the API needed a makeover: stripping out internal entities, identifiers, and making the data coherent and contextually relevant for the AI.
+
+Now, generally speaking, adding a new API is a pretty clear-cut process—parse the endpoints, connect the dots, and fit it into the application. But it's also a time-consuming routine. It’s not just about writing the code but ensuring everything aligns perfectly, which eats up a lot of time, especially when scaling this up to integrate more APIs quickly. We wanted to simplify this routine, making it more efficient and repeatable.
+
+I’ve been using GitHub Copilot and ChatGPT extensively in my coding routine, and they’ve been great. But for this task, I wanted to see if there was a better, more streamlined way. That’s when I decided to experiment with Cursor Editor and a custom script approach, hoping they could give me that extra edge.
+<!-- cut -->
+
+Integrating an API into a project typically involves four key components:
+
+1. **API Client**: Allows code to make requests to the API and understand its contracts.
+2. **Function Definition**: A JSON schema of input parameters needed for OpenAI tools integration, as detailed in the [OpenAI function calling guide](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling).
+3. **Function Implementation**: The actual code that performs the required operations.
+4. **Tests**: Ensures the function works as intended and supports future updates.
+
+## Tool #1: Cursor Editor
+
+### Getting Started
+
+I kicked things off with [Cursor Editor](https://www.trycursor.com), which, if you haven’t heard of it, is like a supercharged version of an IDE with AI baked in. It’s got this cool feature where it can read the codebase and provide insights into what’s going on. It’s kinda like having a buddy who knows just enough to help but still needs some guidance. So, I enabled code embeddings in Cursor, which gave me a broad picture of the project but no clear path on what I actually needed to do.
+
+When it came to generating code, I used [openapi-typescript-codegen](https://www.npmjs.com/package/openapi-typescript-codegen) for the basic models and let Cursor handle the heavy lifting of generating the API client. It was surprisingly good at piecing together most of the code, even catching some missing API requests, which was nice. But it wasn’t all smooth sailing—some requests still had to be adjusted manually.
+
+### Trying to Get Things Done
+
+My first approach was simple: I just asked it to generate a function that could update or set some records, and… well, it didn’t exactly get the job done. The code it spit out was generic and often missed the context, which felt like talking to someone who heard the words but didn’t quite get the meaning.
+
+But after tweaking my prompt and adding more detail, I got something that almost worked. For example, I told it to create, update, or delete records while being careful with destructive operations (basically, keeping the old state so I could roll back if needed). The results were better, but still, there were parts where the AI kinda stumbled and needed some hand-holding to make the logic work correctly.
+
+One cool feature I found was the inline adjustments you could make using CTRL+K on selected code. It’s like having your very own pair programming assistant who doesn’t mind being bossed around—perfect for making step-by-step improvements. But honestly, even though it sped up the process a lot compared to doing everything manually, it wasn’t fully predictable. Some days, you get a lot of the code right on the first go; other days, you’re buried in hidden bugs that can drain your time.
+
+### The Cursor Editor Experience
+
+Initially, Cursor Editor creates a noticeable "Wow" effect. However, as you work with it more, the excitement fades, and it starts to feel like a Copilot-powered IDE.
+
+But there are some standout features that make it worth using:
+
+1. **Predictive Suggestions**: Cursor does this cool thing where it guesses what else you might need to change when you tweak one part of your code. Sometimes, it’s spot on and feels like magic. Other times, not so much, but it’s still a nice touch.
+
+2. **Inline Prompts and Adjustments (CTRL + K)**: This was the real star for me. You highlight a bit of code, tell Cursor what you want, and it does it. It’s like having a super chill coworker who never gets tired of your constant “Hey, can you fix this?” requests.
+
+3. **Model Switching and Using Claude**: The fact that you can swap models like changing channels is awesome. Claude’s great with larger contexts and code generation, and it’s right there without the hassle of setting up your own account.
+
+
+## Tool #2: OpenAI-Based Script
+
+The second tool in my bag of tricks was this script I whipped up with OpenAI’s help. The idea was for it to generate the function implementations directly—basically automating the boring bits. I brainstormed with ChatGPT, and it threw an estimate of 27 days to get the whole script right. That’s when I almost gave up, because the biggest challenge wasn’t writing the code itself but feeding the AI enough context so it wouldn’t mess up.
+Instead of getting bogged down with parsing the whole OpenAPI spec, I decided to take a different approach. I generated TypeScript models directly from the OpenAPI specification and then wrote a TypeScript class—an API client—using those models. But instead of defining every possible endpoint, I focused on including only the methods I actually needed. This way, I kept things lean and focused, which made it easier for the AI to handle.
+
+The next part of the plan was to leverage this TypeScript API client as the entry point. I used the TypeScript compiler API to gather all the dependencies and relevant source code from the models used within the client. Once I had that neatly packaged, I fed it into the OpenAI ChatGPT-4 model as context. By providing this precise input, I was able to guide the AI more effectively and generate relevant code snippets without drowning in irrelevant details.
+
+ChatGPT was quick to generate the code, but debugging and refining took a couple of hours. Still, this approach made it way easier to control what the AI was working with, and once I got through the initial setup, writing prompts to get the rest of the code became pretty straightforward.
+
+Still, the quality of the API docs and the interfaces mattered a lot. Some parts of the API were confusing, even for the AI—like when it didn’t understand that a random string was just a synthetic ID. Sometimes, you have to spell things out to the AI, which can be a little annoying but still way faster than doing everything from scratch.
+
+Below is a simplified version of the script I used to generate the function definition, implementation, and unit tests for the records management function. I omitted many details, *very* simplified prompts, and it is generalized to give you an idea of the process:
+
+
+```typescript
+import OpenAI from 'openai';
+import * as fs from 'fs';
+import path from 'path';
+
+function collectTsCodeFromDependencies(filePath: string): string {
+    // Logic to read and parse TypeScript files from dependencies would go here
+    return `// Mock content collected from ${filePath}`;
+}
+
+// Pretty familiar code for those who works with OpenAI API
+async function runOpenAIGeneration(prompt: string, openAiClient: OpenAI) {
+    const response = await openAiClient.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [{ role: 'user', content: prompt }],
+    });
+
+    return response.choices.map((m) => m.message?.content || '').join('\n');
+}
+
+const openAiClient = new OpenAI({ apiKey: 'your-api-key' });
+
+const apiClientPath = './path/to/yourApiClient.ts';
+const functionDefinitionExamplePath = './path/to/exampleFunctionDefinition.ts';
+
+// Collecting TypeScript context from dependencies
+const apiClientContent = collectTsCodeFromDependencies(apiClientPath, null);
+const exampleFunctionDefinitionContent = collectTsCodeFromDependencies(functionDefinitionExamplePath, null);
+
+const functionName = 'manageRecords';
+const functionLogic = 'The function should manage records, allowing for operations such as creating, updating, and deleting records.';
+
+const basicPrompt = `You are generating TypeScript code for a records management application.
+The function logic is as follows:
+${functionLogic}
+
+API Client Code:
+${apiClientContent}`;
+
+const functionDefinitionPrompt = `
+${basicPrompt}
+
+Function Definition Example:
+${exampleFunctionDefinitionContent}
+
+====
+Generate a function definition using the above API client code and function definition example.`;
+
+const functionDefinition = await runOpenAIGeneration(functionDefinitionPrompt, openAiClient);
+const functionDefinitionPath = path.resolve(path.join('./path/to/save', `${functionName}.ts`));
+fs.writeFileSync(functionDefinitionPath, functionDefinition, { flag: 'w' });
+
+const exampleFunctionImplementationPath = './path/to/exampleFunctionImplementation.ts';
+const exampleFunctionImplementationContent = collectTsCodeFromDependencies(exampleFunctionImplementationPath, null);
+
+const functionImplementationPrompt = `
+${basicPrompt}
+
+Function Definition:
+${functionDefinition}
+
+Example Function Implementation:
+${exampleFunctionImplementationContent}
+
+====
+Generate a function implementation based on the function definition.`;
+
+const functionImplementation = await runOpenAIGeneration(functionImplementationPrompt, openAiClient);
+const functionImplementationPath = path.resolve(path.join('./path/to/save', `${functionName}.ts`));
+fs.writeFileSync(functionImplementationPath, functionImplementation, { flag: 'w' });
+
+const functionTestsPrompt = `
+${basicPrompt}
+
+Function Implementation:
+${functionImplementation}
+
+====
+Generate unit tests for the function implementation using Jest.`;
+
+const functionTests = await runOpenAIGeneration(functionTestsPrompt, openAiClient);
+const functionTestsPath = path.resolve(path.join('./path/to/tests', `${functionName}.test.ts`));
+fs.writeFileSync(functionTestsPath, functionTests, { flag: 'w' });
+```
+
+### Important Note on Prompts
+
+The prompts used in the script above are quite simplified. In reality, it took about an hour to fine-tune them to generate code that was both modifiable and clear. Here's what I needed to clarify and specify:
+
+- Detailed explanations of the API's functionality, especially where it isn't obvious from names or contracts.
+- Definitions of terms unique to the domain that might not be familiar to the LLM.
+- Instructions on libraries and non-standard practices used in the project.
+- Guidelines on how to write tests that are easy to maintain and update.
+
+As you might imagine those are time-consuming, but at least partially reusable for the next tasks.
+
+### Results of the script
+
+Well, the script worked. OpenAI was able to generate the function definition, implementation, and even the unit tests. But it wasn’t perfect.
+
+First of all TypesScript code was not correct everywhere. I had to fix manually compilation, sometimes adding missing details and make code compliant with the project lint rules.
+
+Next the tests required to tune a lot to make them runnable. Tests itself were missed the cases I needed, but when initially generated bunch was fixed, but old buddy Copilot was able to help to add more cases.
+
+Then I finally was able to fix logic, and make it work as expected.
+I had to spend a couple of hours debugging and fixing the generated code, especially around the API client.
+The API itself was a bit of a mess, which didn’t help.
+
+## Final Thoughts
+
+So, what would I recommend?
+
+The ability to generate code with LLMs is impressive, but it still has limitations and can be confusing in larger contexts. However, it's far from useless. Scripts like the one created here are valuable for repetitive tasks where traditional code generation methods fall short.
+
+In my view, you need a substantial number of similar tasks to justify the time spent creating such scripts. While LLMs can fill a niche in automating logic code generation, expect to spend time fixing issues in the generated code. Simpler logic generally results in fewer mistakes, but more complex logic will require more effort to correct.
+
+For most cases, using LLMs through the Copilot-like extensions to generate smaller code snippets and then gradually integrating and refining them is a more reliable and scalable approach. This method suits the current state of LLMs better. As LLMs improve in reasoning and handling larger contexts, their ability to generate comprehensive code in a single step will also become more dependable. We'll have to see how this evolves in the future.
+
+What about Cursor? If you’re a developer using VS Code or any AI-assisted tool like Copilot, Cursor Editor is definitely worth a shot. It has some unique features that can save you a bunch of time, especially for making quick adjustments and working with larger codebases. It’s not perfect, but it’s a nice extra tool to have on your belt. But I bet that Copilot will catch up with some of the features soon. It looks like a race of features right now, and it is up to you to decide which tool gives more value in the current moment.

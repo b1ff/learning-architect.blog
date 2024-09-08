@@ -5,7 +5,7 @@ import { Heading } from './Heading';
 
 export function WithSidebarLayout({ children, additionalKeywords = undefined }) {
 	return (
-		<div className='container bg-white max-w-3xl mx-auto px-4 sm:px-6 xl:max-w-5xl xl:px-0 py-16'>
+		<div className='container bg-white max-w-5xl mx-auto px-4 sm:px-6 xl:max-w-7xl xl:px-0 py-16'>
 			<Heading additionalKeywords={additionalKeywords} />
 
 			<div className='grid grid-cols-1 md:grid-cols-12 shadow-lg'>
@@ -15,7 +15,7 @@ export function WithSidebarLayout({ children, additionalKeywords = undefined }) 
 						<RecentPublications/>
 					</div>
 				</div>
-				<main className="col-span-9 py-6 pl-6 pr-10">
+				<main className="col-span-9 py-6 pl-9 pr-10">
 					{children}
 				</main>
 			</div>
