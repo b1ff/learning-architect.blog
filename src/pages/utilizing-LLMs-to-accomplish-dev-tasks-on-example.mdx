@@ -6,13 +6,13 @@ keywords: ai,LLM,Chat-GTP,speed of development,claude,OpenAI,Cursor Editor,devel
 ---
 # Exploring how to utilize LLMs to speedup development
 
-<!-- cut -->
+{/* cut */}
 Recently, I got tasked with integrating another internal API into an LLM-based agent that I was working on. The application already had several APIs connected, but this new addition was crucial, and I was looking for a way to automate the integration process. The challenge wasn’t just about hooking up the API—it was about transforming the complex internal structures into something more digestible for the LLM. Basically, the API needed a makeover: stripping out internal entities, identifiers, and making the data coherent and contextually relevant for the AI.
 
 Now, generally speaking, adding a new API is a pretty clear-cut process—parse the endpoints, connect the dots, and fit it into the application. But it's also a time-consuming routine. It’s not just about writing the code but ensuring everything aligns perfectly, which eats up a lot of time, especially when scaling this up to integrate more APIs quickly. We wanted to simplify this routine, making it more efficient and repeatable.
 
 I’ve been using GitHub Copilot and ChatGPT extensively in my coding routine, and they’ve been great. But for this task, I wanted to see if there was a better, more streamlined way. That’s when I decided to experiment with Cursor Editor and a custom script approach, hoping they could give me that extra edge.
-<!-- cut -->
+{/* cut */}
 
 Integrating an API into a project typically involves four key components:
 
