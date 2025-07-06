@@ -18,6 +18,13 @@ module.exports = {
 		{
 			resolve: "gatsby-plugin-mdx",
 			options: {
+				extensions: [`.mdx`, `.md`],
+				mdxOptions: {
+					remarkPlugins: [
+						require('remark-gfm'),
+					],
+					rehypePlugins: [],
+				},
 				gatsbyRemarkPlugins: [
 					{
 						resolve: `gatsby-remark-images`,
@@ -31,9 +38,6 @@ module.exports = {
 						},
 					},
 				],
-				defaultLayouts: {
-					default: require.resolve(`./src/components/DefaultPageLayout.tsx`),
-				},
 			}
 		},
 		`gatsby-remark-images`,
@@ -74,32 +78,33 @@ module.exports = {
 					{
 						serialize: ({query: {site, allMdx}}) => {
 							return allMdx.nodes.map(node => {
+								const slug = node.internal.contentFilePath.replace(/^.*\/src\/pages\//, '').replace(/\.mdx?$/, '')
+								const title = slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 								return Object.assign({}, node.frontmatter, {
-									description: node.fields.articleCut,
+									description: node.fields ? node.fields.articleCut : node.excerpt,
 									date: node.frontmatter.date,
-									title: node.headings[0].value,
-									url: `${site.siteMetadata.siteUrl}/${node.slug}/`,
-									guid: `${site.siteMetadata.siteUrl}/${node.slug}/`
+									title: title,
+									url: `${site.siteMetadata.siteUrl}/${slug}/`,
+									guid: `${site.siteMetadata.siteUrl}/${slug}/`
 								})
 							})
 						},
 						query: `
               {
                 allMdx(
-                  sort: { fields: [frontmatter___date], order: DESC }
+                  sort: { frontmatter: { date: DESC } }
                 ) {
                   nodes {
 				     id
-					 headings(depth: h1) {
-					    value
-					 }
+				     excerpt
+				     internal {
+				       contentFilePath
+				     }
 					 fields {
 					    articleCut
 					 }
-					 slug
 					 frontmatter {
 						date
-						title
 						author
 						keywords
 					 }

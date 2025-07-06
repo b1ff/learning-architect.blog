@@ -18,26 +18,29 @@ const IndexPage = (props) => {
 			</section>
 			<section className="">
 				<ul>
-					{posts.map(post => (
-						<li className={'pt-12'} key={post.slug}>
+					{posts.map(post => {
+						const slug = post.internal.contentFilePath.replace(/^.*\/src\/pages\//, '').replace(/\.mdx?$/, '');
+						return (
+						<li className={'pt-12'} key={post.id}>
 							<article className={'article'}>
 								<h2 className='secondary-h'>
-									<a href={`./${post.slug}/`}>
-										{post.headings[0].value}
+									<a href={`./${slug}/`}>
+										{slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
 									</a>
 								</h2>
 								<div className='text-gray-500 py-2'>
 									{formatDate(post.frontmatter.date)} / author
-									<span className='text-gray-700'> Eugene</span> / minutes to read <span
-									className="text-gray-700">{post.timeToRead}</span>
+									<span className='text-gray-700'> Eugene</span>
 								</div>
 								<div className="article-summary" dangerouslySetInnerHTML={{ __html: post.fields.articleCut }}/>
 								<div className='mt-4'>
 									<a className="link-default"
-										href={`./${post.slug}/`}>Read full article →</a>
+										href={`./${slug}/`}>Read full article →</a>
 								</div>
 							</article>
-						</li>))}
+						</li>
+						);
+					})}
 				</ul>
 			</section>
 		</WithSidebarLayout>
@@ -49,10 +52,9 @@ export default IndexPage
 interface BlogsNode {
 	id: string;
 	excerpt: string;
-	headings: [{ value: string }];
-	timeToRead: number;
-	slug: string;
-	html: string;
+	internal: {
+		contentFilePath: string;
+	}
 	fields: {
 		articleCut: string;
 	}
@@ -70,21 +72,18 @@ export const pageQuery = graphql`
       }
     }
     allMdx(
-      sort: { fields: [frontmatter___date], order: DESC }
+      sort: { frontmatter: { date: DESC } }
     ) {
 	  nodes {
 	  	 id
-	  	 timeToRead
-		 headings(depth: h1) {
-		 	value
+		 internal {
+		   contentFilePath
 		 }
 		 fields {
 		 	articleCut
 		 }
-		 slug
 		 frontmatter {
 			date
-			title
 			author
 		 }
 	  }

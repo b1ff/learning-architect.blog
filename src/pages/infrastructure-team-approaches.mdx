@@ -6,13 +6,13 @@ keywords: devops,devops principles,speed of infrastructure building,team process
 ---
 # Ways of organizing work on infrastructure
 
-<!-- cut -->
+{/* cut */}
 Over the years, I've seen many different models for organizing work on infrastructure. In this article, I would like to systematize what I've seen and briefly describe when and why different options should be preferred to others.
 It is important to note that infrastructure refers to work with hardware, cloud, hosting, etc., which is usually referred to as DevOps.
 Each section describes one model, its pros and cons, risks, and when to prefer other models.
-<!-- cut -->
+{/* cut */}
 
-<h2 id={"central-team"}><a href={"#central-team"}>Central team</a></h2>
+<h2 id="central-team"><a href="#central-team">Central team</a></h2>
 
 In this model, there is one team that develops the infrastructure, and other teams consume it.
 The central team has its own internal processes and structure, as well as external processes for interacting with other teams.
@@ -49,7 +49,7 @@ it is essential that this system of prioritization is as transparent and underst
 It would be good not to fall into the trap of "whoever screams louder, gets the priority." Sooner or later, this will happen, as each team strives to optimize
 their local priorities, and it may not be clear to them why their work is being postponed.
 
-<h2 id={"infra-eng-in-team"}><a href={"#infra-eng-in-team"}>Infrastructure Engineer in a Team</a></h2>
+<h2 id="infra-eng-in-team"><a href="#infra-eng-in-team">Infrastructure Engineer in a Team</a></h2>
 
 In this model, each development team has one or more people who work on infrastructure.
 Infrastructure engineers are fully integrated into the processes of a specific team.
@@ -94,7 +94,7 @@ Exchange of knowledge. Often, only one engineer who works with infrastructure is
 
 Zoo of solutions and tools. This becomes a problem when an organization has a department responsible for a certain minimum quality level. For example, the security department must ensure a minimum quality level for any infrastructure built within the organization. Such a department will have to deal with architectures and approaches that are unique enough, which is already a significant amount of work. It will also be necessary to understand the set of actions in each selected approach to achieve the same minimum quality level and control that it is being implemented.
 
-<h2 id={"infra-in-team"}><a href={"#infra-in-team"}>Infrastructure integrated into the team</a></h2>
+<h2 id="infra-in-team"><a href="#infra-in-team">Infrastructure integrated into the team</a></h2>
 
 In this approach, there is no dedicated engineer responsible for infrastructure. The entire team is involved in infrastructure and responsibility is shared among engineers.
 
@@ -128,7 +128,7 @@ As with the previous approach, there may be a zoo of technologies. If all teams 
 
 Maintaining the minimum level of infrastructure quality. If work is being done in the cloud, there are tools that allow checking that the infrastructure meets certain rules.
 
-<h2 id={"mixed-approach"}><a href={"#mixed-approach"}>Combination of Approaches</a></h2>
+<h2 id="mixed-approach"><a href="#mixed-approach">Combination of Approaches</a></h2>
 
 Approaches can be combined by mixing the central team with the other two options. That is:
 
