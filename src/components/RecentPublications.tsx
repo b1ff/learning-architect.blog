@@ -6,13 +6,12 @@ export function RecentPublications() {
 	const data = useStaticQuery(graphql`
 	 query recentsQuery {
 		 allMdx(
-			sort: { fields: [frontmatter___date], order: DESC }
+			sort: { frontmatter: { date: DESC } }
 		 ) {
 		  nodes {
-			 headings(depth: h1) {
-				value
+			 internal {
+			   contentFilePath
 			 }
-			 slug
 			 frontmatter {
 				date
 				author
@@ -33,9 +32,10 @@ export function RecentPublications() {
 			</li>
 
 			{posts.map(post => {
+				const slug = post.internal.contentFilePath.replace(/^.*\/src\/pages\//, '').replace(/\.mdx?$/, '');
 				return (
 					<li key={post.frontmatter.date}>
-						<span className="text-gray-500">{formatDate(post.frontmatter.date)} - </span><a className={'link-default'} href={`/${post.slug}/`}>{post.headings[0].value}</a>
+						<span className="text-gray-500">{formatDate(post.frontmatter.date)} - </span><a className={'link-default'} href={`/${slug}/`}>{slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</a>
 						<hr className="mb-3 mt-3"/>
 					</li>
 				)

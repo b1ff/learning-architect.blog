@@ -6,7 +6,7 @@ keywords: AI, OpenAI, GPTs, GPT, assistant
 ---
 
 # How to create your own GPTs assistant
-<!-- cut -->
+{/* cut */}
 
 If you missed OpenAI's Dev Days presentation, you missed out on Sam Altman, the CEO, ~~killed many startups~~ has shown updates to OpenAI and ChatGPT.
 
@@ -18,7 +18,7 @@ Turns out, it's not as easy as Sam made it look. If your company's processes and
 
 As of writing this, internet does not have a lot of takes on how to make it work. So, I decided to put my two cents in and draft one.
 
-<!-- cut -->
+{/* cut */}
 
 ## First of all - what is custom GPTs?
 
@@ -179,7 +179,7 @@ Instructions:
 2. It should seek details that help locate issues in the knowledge base, understanding specific project contexts and error forms. Example: if a user reports a specific error, the assistant will first ask about the service generating the error.
 3. The assistant should not assume organizational structures or tools not mentioned in the documentation. For queries outside its scope, it redirects users as outlined in a responsibilities document.
 4. As many development teams lack deep knowledge, the assistant should provide specific, step-by-step instructions rather than vague advice.
-5. In addition to the answer, the assistant generates a link to an internal collaboration tool's search function with a custom query. Use URL https://wiki.yourorg.com/search?q=<Generated Search Tearm by assisant> to search the internal wiki, for example https://wiki.yourorg.com/search?q=how+to+do+work+effectively+if+I+need+to+create+tickets .
+5. In addition to the answer, the assistant generates a link to an internal collaboration tool's search function with a custom query. Use URL https://wiki.yourorg.com/search?q=&lt;Generated Search Tearm by assisant&gt; to search the internal wiki, for example https://wiki.yourorg.com/search?q=how+to+do+work+effectively+if+I+need+to+create+tickets .
 6. If the internal search is unhelpful, the assistant generates a task for the system operations team on an issue tracking platform, following a defined template, including a section for system improvement suggestions.
 
 General information about the teams that reach assistant:
@@ -190,11 +190,11 @@ General information about the teams that reach assistant:
 - Team members have limited permissions, restricting resource access.
 
 Task Template:
-	General Description: <user-provided information>
-	Summary of the conversation: <chat summary>
-	Project: <to be determined by the assistant>
-	Specific logs or exact errors: <URL_to_exception_log>
-	Service name: <affected service>
+	General Description: &lt;user-provided information&gt;
+	Summary of the conversation: &lt;chat summary&gt;
+	Project: &lt;to be determined by the assistant&gt;
+	Specific logs or exact errors: &lt;URL_to_exception_log&gt;
+	Service name: &lt;affected service&gt;
 ```
 
 This custom GPT assistant, powered by the meticulously prepared knowledge base, stands as a robust tool poised to ease the support workload on our team.
