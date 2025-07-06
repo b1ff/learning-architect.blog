@@ -30,7 +30,8 @@ const IndexPage = (props) => {
 								</h2>
 								<div className='text-gray-500 py-2'>
 									{formatDate(post.frontmatter.date)} / author
-									<span className='text-gray-700'> Eugene</span>
+									<span className='text-gray-700'> Eugene</span> / 
+									<span className='text-gray-700'> {Math.ceil(post.fields.timeToRead)} min read</span>
 								</div>
 								<div className="article-summary" dangerouslySetInnerHTML={{ __html: post.fields.articleCut }}/>
 								<div className='mt-4'>
@@ -57,6 +58,7 @@ interface BlogsNode {
 	}
 	fields: {
 		articleCut: string;
+		timeToRead: number;
 	}
 	frontmatter: {
 		date: string;
@@ -81,6 +83,7 @@ export const pageQuery = graphql`
 		 }
 		 fields {
 		 	articleCut
+		 	timeToRead
 		 }
 		 frontmatter {
 			date

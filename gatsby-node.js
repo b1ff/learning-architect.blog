@@ -1,4 +1,5 @@
 const fs = require('fs')
+const readingTime = require('reading-time')
 
 const EXCERPT_SEPARATOR = '{/* cut */}'
 
@@ -72,5 +73,29 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
 			node,
 			value: articleCut,
 		})
+		
+		// Add reading time estimation
+		try {
+			const filePath = node.fileAbsolutePath || node.internal.contentFilePath;
+			if (filePath && fs.existsSync(filePath)) {
+				const content = fs.readFileSync(filePath, 'utf-8');
+				// Remove frontmatter and calculate reading time
+				const contentWithoutFrontmatter = content.replace(/^---[\s\S]*?---\s*/m, '');
+				const readingTimeStats = readingTime(contentWithoutFrontmatter);
+				
+				createNodeField({
+					name: `timeToRead`,
+					node,
+					value: readingTimeStats.minutes,
+				})
+			}
+		} catch (error) {
+			console.warn('Error calculating reading time for', node.internal.contentFilePath, error);
+			createNodeField({
+				name: `timeToRead`,
+				node,
+				value: 1, // fallback to 1 minute
+			})
+		}
 	}
 }

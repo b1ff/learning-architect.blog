@@ -50,7 +50,19 @@ module.exports = {
     // List classes
     'list-disc',
     'list-decimal',
-    'ml-6'
+    'ml-6',
+    // Table classes
+    'border-separate',
+    'border-collapse',
+    'table-fixed',
+    'border',
+    'border-yellow-400',
+    'border-yellow-300',
+    'bg-yellow-100',
+    'text-left',
+    'px-3',
+    'py-1.5',
+    'w-1/2'
   ],
   theme: {
     extend: {},

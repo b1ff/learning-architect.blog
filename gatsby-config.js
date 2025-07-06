@@ -30,7 +30,9 @@ module.exports = {
 					remarkPlugins: [
 						require('remark-gfm'),
 					],
-					rehypePlugins: [],
+					rehypePlugins: [
+						require('rehype-raw'),
+					],
 				},
 				gatsbyRemarkPlugins: [
 					{

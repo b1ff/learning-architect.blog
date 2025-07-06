@@ -46,7 +46,7 @@
 }
 
 .article table {
-    @apply border-separate border border-yellow-400 border-collapse table-fixed;
+    @apply border-separate border border-yellow-400 border-collapse table-auto w-full;
     border-spacing: 0;
 }
 
@@ -57,5 +57,5 @@
 .article table th,
 .article table td
 {
-    @apply border-separate border border-yellow-300 border-collapse px-3 py-1.5 w-1/2;
+    @apply border-separate border border-yellow-300 border-collapse px-3 py-1.5;
 }
