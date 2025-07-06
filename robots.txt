@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Sitemap: https://learning-architect.blog/sitemap-index.xml
+Host: https://learning-architect.blog
