@@ -90,6 +90,7 @@ The excerpt is automatically converted from Markdown to HTML and displayed in th
 - `tailwind.config.js` - Tailwind CSS configuration  
 - `postcss.config.js` - PostCSS configuration for Tailwind processing
 - `gatsby-browser.js` - Browser-specific imports (CSS and Prism theme)
+- `gatsby-ssr.js` - Server-side rendering setup with critical CSS to prevent FOUC
 - `gatsby-node.js` - Custom excerpt extraction logic for `{/* cut */}` tags
 - Site metadata and RSS feed settings in gatsby-config.js
 

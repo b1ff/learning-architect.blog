@@ -4,8 +4,15 @@ module.exports = {
 		siteUrl: `https://learning-architect.blog`,
 	},
 	plugins: [
+		{
+			resolve: "gatsby-plugin-postcss",
+			options: {
+				cssLoaderOptions: {
+					modules: false,
+				},
+			},
+		},
 		"gatsby-plugin-sass",
-		"gatsby-plugin-postcss",
 		"gatsby-plugin-image",
 		"gatsby-plugin-react-helmet",
 		{
