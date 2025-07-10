@@ -70,12 +70,12 @@ For AI agent based development we are going to utilize the same setup, but with 
 So basically a setup for AI agent is done in a way that a developer can give a task and expect at least a result that can be run right away.
 There is no limits on AI agent tokens usage and cost. But there is a hard limits of current state of LLM context window, i.e. 200k tokens for Claude models.
 
-### Lets do imaginary "manual" development following the developer actions
+## Lets do imaginary "manual" development following the developer actions
 
 This part is becoming tricky. I have to do some approximations and assumptions here.
-The final goal is to measure time spend for development, but just a pure number throwing does not look right at the moment, because it will be an expert measurement and as I told at the beginnig I started to doubt a bit in my expretness.
+The final goal is to measure time spent for development, but just a pure number throwing does not look right at the moment, because it will be an expert measurement and as I told at the beginnig I started to doubt a bit in my expertness.
 
-So lets imagine categories of tasks that a developer does with some basic time spends.
+So let's imagine categories of tasks that a developer does with some basic time spends.
 Basis is for one piece of the category, but we can apply multipliers later on.
 
 <table>
@@ -150,7 +150,7 @@ So lets imagine a human workflow
 8. Next step is defined we start to work on frontend, added a new route for the page with some boiler plate, checking that it works, which is UI coding x1 (UI Coding)
 9. So we need to fetch data but before we need a shape for api contracts and state, which goes into Declarative Coding x2 (Declarative Coding)
 10. Now we can draft a basic store that holds state of the filters, fetches data from api, holding that data as state and reloading it when related state is changed. It is a Runtime Coding x3 (Runtime Coding)
-11. Lets bind store to some UI components and render just a data first. But we need to find a proper component and understand how to use it which reading documentation which is Reading documentation x1 and we can do UI coding x1. Boom! We have first visual results, and it even works (Reading Documentation + UI Coding)
+11. Lets bind store to some UI components and render just a data first. But we need to find a proper component and understand how to use it which is reading documentation x1 and we can do UI coding x1. Boom! We have first visual results, and it even works (Reading Documentation + UI Coding)
 12. Think about the UI approach for filters - what components we need, how to structure the search and filter interface x1 (Thinking)
 13. Need to read documentation of the internal org UI design system library to find the right filter components and understand how to use them properly x3 (Reading Documentation)
 14. Now we need to implement the actual search and filter UI components - input fields, dropdowns, etc. This requires some design decisions and component selection x3 (UI Coding)
@@ -170,7 +170,7 @@ So lets imagine a human workflow
 28. Code review prep - cleaning up console.logs, adding comments, ensuring code standards x1 (Refactoring)
 29. Small thinking session to verify we haven't missed anything from requirements x1 (Thinking)
 
-## Summary Table
+### Summary Table
 
 <table>
 	<thead>
@@ -228,3 +228,159 @@ So lets imagine a human workflow
 </table>
 
 **Grand Total: 535 minutes = 8.92 hours or ~9 hours**
+
+## Now lets do the same using AI agent
+
+As for the human we should do some approximation and simplification, but lets try to stick to at least some reality norms.
+
+I will describe also from my experience working with AI agents at the moment of article writing which is in my case it is either [JetBrains Junie](https://www.jetbrains.com/junie/) or [Claude Code](https://www.anthropic.com/claude-code). At the moment they are quite similar in terms of output, where Junie slightly outperform claude in terms of quality of the output and claude in terms of developer experience and speed.
+Nevertheless when we use AI coding agents with a setup tuned for them the typical flow would be to throw into AI agent a task, review, if it is too far away, iterate with AI again, if it is mostly good it might require some slight manual tuning at the end. Also not to forget that every AI agent loop will end-up with validation like running build / tests / formatting / lints with possible additional loops to self-correct.
+Also some activities will be the same as AI agents are not endlessly powerful.
+To simplify lets assume that any AI generation end-up with a human review, that depends on the size of generated code and on bigger output it will take more time than on smaller ones.
+
+Let's try to outline out interaction type during AI Agent based development.
+
+<table>
+	<thead>
+	<tr>
+		<th>Short Name</th>
+		<th>Estimate</th>
+		<th>Description</th>
+		<th>Example</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td>Thinking</td>
+		<td>5m</td>
+		<td>Planning the next step or initial brainstorming. Reduced amount of time since some of the decisions we are going to delegate to AI.</td>
+		<td>Decomposing a feature.</td>
+	</tr>
+	<tr>
+		<td>Quick and Scoped AI Generation</td>
+		<td>10m</td>
+		<td>
+			Typically a well understood task, with the scoped and known in advance files to edit. It might be a bug
+			targeted bug fix, or very small decomposed piece of the feature.
+		</td>
+		<td>
+			Adding a typical validation to API method.
+		</td>
+	</tr>
+	<tr>
+		<td>Full AI Generation</td>
+		<td>20m</td>
+		<td>
+			A task that might evolve multiple changes, like addition new files, changing existing in multiple places.
+		</td>
+		<td>Adding a new API method, involving API, tests, logic, DB changes, etc..</td>
+	</tr>
+	<tr>
+		<td>AI Output Review</td>
+		<td>8m</td>
+		<td>Carefully reviewing large AI-generated code blocks for correctness, integration issues, and adherence to project patterns.</td>
+		<td>Reviewing a complete API implementation with tests.</td>
+	</tr>
+	<tr>
+		<td>UI Corrections</td>
+		<td>10m</td>
+		<td>Fixing styles after AI generated frontend, and looking on the results in browser.</td>
+		<td>Correcting elements alignment or sizes.</td>
+	</tr>
+	<tr>
+		<td>Reading Documentation</td>
+		<td>10m</td>
+		<td>Reviewing relevant documentation or component/library designs to inform development.</td>
+		<td>Reading API docs before using a library</td>
+	</tr>
+	<tr>
+		<td>Refactoring</td>
+		<td>10m</td>
+		<td>Improving existing code structure/quality without changing its behavior.</td>
+		<td>Renaming variables or reorganizing functions</td>
+	</tr>
+	</tbody>
+</table>
+
+A note on "idle". It is not forgotten here :) as we still human, but to simplify we assume that we do the deals while AI generates...
+Now lets try to imagine how the same task would be done if we utilize AI agents for development based on the activities above.
+
+### Ok Claude, take this file...
+
+1. Thinking on high-level decomposition x2 (Thinking)
+2. Throwing a description of the task asking AI agent to build API x1 (Full AI generation)
+3. Review the generated API code thoroughly x1 (AI Output Review)
+4. After review, we see some issues that better to fix right away so we do x2 (Quick and Scoped AI Generation)
+5. Do some refactoring to finish the API x1 (Refactoring)
+6. Now let's think on the next step x1 (Thinking)
+7. Now asking AI agent to generate API client for UI and a store needed for a feature. Here some experience works, that asking to generate all at once including components might not give a stable a good results, so we core prep which can be considered as full generation x1 (Full AI Generation)
+8. Review the generated store and client code x1 (AI Output Review)
+9. Do some manual refactoring right away to shape the store for the next AI loop x1 (Refactoring)
+10. Now we need to read some documentation to supply AI correct instruction on the next step x1 (Reading Documentation)
+11. Now lets ask AI to generate a visual for the data table which is full generation x1 (Full AI Generation). When it finishes it even works... a technology miracle, but there are still things to do.
+12. Right away we ask to add filters on UI which is another full generation x1 (Full AI Generation), it is a bit harder than previous for AI as more small components need to be created, but it tackles successfully heating the temperature in the world a bit.
+13. Review the generated UI components and integration x1 (AI Output Review)
+14. After review we found a couple of things to fine tune from the behavior standpoint so we do x3 (Quick and Scoped AI Generation)
+15. So now we need to tune visuals, seeing results in browser, and since we generated a lot at this stage it is UI Corrections x4 (UI Corrections)
+16. Some refactoring of components after all the work x1 (Refactoring)
+17. Further testing reveals some corner cases and performance issues, so we fix it using a couple of quick generation sessions x2 (Quick and Scoped AI Generation)
+18. Small thinking session to verify we haven't missed anything from requirements x1 (Thinking)
+
+### Summary
+
+<table>
+	<thead>
+	<tr>
+		<th>Task Type</th>
+		<th>Time per Unit</th>
+		<th>Count</th>
+		<th>Total Time</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td>Thinking</td>
+		<td>5m</td>
+		<td>4</td>
+		<td>20m</td>
+	</tr>
+	<tr>
+		<td>Quick and Scoped AI Generation</td>
+		<td>10m</td>
+		<td>7</td>
+		<td>70m</td>
+	</tr>
+	<tr>
+		<td>Full AI Generation</td>
+		<td>20m</td>
+		<td>4</td>
+		<td>80m</td>
+	</tr>
+	<tr>
+		<td>AI Output Review</td>
+		<td>8m</td>
+		<td>3</td>
+		<td>24m</td>
+	</tr>
+	<tr>
+		<td>UI Corrections</td>
+		<td>10m</td>
+		<td>4</td>
+		<td>40m</td>
+	</tr>
+	<tr>
+		<td>Reading Documentation</td>
+		<td>10m</td>
+		<td>1</td>
+		<td>10m</td>
+	</tr>
+	<tr>
+		<td>Refactoring</td>
+		<td>10m</td>
+		<td>3</td>
+		<td>30m</td>
+	</tr>
+	</tbody>
+</table>
+
+**Grand Total: 274 minutes = 4.57 hours or ~4.5 hours**
