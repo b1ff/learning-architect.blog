@@ -389,32 +389,49 @@ Now lets try to imagine how the same task would be done if we utilize AI agents 
 
 So we got into x2 speed up from using AI. But is it real?
 
-First all, lets agree that we need to treat it as thinking experiment, to make it real we need exactly the same developer doing exactly the same task in parallel realities manually and with AI to ensure that no previous knowledge on the task implementation is utilized. Which is hardly achievable.
+First of all, let's agree that we need to treat it as a thinking experiment, to make it real we need exactly the same developer doing exactly the same task in parallel realities manually and with AI to ensure that no previous knowledge on the task implementation is utilized. Which is hardly achievable.
 
-Yes with some scale you can count statistical behavior of similar tasks in a similar conditions, like it was done by METR, to study [impact of AI on speed of experienced developers](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) and well known code base for them.
-Funny enough, this study shows that developers who know codebase very well, like maintainers for the OSS products, actually getting 20% slower on average.
+The numbers I've used here are essentially educated guesses based on my experience - the 15 minutes for "Runtime Coding" or 8 minutes for "AI Output Review" aren't scientifically measured but rather approximations of how I perceive these activities. This makes the entire exercise more of a framework for thinking about AI impact rather than a proof of specific speedup claims.
+
+Yes, with some scale you can count statistical behavior of similar tasks in similar conditions, like it was done by METR, to study [impact of AI on speed of experienced developers](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) on a well known codebase for them. Funny enough, this study shows that developers who know codebase very well, like maintainers for the OSS products, actually getting 20% slower on average.
 
 While in the thinking experiment above it should show x2 speed increase.
 
-Basically in this thinking experiment I'm showing a typical expectation from AI tooling nowadays, but reality can hit hard and due to non-deterministic nature of the AI output the time spend on the task together with AI agent can overweight raw effort needed to code the task by itself with good craft coding. It is becoming an important skill nowadays to get enough experience with AI agent to be able to categorize tasks as suitable for full AI coding and non-suitable.
+This contradiction is telling. It suggests that the reality of working with AI tools is more complex than breaking development into discrete time boxes. The overhead of context management, the cognitive load of constantly reviewing AI output, and the integration challenges of AI-generated code aren't fully captured in my simplified model.
 
-But nevertheless I still think that x2 speedup on a certain tasks is possible.
-While it is probabilistic thing we can improve chances of AI agents to reach success.
-What we can do at the moment, is all good setup for fast feedback, we used for ages:
-- auto code formatting
-- linting with rules to early find issues
-- types
-- tests on different levels, like unit / integration / e2e / etc
-- task decomposition, spec creation
+What this exercise does show is that **for certain types of tasks, under ideal conditions, significant speedups are theoretically possible**. And I want to emphasize that by "tasks" I mean real production features in long-term projects with existing codebases, technical debt, and maintainability requirements - not quick throwaway MVPs or greenfield prototypes where you can be loose with code quality. The constraints of working within established patterns, ensuring backward compatibility, and maintaining code that others will work on for years change the equation significantly.
 
-In addition to the above considering AI specific:
-- keep codebase modular, so it fits context effectively. (Microservices strike again)
-- all the automation tooling that is going to be run by AI agents must be context / tokens friendly, meaning that there should be only meaningful info (No more 100500 unresolved linter / compilation warnings)
-- speed of feedback matters. Given that much AI can make mistakes and how much all the tools should be re-run - it better that feedback is given for seconds, not minutes.
-- AI friendly guidelines to the projects itself
-- Creating a good example of typical feature for AI to copy "style", i.e. reviewed and written API controllers, with auth, validation, etc..
+The key insight isn't the specific 2x number, but rather understanding which categories of work benefit most from AI assistance and which don't.
+
+From this breakdown, it's clear that AI shines most in:
+- Boilerplate and repetitive coding tasks
+- Initial implementation drafts that humans can refine
+- Reducing the time spent on "typing" versus "thinking"
+
+But it struggles with:
+- Complex integration scenarios
+- Subtle bugs that require deep system understanding
+- Tasks requiring significant domain context that doesn't fit in the context window
+- Long-term maintainability considerations that aren't immediately obvious
+
+The probabilistic nature of AI output means that the time spent on any given task can vary wildly. Sometimes AI nails it perfectly, sometimes you spend hours debugging generated code that looked correct but had subtle issues. My model assumes the "happy path" more often than reality might deliver. And in production systems, the cost of getting it wrong is much higher than in throwaway projects.
+
+Nevertheless, I still think that meaningful speedups on certain tasks are achievable. The question isn't whether AI can make us faster - it's learning to identify which tasks are suitable for AI assistance and which aren't. This becomes an important skill: knowing when to reach for AI tools and when to code manually, especially when working on systems that need to be maintained and extended over time.
+
+To improve our chances of getting the theoretical benefits, we need all the good setup practices we've used for ages:
+- Auto code formatting
+- Linting with rules to early find issues
+- Types
+- Tests on different levels, like unit / integration / e2e / etc
+- Task decomposition, spec creation
+
+In addition to the above, considering AI-specific needs:
+- Keep codebase modular, so it fits context effectively (microservices strike again)
+- All the automation tooling that AI agents will run must be context/tokens friendly, meaning there should be only meaningful info (no more 100500 unresolved linter warnings)
+- Speed of feedback matters. Given how much AI can make mistakes and how often all the tools need to be re-run - it's better that feedback is given in seconds, not minutes
+- AI-friendly guidelines for the projects themselves
 - LLM consumable documentation for internal libraries, processes, etc.
 
-Also of course, a task should be suitable for the LLMs at their current stage of development. At the moment of writing this article it is still hard for LLM to write code that requires a lot of conditions. Most likely size of prompt + tunings afterward require much more effort that writing that logic itself delegating to LLM only to generate boilerplate code with placeholders.
+So the conclusion is that with certain tasks, in properly configured environments friendly for LLMs, speedups are theoretically achievable. But it doesn't come for free - we need to invest, improve, or sometimes fully rebuild our processes to get the gains from AI-assisted development. And most importantly, we need to get better at recognizing which tasks are actually suitable for AI assistance versus which ones are better done the traditional way.
 
-But to make a conclusion that with certain tasks, in certainly configured environments friendly for LLM speed is achievable. But funny enough it does not come for free, we need to invest, improve or sometimes fully re-build processes to get the gain from AI agents assisted development.
+The 2x speedup isn't a guarantee - it's a possibility under ideal conditions for specific types of work in production-grade systems. The real value of this exercise is in developing a framework for thinking about when and how AI tools can actually help in real-world development scenarios, rather than assuming they'll magically make everything faster regardless of context.
