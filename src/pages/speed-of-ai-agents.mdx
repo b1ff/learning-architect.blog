@@ -98,7 +98,7 @@ Basis is for one piece of the category, but we can apply multipliers later on.
 		<td>Idle</td>
 		<td>5m</td>
 		<td>Taking a break, such as a bio-pause or refreshing.</td>
-		<td>Grabbing a coffee, restroom break</td>
+		<td>Grabbing a coffee, existential crisis about code quality, restroom break</td>
 	</tr>
 	<tr>
 		<td>Declarative Coding</td>
@@ -140,35 +140,35 @@ Looks like we have a decent list to start from so let's move to the manual devel
 
 So let's imagine a human workflow
 
-1. Thinking. On the tasks as we start, initial one could be a bit more complex - so x2 (Thinking)
-2. Agreed to start from backend and do some declarative coding of the API. Request, response, some sub contracts x3 (Declarative Coding)
-3. Now move to implementation - validation for API which is runtime part x1 (Runtime Coding)
-4. Implementation of the filters on the existing data in DB. So we need to write some SQL / ORM queries testing it right away, given that we have a couple of different filters and paging let's say x3 (Runtime Coding)
-5. Given that we did a bit of mess to get everything to work we spend a bit on refactoring x1 (Refactoring)
-6. Huh, nice run, it works, let's do a small break x1 (Idle)
-7. Now let's think on the next step x1 (Thinking)
-8. Next step is defined we start to work on frontend, added a new route for the page with some boilerplate, checking that it works, which is UI coding x1 (UI Coding)
-9. So we need to fetch data but before we need a shape for API contracts and state, which goes into Declarative Coding x2 (Declarative Coding)
-10. Now we can draft a basic store that holds state of the filters, fetches data from API, holding that data as state and reloading it when related state is changed. It is a Runtime Coding x3 (Runtime Coding)
-11. Let's bind store to some UI components and render just a data first. But we need to find a proper component and understand how to use it which is reading documentation x1 and we can do UI coding x1. Boom! We have first visual results, and it even works (Reading Documentation + UI Coding)
-12. Think about the UI approach for filters - what components we need, how to structure the search and filter interface x1 (Thinking)
-13. Need to read documentation of the internal org UI design system library to find the right filter components and understand how to use them properly x3 (Reading Documentation)
-14. Now we need to implement the actual search and filter UI components - input fields, dropdowns, etc. This requires some design decisions and component selection x3 (UI Coding)
-15. We need to wire up the form inputs to the MobX store state, handling user interactions and triggering API calls on changes x2 (Runtime Coding)
-16. During testing we discover some bugs in our backend filter logic - need to debug and figure out what's wrong x1 (Thinking)
-17. Fix the backend issues we found during frontend testing x1 (Runtime Coding)
-18. Let's add proper loading states, error handling, and empty states to make the UX smooth x3 (Runtime Coding)
-19. Time to implement pagination controls and wire them to the store x1 (UI Coding)
-20. Spotted a bug with paging implementation on backend during frontend testing, but it's an easy fix x1 (Runtime Coding)
-21. Some point in the implementation, time to take a break after exhausting frontend work x3 (Idle)
-22. Come back, thinking on what is next x1 (Thinking)
-23. Looking at the reference design, we need to style everything properly and make it responsive for mobile x3 (UI Coding)
-24. We notice some performance issues with rapid filter changes, so let's add debouncing to the search input x1 (Runtime Coding)
-25. Quick refactoring session to clean up component structure and extract some reusable pieces x1 (Refactoring)
-26. Simulating errors on UI and adding error boundaries and proper styles for error messaging x2 (UI Coding)
-27. Final manual testing across different screen sizes and edge cases, fixing small bugs discovered x2 (UI Coding)
-28. Code review prep - cleaning up console.logs, adding comments, ensuring code standards x1 (Refactoring)
-29. Small thinking session to verify we haven't missed anything from requirements x1 (Thinking)
+1. **Initial planning** - On the tasks as we start, initial one could be a bit more complex - so x2 (Thinking)
+2. **Backend API design** - Agreed to start from backend and do some declarative coding of the API. Request, response, some sub contracts x3 (Declarative Coding)
+3. **API validation** - Now move to implementation - validation for API which is runtime part x1 (Runtime Coding)
+4. **Database filter logic** - Implementation of the filters on the existing data in DB. So we need to write some SQL / ORM queries testing it right away, given that we have a couple of different filters and paging let's say x3 (Runtime Coding)
+5. **Code cleanup** - Given that we did a bit of mess to get everything to work we spend a bit on refactoring x1 (Refactoring)
+6. **Break time** - Huh, nice run, it works, let's do a small break x1 (Idle)
+7. **Next step planning** - Now let's think on the next step x1 (Thinking)
+8. **Frontend route setup** - Next step is defined we start to work on frontend, added a new route for the page with some boilerplate, checking that it works, which is UI coding x1 (UI Coding)
+9. **API contracts for frontend** - So we need to fetch data but before we need a shape for API contracts and state, which goes into Declarative Coding x2 (Declarative Coding)
+10. **Store implementation** - Now we can draft a basic store that holds state of the filters, fetches data from API, holding that data as state and reloading it when related state is changed. It is a Runtime Coding x3 (Runtime Coding)
+11. **Basic data rendering** - Let's bind store to some UI components and render just a data first. But we need to find a proper component and understand how to use it which is reading documentation x1 and we can do UI coding x1. Boom! We have first visual results, and it even works (shocking, I know) (Reading Documentation + UI Coding)
+12. **Filter UI planning** - Think about the UI approach for filters - what components we need, how to structure the search and filter interface x1 (Thinking)
+13. **Design system research** - Need to read documentation of the internal org UI design system library to find the right filter components and understand how to use them properly x3 (Reading Documentation)
+14. **Filter components** - Now we need to implement the actual search and filter UI components - input fields, dropdowns, etc. This requires some design decisions and component selection x3 (UI Coding)
+15. **Store integration** - We need to wire up the form inputs to the MobX store state, handling user interactions and triggering API calls on changes x2 (Runtime Coding)
+16. **Backend bug discovery** - During testing we discover some bugs in our backend filter logic - need to debug and figure out what's wrong x1 (Thinking)
+17. **Backend fixes** - Fix the backend issues we found during frontend testing x1 (Runtime Coding)
+18. **UX improvements** - Let's add proper loading states, error handling, and empty states to make the UX smooth x3 (Runtime Coding)
+19. **Pagination controls** - Time to implement pagination controls and wire them to the store x1 (UI Coding)
+20. **Paging bug fix** - Spotted a bug with paging implementation on backend during frontend testing, but it's an easy fix x1 (Runtime Coding)
+21. **Long break** - Some point in the implementation, time to take a break after exhausting frontend work and questioning life choices x3 (Idle)
+22. **Post-break planning** - Come back, thinking on what is next x1 (Thinking)
+23. **Responsive styling** - Looking at the reference design, we need to style everything properly and make it responsive for mobile x3 (UI Coding)
+24. **Performance optimization** - We notice some performance issues with rapid filter changes, so let's add debouncing to the search input x1 (Runtime Coding)
+25. **Component refactoring** - Quick refactoring session to clean up component structure and extract some reusable pieces x1 (Refactoring)
+26. **Error handling UI** - Simulating errors on UI and adding error boundaries and proper styles for error messaging x2 (UI Coding)
+27. **Final testing** - Final manual testing across different screen sizes and edge cases, fixing small bugs discovered x2 (UI Coding)
+28. **Code review prep** - Code review prep - cleaning up console.logs, adding comments, ensuring code standards x1 (Refactoring)
+29. **Final verification** - Small thinking session to verify we haven't missed anything from requirements x1 (Thinking)
 
 ### Summary Table
 
@@ -307,24 +307,24 @@ Now let's try to imagine how the same task would be done if we utilize AI agents
 
 ### OK Claude, take this file...
 
-1. Thinking on high-level decomposition x2 (Thinking)
-2. Throwing a description of the task asking AI agent to build API x1 (Full AI generation)
-3. Review the generated API code thoroughly x1 (AI Output Review)
-4. After review, we see some issues that are better to fix right away so we do x2 (Quick and Scoped AI Generation)
-5. Do some refactoring to finish the API x1 (Refactoring)
-6. Now let's think on the next step x1 (Thinking)
-7. Now asking AI agent to generate API client for UI and a store needed for a feature. Here some experience works, that asking to generate all at once including components might not give stable good results, so we do core prep which can be considered as full generation x1 (Full AI Generation)
-8. Review the generated store and client code x1 (AI Output Review)
-9. Do some manual refactoring right away to shape the store for the next AI loop x1 (Refactoring)
-10. Now we need to read some documentation to supply AI correct instructions on the next step x1 (Reading Documentation)
-11. Now let's ask AI to generate a visual for the data table which is full generation x1 (Full AI Generation). When it finishes it even works... a technology miracle, but there are still things to do.
-12. Right away we ask to add filters on UI which is another full generation x1 (Full AI Generation), it is a bit harder than previous for AI as more small components need to be created, but it tackles successfully heating the temperature in the world a bit.
-13. Review the generated UI components and integration x1 (AI Output Review)
-14. After review we found a couple of things to fine tune from the behavior standpoint so we do x3 (Quick and Scoped AI Generation)
-15. So now we need to tune visuals, seeing results in browser, and since we generated a lot at this stage it is UI Corrections x4 (UI Corrections)
-16. Some refactoring of components after all the work x1 (Refactoring)
-17. Further testing reveals some corner cases and performance issues, so we fix it using a couple of quick generation sessions x2 (Quick and Scoped AI Generation)
-18. Small thinking session to verify we haven't missed anything from requirements x1 (Thinking)
+1. **High-level decomposition** - Thinking on high-level decomposition x2 (Thinking)
+2. **API development** - Throwing a description of the task asking AI agent to build API x1 (Full AI generation)
+3. **API code review** - Review the generated API code thoroughly x1 (AI Output Review)
+4. **API fixes** - After review, we see some issues that are better to fix right away so we do x2 (Quick and Scoped AI Generation)
+5. **API refactoring** - Do some refactoring to finish the API x1 (Refactoring)
+6. **Next step planning** - Now let's think on the next step x1 (Thinking)
+7. **Store and client generation** - Now asking AI agent to generate API client for UI and a store needed for a feature. Here some experience works, that asking to generate all at once including components might not give stable good results, so we do core prep which can be considered as full generation x1 (Full AI Generation)
+8. **Store code review** - Review the generated store and client code x1 (AI Output Review)
+9. **Store preparation** - Do some manual refactoring right away to shape the store for the next AI loop x1 (Refactoring)
+10. **Documentation research** - Now we need to read some documentation to supply AI correct instructions on the next step x1 (Reading Documentation)
+11. **Data table generation** - Now let's ask AI to generate a visual for the data table which is full generation x1 (Full AI Generation). When it finishes it even works... a technology miracle, but there are still things to do.
+12. **Filter UI generation** - Right away we ask to add filters on UI which is another full generation x1 (Full AI Generation), it is a bit harder than previous for AI as more small components need to be created, but it tackles successfully heating the temperature in the world a bit.
+13. **UI components review** - Review the generated UI components and integration x1 (AI Output Review)
+14. **Behavior fine-tuning** - After review we found a couple of things to fine tune from the behavior standpoint so we do x3 (Quick and Scoped AI Generation)
+15. **Visual adjustments** - So now we need to tune visuals, seeing results in browser, and since we generated a lot at this stage it is UI Corrections x4 (UI Corrections)
+16. **Component refactoring** - Some refactoring of components after all the work x1 (Refactoring)
+17. **Corner case fixes** - Further testing reveals some corner cases and performance issues, so we fix it using a couple of quick generation sessions x2 (Quick and Scoped AI Generation)
+18. **Final verification** - Small thinking session to verify we haven't missed anything from requirements x1 (Thinking)
 
 ### Summary
 
