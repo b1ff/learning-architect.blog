@@ -9,73 +9,73 @@ keywords: ai,claude code,agents,development speed
 {/* cut */}
 Recently I was lucky enough to run an experiment of developing a project using purely AI tools.
 
-Instead of the team of developers it was only me, with AI tools of my choice.
-At the moment experiment is 4 month old :) and continues, with pure effort spend on this project I'd say at least 3 month and 1 week.
+Instead of a team of developers it was only me, with AI tools of my choice.
+At the moment the experiment is 4 months old :) and continues, with pure effort spent on this project I'd say at least 3 months and 1 week.
 
-There were complication involving me need to touch other services within the company codebase, owned by other teams, some of them cricial like payments, which took a good piece of overall timeline, but the core is a sigle service with front pages, auth hidden pages, admin, some internal APIs, workers and cron jobs.
+There were complications involving me needing to touch other services within the company codebase, owned by other teams, some of them critical like payments, which took a good piece of overall timeline, but the core is a single service with front pages, auth hidden pages, admin, some internal APIs, workers and cron jobs.
 So pretty much typical project.
 
-At some period of time I started to doubt whether I output results the full possible speed.
-A lot of people saying that they did with AI something x10 faster than it would be done without before, so reasonably this project shouldn't take 40 developer/months. I changed approaches and AI tools during this experiment, and at the moment I have a setup where I'm fully dedicated to review of that gigantic AI output and I cannot find where I can find x2..3...4..etc speedup.
+At some point in time I started to doubt whether I output results at the full possible speed.
+A lot of people saying that they did with AI something x10 faster than it would be done without before, so reasonably this project shouldn't take 40 developer/months without using AI agents. I changed approaches and AI tools during this experiment, and at the moment I have a setup where I'm fully dedicated to review of that gigantic AI output and I cannot find where I can find x2..3...4...etc speedup.
 
-And while measuring of the development speed is something that not solved well in the industry at the moment I still want to try to compare a process before heavily rely on AI agents and current in terms of how much time it saves.
-Typical approaches taken in the organization ot measure velocity wouldn't work here as I do not have story points, estimations in hours, team, etc.. So I'll try to measure a one task purely relying on my understanding of my process of development with AI agents and without.
+And while measuring of the development speed is something that's not solved well in the industry at the moment I still want to try to compare a process before heavily relying on AI agents and current approaches in terms of how much time it saves.
+Typical approaches taken in the organization to measure velocity wouldn't work here as I do not have story points, estimations in hours, team, etc.. So I'll try to measure a one task purely relying on my understanding of my process of development with AI agents and without.
 {/* cut */}
 
 ## Setup the stage
 
-First of all it is important agree on setup and some simplification, given low predictability of the real world.
-I will outline the task and describe setup of the project and development process done by human directly and the one done with ai agents.
+First of all it is important to agree on setup and some simplification, given low predictability of the real world.
+I will outline the task and describe setup of the project and development process done by human directly and the one done with AI agents.
 
 ### The project
 
-Imagine an existing project, where developer is aware with codebase, setup and technologies used.
-It is a NodeJS backend, with PostgreSQL DB and ReactJS based frontend with mobx as a state manager. Code is written on TypeScript.
-There is around 30k LOC already in the project, with existing data in DB, major entities already exist.
-And lets add a spice of the real world, the project depends on couple of the internal non public libraries, including components of UI design system that must be utilized.
+Imagine an existing project, where developer is aware of the codebase, setup and technologies used.
+It is a NodeJS backend, with PostgreSQL DB and ReactJS based frontend with MobX as a state manager. Code is written in TypeScript.
+There are around 30k LOC already in the project, with existing data in DB, major entities already exist.
+And let's add a spice of the real world, the project depends on a couple of internal non-public libraries, including components of UI design system that must be utilized.
 Build, deployment automation all are known and existing, and can be just used as is.
 
 ### The task
 
-Let's imagine that a developer needs to build a simple feature that touches all the components - public facing page where user can search the entities that lying in the one table in DB. Search by some string query, couple of filters like greater / lower prices and similar ones and with paging.
+Let's imagine that a developer needs to build a simple feature that touches all the components - public facing page where user can search the entities that are lying in one table in DB. Search by some string query, a couple of filters like greater / lower prices and similar ones and with paging.
 
-The page has reference design, but not full, missing some details, like mobile views and maybe some reaction, etc.. so it specifies the target, but still have some spaces to be figured out during development.
+The page has reference design, but not full, missing some details, like mobile views and maybe some reactions, etc. so it specifies the target, but still has some spaces to be figured out during development.
 
-Lets scope this feature to a simplest implementation, no string performance measurements and UX features, even will skip for a sake of this article reflecting state in the URL.
+Let's scope this feature to a simplest implementation, no string performance measurements and UX features, we'll even skip for the sake of this article reflecting state in the URL.
 
 Pretty much clear what needs to be changed / added:
 - API that takes user input as request and returns paged data. Request with filters should be validated, under the hood it should go to DB with a valid and safe query to run
-- Frontend including page on the some route of application, mobx store that holds a state being a mediator between rendering and backend
-- Integrating all together, including due dilligence tasks like error handling and testing
+- Frontend including page on some route of application, MobX store that holds a state being a mediator between rendering and backend
+- Integrating all together, including due diligence tasks like error handling and testing
 
 
 ### The setup
 
-Since it is existing project lets use pretty much common setups for manual development and AI agent based development
+Since it is existing project let's use pretty much common setups for manual development and AI agent based development
 
-- Tests are exist both integration and unit tests for both frontend and backend code.
+- Tests exist both integration and unit tests for both frontend and backend code.
 - There is linting and automated formatting.
 - There is ability to run the project locally with all the needed components.
-- The frontend has hot reload feature, so the developer can see updates right away for most of the visual changes.
+- The frontend has hot-reload feature, so the developer can see updates right away for most of the visual changes.
 
-For the human development we use IDE a developer experienced and get proficcient with.
-Tests and formatting are automatically run after every change the human does so we have as fast feedback during development as possible, where a developer focusing only on producing code.
+For the human development we use IDE a developer is experienced and proficient with.
+Tests and formatting are automatically run after every change the human does so we have as fast feedback during development as possible, where a developer is focusing only on producing code.
 
 For AI agent based development we are going to utilize the same setup, but with additions and modifications:
 
-- AI agent guidelines exist and polished. For instance CLAUDE.md for claude code which is tuned for being followed well on the previous tasks
-- Guidelines instruct AI agent to run formatting / lint / build / test to validate resut and that any issues must be fixed. What could be fixed automatically, i.e. formating is fixed automatically.
+- AI agent guidelines exist and are polished. For instance CLAUDE.md for claude code which is tuned for being followed well on the previous tasks
+- Guidelines instruct AI agent to run formatting / lint / build / test to validate result and that any issues must be fixed. What could be fixed automatically, i.e. formatting is fixed automatically.
 - Prepared allow list of the commands AI agent can run without asking permission
 
 So basically a setup for AI agent is done in a way that a developer can give a task and expect at least a result that can be run right away.
-There is no limits on AI agent tokens usage and cost. But there is a hard limits of current state of LLM context window, i.e. 200k tokens for Claude models.
+There are no limits on AI agent tokens usage and cost. But there are hard limits of current state of LLM context window, i.e. 200k tokens for Claude models.
 
-## Lets do imaginary "manual" development following the developer actions
+## Let's do imaginary "manual" development following the developer actions
 
 This part is becoming tricky. I have to do some approximations and assumptions here.
-The final goal is to measure time spent for development, but just a pure number throwing does not look right at the moment, because it will be an expert measurement and as I told at the beginnig I started to doubt a bit in my expertness.
+The final goal is to measure time spent for development, but just pure number throwing does not look right at the moment, because it will be an expert measurement and as I told at the beginning I started to doubt a bit in my expertise.
 
-So let's imagine categories of tasks that a developer does with some basic time spends.
+So let's imagine categories of tasks that a developer does with some basic time spent.
 Basis is for one piece of the category, but we can apply multipliers later on.
 
 <table>
@@ -134,27 +134,27 @@ Basis is for one piece of the category, but we can apply multipliers later on.
 </table>
 
 
-Looks like we have a decent list to start from so lets move to the manual development breakdown
+Looks like we have a decent list to start from so let's move to the manual development breakdown
 
 #### Human takes the lead
 
-So lets imagine a human workflow
+So let's imagine a human workflow
 
 1. Thinking. On the tasks as we start, initial one could be a bit more complex - so x2 (Thinking)
 2. Agreed to start from backend and do some declarative coding of the API. Request, response, some sub contracts x3 (Declarative Coding)
 3. Now move to implementation - validation for API which is runtime part x1 (Runtime Coding)
-4. Implementation of the filters on the existing data in DB. So we need to write some SQL / ORM queries testing it right away, given that we have couple of different filters and paging let say x3 (Runtime Coding)
+4. Implementation of the filters on the existing data in DB. So we need to write some SQL / ORM queries testing it right away, given that we have a couple of different filters and paging let's say x3 (Runtime Coding)
 5. Given that we did a bit of mess to get everything to work we spend a bit on refactoring x1 (Refactoring)
-6. Huh, nice run, it works, lets do a small break x1 (Idle)
-7. Now lets think on the next step x1 (Thinking)
-8. Next step is defined we start to work on frontend, added a new route for the page with some boiler plate, checking that it works, which is UI coding x1 (UI Coding)
-9. So we need to fetch data but before we need a shape for api contracts and state, which goes into Declarative Coding x2 (Declarative Coding)
-10. Now we can draft a basic store that holds state of the filters, fetches data from api, holding that data as state and reloading it when related state is changed. It is a Runtime Coding x3 (Runtime Coding)
-11. Lets bind store to some UI components and render just a data first. But we need to find a proper component and understand how to use it which is reading documentation x1 and we can do UI coding x1. Boom! We have first visual results, and it even works (Reading Documentation + UI Coding)
+6. Huh, nice run, it works, let's do a small break x1 (Idle)
+7. Now let's think on the next step x1 (Thinking)
+8. Next step is defined we start to work on frontend, added a new route for the page with some boilerplate, checking that it works, which is UI coding x1 (UI Coding)
+9. So we need to fetch data but before we need a shape for API contracts and state, which goes into Declarative Coding x2 (Declarative Coding)
+10. Now we can draft a basic store that holds state of the filters, fetches data from API, holding that data as state and reloading it when related state is changed. It is a Runtime Coding x3 (Runtime Coding)
+11. Let's bind store to some UI components and render just a data first. But we need to find a proper component and understand how to use it which is reading documentation x1 and we can do UI coding x1. Boom! We have first visual results, and it even works (Reading Documentation + UI Coding)
 12. Think about the UI approach for filters - what components we need, how to structure the search and filter interface x1 (Thinking)
 13. Need to read documentation of the internal org UI design system library to find the right filter components and understand how to use them properly x3 (Reading Documentation)
 14. Now we need to implement the actual search and filter UI components - input fields, dropdowns, etc. This requires some design decisions and component selection x3 (UI Coding)
-15. We need to wire up the form inputs to the mobx store state, handling user interactions and triggering API calls on changes x2 (Runtime Coding)
+15. We need to wire up the form inputs to the MobX store state, handling user interactions and triggering API calls on changes x2 (Runtime Coding)
 16. During testing we discover some bugs in our backend filter logic - need to debug and figure out what's wrong x1 (Thinking)
 17. Fix the backend issues we found during frontend testing x1 (Runtime Coding)
 18. Let's add proper loading states, error handling, and empty states to make the UX smooth x3 (Runtime Coding)
@@ -165,7 +165,7 @@ So lets imagine a human workflow
 23. Looking at the reference design, we need to style everything properly and make it responsive for mobile x3 (UI Coding)
 24. We notice some performance issues with rapid filter changes, so let's add debouncing to the search input x1 (Runtime Coding)
 25. Quick refactoring session to clean up component structure and extract some reusable pieces x1 (Refactoring)
-26. Imitating errors on UI and adding error boundaries and proper styles for error messaging x2 (UI Coding)
+26. Simulating errors on UI and adding error boundaries and proper styles for error messaging x2 (UI Coding)
 27. Final manual testing across different screen sizes and edge cases, fixing small bugs discovered x2 (UI Coding)
 28. Code review prep - cleaning up console.logs, adding comments, ensuring code standards x1 (Refactoring)
 29. Small thinking session to verify we haven't missed anything from requirements x1 (Thinking)
@@ -229,16 +229,16 @@ So lets imagine a human workflow
 
 **Grand Total: 535 minutes = 8.92 hours or ~9 hours**
 
-## Now lets do the same using AI agent
+## Now let's do the same using AI agent
 
-As for the human we should do some approximation and simplification, but lets try to stick to at least some reality norms.
+As for the human we should do some approximation and simplification, but let's try to stick to at least some reality norms.
 
-I will describe also from my experience working with AI agents at the moment of article writing which is in my case it is either [JetBrains Junie](https://www.jetbrains.com/junie/) or [Claude Code](https://www.anthropic.com/claude-code). At the moment they are quite similar in terms of output, where Junie slightly outperform claude in terms of quality of the output and claude in terms of developer experience and speed.
-Nevertheless when we use AI coding agents with a setup tuned for them the typical flow would be to throw into AI agent a task, review, if it is too far away, iterate with AI again, if it is mostly good it might require some slight manual tuning at the end. Also not to forget that every AI agent loop will end-up with validation like running build / tests / formatting / lints with possible additional loops to self-correct.
+I will describe also from my experience working with AI agents at the moment of article writing which is in my case it is either [JetBrains Junie](https://www.jetbrains.com/junie/) or [Claude Code](https://www.anthropic.com/claude-code). At the moment they are quite similar in terms of output, where Junie slightly outperforms Claude in terms of quality of the output and Claude in terms of developer experience and speed.
+Nevertheless when we use AI coding agents with a setup tuned for them the typical flow would be to throw into AI agent a task, review, if it is too far away, iterate with AI again, if it is mostly good it might require some slight manual tuning at the end. Also not to forget that every AI agent loop will end up with validation like running build / tests / formatting / lints with possible additional loops to self-correct.
 Also some activities will be the same as AI agents are not endlessly powerful.
-To simplify lets assume that any AI generation end-up with a human review, that depends on the size of generated code and on bigger output it will take more time than on smaller ones.
+To simplify let's assume that any AI generation ends up with a human review, that depends on the size of generated code and on bigger output it will take more time than on smaller ones.
 
-Let's try to outline out interaction type during AI Agent based development.
+Let's try to outline our interaction type during AI Agent based development.
 
 <table>
 	<thead>
@@ -260,7 +260,7 @@ Let's try to outline out interaction type during AI Agent based development.
 		<td>Quick and Scoped AI Generation</td>
 		<td>10m</td>
 		<td>
-			Typically a well understood task, with the scoped and known in advance files to edit. It might be a bug
+			Typically a well understood task, with the scoped and known in advance files to edit. It might be a
 			targeted bug fix, or very small decomposed piece of the feature.
 		</td>
 		<td>
@@ -271,9 +271,9 @@ Let's try to outline out interaction type during AI Agent based development.
 		<td>Full AI Generation</td>
 		<td>20m</td>
 		<td>
-			A task that might evolve multiple changes, like addition new files, changing existing in multiple places.
+			A task that might involve multiple changes, like addition of new files, changing existing in multiple places.
 		</td>
-		<td>Adding a new API method, involving API, tests, logic, DB changes, etc..</td>
+		<td>Adding a new API method, involving API, tests, logic, DB changes, etc.</td>
 	</tr>
 	<tr>
 		<td>AI Output Review</td>
@@ -284,7 +284,7 @@ Let's try to outline out interaction type during AI Agent based development.
 	<tr>
 		<td>UI Corrections</td>
 		<td>10m</td>
-		<td>Fixing styles after AI generated frontend, and looking on the results in browser.</td>
+		<td>Fixing styles after AI generated frontend, and looking at the results in browser.</td>
 		<td>Correcting elements alignment or sizes.</td>
 	</tr>
 	<tr>
@@ -302,22 +302,22 @@ Let's try to outline out interaction type during AI Agent based development.
 	</tbody>
 </table>
 
-A note on "idle". It is not forgotten here :) as we still human, but to simplify we assume that we do the deals while AI generates...
-Now lets try to imagine how the same task would be done if we utilize AI agents for development based on the activities above.
+A note on "idle". It is not forgotten here :) as we are still human, but to simplify we assume that we do other things while AI generates...
+Now let's try to imagine how the same task would be done if we utilize AI agents for development based on the activities above.
 
-### Ok Claude, take this file...
+### OK Claude, take this file...
 
 1. Thinking on high-level decomposition x2 (Thinking)
 2. Throwing a description of the task asking AI agent to build API x1 (Full AI generation)
 3. Review the generated API code thoroughly x1 (AI Output Review)
-4. After review, we see some issues that better to fix right away so we do x2 (Quick and Scoped AI Generation)
+4. After review, we see some issues that are better to fix right away so we do x2 (Quick and Scoped AI Generation)
 5. Do some refactoring to finish the API x1 (Refactoring)
 6. Now let's think on the next step x1 (Thinking)
-7. Now asking AI agent to generate API client for UI and a store needed for a feature. Here some experience works, that asking to generate all at once including components might not give a stable a good results, so we core prep which can be considered as full generation x1 (Full AI Generation)
+7. Now asking AI agent to generate API client for UI and a store needed for a feature. Here some experience works, that asking to generate all at once including components might not give stable good results, so we do core prep which can be considered as full generation x1 (Full AI Generation)
 8. Review the generated store and client code x1 (AI Output Review)
 9. Do some manual refactoring right away to shape the store for the next AI loop x1 (Refactoring)
-10. Now we need to read some documentation to supply AI correct instruction on the next step x1 (Reading Documentation)
-11. Now lets ask AI to generate a visual for the data table which is full generation x1 (Full AI Generation). When it finishes it even works... a technology miracle, but there are still things to do.
+10. Now we need to read some documentation to supply AI correct instructions on the next step x1 (Reading Documentation)
+11. Now let's ask AI to generate a visual for the data table which is full generation x1 (Full AI Generation). When it finishes it even works... a technology miracle, but there are still things to do.
 12. Right away we ask to add filters on UI which is another full generation x1 (Full AI Generation), it is a bit harder than previous for AI as more small components need to be created, but it tackles successfully heating the temperature in the world a bit.
 13. Review the generated UI components and integration x1 (AI Output Review)
 14. After review we found a couple of things to fine tune from the behavior standpoint so we do x3 (Quick and Scoped AI Generation)
