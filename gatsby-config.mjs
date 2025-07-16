@@ -1,6 +1,8 @@
-module.exports = {
+import remarkGfm from 'remark-gfm';
+
+const config = {
 	siteMetadata: {
-		title: "Блог обучающегося архитектора",
+		title: "Learning architect blog",
 		siteUrl: `https://learning-architect.blog`,
 	},
 	plugins: [
@@ -28,10 +30,9 @@ module.exports = {
 				extensions: [`.mdx`, `.md`],
 				mdxOptions: {
 					remarkPlugins: [
-						require('remark-gfm'),
+						remarkGfm,
 					],
 					rehypePlugins: [
-						require('rehype-raw'),
 					],
 				},
 				gatsbyRemarkPlugins: [
@@ -129,3 +130,5 @@ module.exports = {
 		}
 	],
 };
+
+export default config;

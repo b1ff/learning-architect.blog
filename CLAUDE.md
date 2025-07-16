@@ -86,13 +86,19 @@ The excerpt is automatically converted from Markdown to HTML and displayed in th
 
 ## Important Configurations
 
-- `gatsby-config.js` - Main Gatsby configuration
+- `gatsby-config.mjs` - Main Gatsby configuration (uses ESM syntax for MDX plugin compatibility)
 - `tailwind.config.js` - Tailwind CSS configuration  
 - `postcss.config.js` - PostCSS configuration for Tailwind processing
 - `gatsby-browser.js` - Browser-specific imports (CSS and Prism theme)
 - `gatsby-ssr.js` - Server-side rendering setup with critical CSS to prevent FOUC
 - `gatsby-node.js` - Custom excerpt extraction logic for `{/* cut */}` tags
-- Site metadata and RSS feed settings in gatsby-config.js
+- Site metadata and RSS feed settings in gatsby-config.mjs
+
+### MDX Configuration Notes
+- Uses `remark-gfm@3.0.1` for GitHub Flavored Markdown support (tables, strikethrough, etc.)
+- Do NOT use `remark-gfm@4.x` as it's incompatible with Gatsby 5's MDX v2
+- Do NOT use `rehype-raw` plugin as it conflicts with MDX v2 processing
+- Configuration uses ESM syntax (gatsby-config.mjs) for proper plugin imports
 
 ## Deployment
 
