@@ -384,3 +384,37 @@ Now lets try to imagine how the same task would be done if we utilize AI agents 
 </table>
 
 **Grand Total: 274 minutes = 4.57 hours or ~4.5 hours**
+
+## What does it tell us?
+
+So we got into x2 speed up from using AI. But is it real?
+
+First all, lets agree that we need to treat it as thinking experiment, to make it real we need exactly the same developer doing exactly the same task in parallel realities manually and with AI to ensure that no previous knowledge on the task implementation is utilized. Which is hardly achievable.
+
+Yes with some scale you can count statistical behavior of similar tasks in a similar conditions, like it was done by METR, to study [impact of AI on speed of experienced developers](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) and well known code base for them.
+Funny enough, this study shows that developers who know codebase very well, like maintainers for the OSS products, actually getting 20% slower on average.
+
+While in the thinking experiment above it should show x2 speed increase.
+
+Basically in this thinking experiment I'm showing a typical expectation from AI tooling nowadays, but reality can hit hard and due to non-deterministic nature of the AI output the time spend on the task together with AI agent can overweight raw effort needed to code the task by itself with good craft coding. It is becoming an important skill nowadays to get enough experience with AI agent to be able to categorize tasks as suitable for full AI coding and non-suitable.
+
+But nevertheless I still think that x2 speedup on a certain tasks is possible.
+While it is probabilistic thing we can improve chances of AI agents to reach success.
+What we can do at the moment, is all good setup for fast feedback, we used for ages:
+- auto code formatting
+- linting with rules to early find issues
+- types
+- tests on different levels, like unit / integration / e2e / etc
+- task decomposition, spec creation
+
+In addition to the above considering AI specific:
+- keep codebase modular, so it fits context effectively. (Microservices strike again)
+- all the automation tooling that is going to be run by AI agents must be context / tokens friendly, meaning that there should be only meaningful info (No more 100500 unresolved linter / compilation warnings)
+- speed of feedback matters. Given that much AI can make mistakes and how much all the tools should be re-run - it better that feedback is given for seconds, not minutes.
+- AI friendly guidelines to the projects itself
+- Creating a good example of typical feature for AI to copy "style", i.e. reviewed and written API controllers, with auth, validation, etc..
+- LLM consumable documentation for internal libraries, processes, etc.
+
+Also of course, a task should be suitable for the LLMs at their current stage of development. At the moment of writing this article it is still hard for LLM to write code that requires a lot of conditions. Most likely size of prompt + tunings afterward require much more effort that writing that logic itself delegating to LLM only to generate boilerplate code with placeholders.
+
+But to make a conclusion that with certain tasks, in certainly configured environments friendly for LLM speed is achievable. But funny enough it does not come for free, we need to invest, improve or sometimes fully re-build processes to get the gain from AI agents assisted development.
