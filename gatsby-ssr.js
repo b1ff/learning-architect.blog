@@ -29,9 +29,8 @@ export const onRenderBody = ({ setHeadComponents, setHtmlAttributes }) => {
       dangerouslySetInnerHTML={{
         __html: `
           /* Critical CSS to prevent FOUC */
-          body { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; background-color: rgb(17, 24, 39); color: rgb(243, 244, 246); }
+          body { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; background-color: white; color: rgb(17, 24, 39); }
           .dark body { background-color: rgb(17, 24, 39); color: rgb(243, 244, 246); }
-          body:not(.dark) { background-color: white; color: rgb(17, 24, 39); }
           .container { width: 100%; max-width: 80rem; margin: 0 auto; }
           .grid { display: grid; }
           .bg-white { background-color: white; }
