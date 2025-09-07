@@ -1,0 +1,301 @@
+---
+slug: "/blog/domain-type-system-for-typescript"
+date: "2025-09-06"
+author: "Eugene"
+keywords: typescript,ddd for typescript,application architecture,backend
+---
+# Domain Type System for TypeScript
+
+{/* cut */}
+As everything that happens nowadays in tech, this article starts from AI :)
+
+As I've been experimenting extensively with AI-augmented development, I've been searching for ways to structure code that can act as a "cage" for AI - constraining it to reduce bugs and minimize the time I spend manually correcting its output.
+
+LLMs can output tremendous amounts of code per iteration, but as soon as we need quality and workability acceptable for development goals, the only "tool" we can rely on is human review. Which has low speed. The more AI output noise in the result, the more detours the human brain should take, the more is missed in the code.
+
+I built custom linters and additional codebase checks, which partially improved the situation, but still, they could not cover issues in logic, especially in projects that are logic-heavy.
+
+Here's what I mean by logical errors: In one code review, I missed that AI had confused entity IDs deep within the business logic, leading to very annoying and hard-to-debug issues. In another case, AI treated admin users and public users as interchangeable, attempting to fetch public user profiles for admin users :facepalm:
+
+These are exactly the kinds of problems that linters can't catch - they're logical, not syntactic. This got me thinking about applying Domain-Driven Design (DDD) principles to make the code more "sound" and restrictive, ideally improving the LLM's ability to self-correct.
+
+The example with regular user and admin user is relatively easy to fix, especially in TypeScript by introducing [brand types](https://www.learningtypescript.com/articles/branded-types) for user ids.
+
+```typescript
+type UserId = string & { readonly brand: unique symbol };
+type AdminId = string & { readonly brand: unique symbol };
+
+function getUserProfile(userId: UserId): UserProfile {
+  // fetch user profile by user id
+}
+
+function getAdminProfile(adminId: AdminId): AdminProfile {
+  // fetch admin profile by admin id
+}
+```
+
+As you can see, now it's impossible to accidentally mix admin and user IDs - the type system prevents it at compile time.
+
+This brand types approach works well for simple cases, but there are bigger, more complex logical structures that remain problematic. In typical architectures, once an LLM has access to repositories and databases, it can construct operations that fetch anything from anywhere, bypassing business rules entirely.
+
+Traditional DDD with aggregates and synchronous business rules offers a solution, but it's not well-suited for distributed systems where you need high performance, clear transactional boundaries, and operational reliability. This led me to explore whether I could combine DDD modeling principles while maintaining these quality attributes.
+
+{/* cut */}
+
+### Problem Example
+
+To illustrate the different approaches and their trade-offs, let me walk you through a concrete example that we'll use throughout this article.
+
+Consider a conference registration system with the following requirements:
+
+- Conferences have a limited number of seats
+- We need to register attendees while avoiding overbooking
+- When someone registers, we reserve their spot but only confirm it after payment
+- If payment fails or times out, we release the reserved space
+
+This scenario captures the complexity of real-world business logic: state management, concurrency concerns, and business rules that need to be enforced consistently.
+
+### Traditional DDD
+
+Let's see a draft of how a simplified conference booking system could look like using the traditional DDD approach.
+
+```ts
+// Brand types to avoid confusing plain strings everywhere
+type Brand<T, B extends string> = T & { readonly __brand: B };
+type ConferenceId = Brand<string, "ConferenceId">;
+type TicketId = Brand<string, "TicketId">;
+type AttendeeId = Brand<string, "AttendeeId">;
+
+type TicketStatus = "reserved" | "paid" | "canceled";
+
+class Ticket {
+  constructor(
+    public readonly conferenceId: ConferenceId,
+    public readonly attendeeId: AttendeeId,
+    private status: TicketStatus = "reserved"
+  ) {}
+
+  get currentStatus(): TicketStatus {
+    return this.status;
+  }
+
+  pay(): void {
+    if (this.status !== "reserved") throw new Error("Can only pay reserved ticket");
+    this.status = "paid";
+  }
+
+  cancel(): void {
+    if (this.status === "paid") throw new Error("Paid ticket requires refund flow");
+    this.status = "canceled";
+  }
+
+  static reserve(conferenceId: ConferenceId, attendeeId: AttendeeId): Ticket {
+    return new Ticket(conferenceId, attendeeId);
+  }
+}
+
+// aggregate root
+class Conference {
+  private reservedCount = 0;
+
+  public readonly tickets: Ticket[] = [];
+
+  constructor(
+    public readonly id: ConferenceId,
+    public readonly title: string,
+    public readonly capacity: number
+  ) {
+    if (capacity <= 0) throw new Error("Capacity must be positive");
+  }
+
+  get reserved(): number {
+    return this.reservedCount;
+  }
+
+  reserveTicket(attendeeId: AttendeeId): Ticket {
+    if (this.reservedCount >= this.capacity) throw new Error("Conference is full");
+    if (this.tickets.some(ticket => ticket.attendeeId === attendeeId)) throw new Error(`Attendee ${attendeeId} already has a ticket`);
+    const ticket = Ticket.reserve(this.id, attendeeId);
+    this.reservedCount++;
+    this.tickets.push(ticket);
+    return ticket;
+  }
+}
+```
+
+Being honest, I like the results.
+
+In production, this would obviously be more complex - different error types, perhaps a `Result<T, Error>` pattern, handling edge cases like sold-out conferences with expired reservations. But even with those additional requirements, this approach maintains its elegance.
+
+
+```ts
+async function handleReserveRequest(conferenceId: ConferenceId) {
+  const conference = await conferenceRepository.readById(conferenceId);
+  const ticket = conference.reserveTicket(auth.currentUser.id); // imagine that it is API that has authentication system
+  await conferenceRepository.save(conference);
+  return ticket;
+}
+```
+
+Nice and clean. The logic is sound, pure, and independent - it could work with different interfaces like APIs, UIs, CLIs, or even LLM tools nowadays. Business rules are explicit and encapsulated, modeling real domain requirements. Testing is straightforward.
+
+I wish I could write systems using this pattern.
+
+But. The real world would then knock on the door and say,
+"Hey, we have overbooking, conference had 2000 seats, but 2023 were registered"
+Or "Hey, customers complain that we have lost their tickets"
+Or "Our database is at capacity of the read throughput"
+
+And here is where the dance begins. Because we can clearly see that the pattern here forced us to read in memory, make modifications, and then write the database changes. Or load all the related tickets with the conference, to be able to calculate the uniqueness of attendees rule.
+
+The typical senior developer response? "We need locking." For performance issues: "We'll add lazy loading to the ticket entity relations - let me write a few hundred lines of ORM configuration."
+
+Whether we choose optimistic or pessimistic locking doesn't really matter - both bring significant tradeoffs. We end up building ORM magic to preserve the domain model's purity. Often, teams just accept the complexity because they need to ship features, but the core issue remains: we're adding significant system complexity solely to maintain theoretical domain model purity.
+
+Because of that, many, I'd guess the majority, don't use such an approach. And instead we have "domain services" layers.
+
+### Domain Services Layers
+
+Here would be nice to have a rant in the style of Uncle Bob.. Sitting in the robe on terrace, ranting about those 1200 lines of code in the ConferenceService and 3000 lines of code in the ConferenceServiceTests. With big masses of code that reads, saves, validates, changes, locks, handles errors, grrr, grrr, grrr.
+
+I think many who worked in the industry, have seen that and understand what I'm talking about here and we've seen that code a lot.
+Here how could the above handler look like using this services approach:
+
+```ts
+class ConferenceService {
+  async function handleReserveRequest(conferenceId: ConferenceId) {
+    return await unitOfWork.wrap(() => {
+      await conferenceService.trackReservation(conferenceId);
+      const ticket = await ticketsService.reserveTicket(conferenceId, auth.currentUser.id);
+      return ticket;
+    });
+  }
+}
+```
+
+For the sake of keeping the code size sane I'm not going to demonstrate the implementation of services.
+It should be pretty straightforward, and nowadays it is pretty simple to get the implementation from LLMs if needed.
+The approach itself is used pretty often, so I think a picture of a possible implementation here should quickly appear in the head.
+
+Don't get me wrong, this approach works. And the concept is simple to understand.
+Group work in the ServiceClass, try to keep it free from the input / output information (like API request responses).
+Inside use abstractions over storages, external APIs, queues, etc. to get the work done.
+It is re-usable, so once an operation is implemented, it can be called in other places, so it is SOLID as well.
+To some degree it is testable, not perfect, but it is testable. We can either create 1-20 mocks and verify that everything is called with needed parameters under test conditions.
+Or we can go with integration tests, where we most likely have most of the code not mocked, but maybe some low-level mock of third-party dependencies, like APIs.
+
+And most likely, I'd use it, sighing from time to time about the sizes of those services and mix of the responsibilities in it. But generically speaking it is not so bad for common day-to-day work.
+
+### So why not use this service approach?
+
+The answer is LLMs... Trying to keep this approach with large-scale output generation by LLM could result in a situation even worse than was described above. This approach is very unconstrained, so without proper human evaluation and rework after LLM it will end up in total mess.
+
+And when I'm talking about LLMs, I mean here scaled output generation, usually using LLM agents, like claude code, trying to achieve a complete feature or a complete fix as result, rather than step-by-step augmented generation like pieces of code in the chats, or AI completions. With those instruments that focus on isolated context, the issues are most likely to appear as the human developer is heavily in the loop and able to do micro corrections on the go.
+
+But all the twitter people are saying that we need to perform X10..0..0..0? faster now and I think without autonomous or semi-autonomous agents, it is not so easy to achieve this goal.
+
+And I started to think, apart from custom lint rules and code scanning with focus on building a "cage" for LLM.
+
+By the "cage" I mean set of rules or constraints, that from one side do not limitate LLM on the outputing the code, but from the another side, guide it automatically to the right approach for this particular project.
+
+Think about as set lint rules, code verifications, tests that force architectural patterns, that are run automatically and report problems that must have a solution.
+For instance: duplication detection, which after specific treshold of duplications fails the tool, and LLM is forced to de-duplicate the code which has been added.
+
+The question is if I can utilize the compiler, from one standpoint forcing LLM to follow it, and from another standpoint help bio-organisms to read and support code easier, or at least does not make it harder.
+And we need to keep in mind all of those technical characteristics, that are required to meet because we build distributed systems.
+
+So I was trying to build a middle-ground approach, which would not require a lot of quirks to keep the "purity" but at the same time, would model the domain a little bit better than with `xxService` architecture.
+
+### Requirements for results
+
+Stricter architecture, with bigger separation of concerns than typical xxService architecture has.
+Clearly defined system, that would empower automating architecture following rules (aka fitness functions). For instance if I want to write a lint rule that would enforce usage of specific layer of types as parameters to another layer, and protect others from being there. Typical example is to avoid usage of entities for API layer, but here I'd like to have more low-level code rules.
+Utilization of typing system to guide and control code generation.
+More "sound" domain modeling. Improve how domain is expressed in code, to the degree that tradeoffs with complexity and quality attributes are not needed.
+
+### State-based models
+
+The main idea, is to have a layer in the model that represents not only high-level domain entity, like `Ticket` but be able to express on the type level state of the entity, or even express combined states in some cases.
+
+Let's say a user wants to pay for the `Ticket`. We know that we can pay only for a ticket in `reserved` state, but we should not allow to pay for the ticket if it is already `paid`.
+
+In the service layered approach we would do something like this:
+
+```ts
+class TicketService {
+  async function pay(ticketId: ticketId, paymentMethod: PaymentMethod): Promise<void> {
+    const ticket = await ticketRepository.findById(ticketId);
+    if (!ticket) throw new Error('Ticket not found');
+    if (ticket.state === 'paid') throw new Error('Ticket is already paid');
+    if (ticket.state !== 'reserved') throw new Error('Ticket is not reserved');
+    const updateResult = await ticketRepository.update({ state: 'paid' }, { where: { id: ticket.id, state: 'reserved' }});
+    if (updateResult.affected === 0) throw new Error('Marking ticket as paid failed');
+  }
+}
+```
+
+If we need to implement some other operation, with a ticket that could be paid, the upper part of the method would be pretty much the same. Of course as good developers, we won't copy-paste it, but rather extract it to a function, something like `ensureTicketIsPayable()` and call it everywhere where needed.
+
+And when we implement such logic, we just need not to forget to put a call to `ensureTicketIsPayable()` before any operation that requires the ticket to be in `reserved` state.
+
+So what if we instead derive a type that represents a ticket that is in `reserved` state?
+TypeScript is very handy here, as it could help us to express it almost effortlessly.
+
+```ts
+type ReservedTicket = Ticket & { state: 'reserved' };
+```
+
+Now we can create a function that constructs such ticket:
+
+```ts
+class TicketsBag {
+  async getReservedTicket(ticketId: string): Promise<ReservedTicket> {
+    const ticket = await ticketRepository.findById(ticketId);
+    if (!ticket) throw new Error('Ticket not found');
+    if (ticket.state !== 'reserved') throw new Error('Ticket is not reserved');
+    return ticket;
+  }
+}
+```
+
+Now we can create a function that takes a `ReservedTicket` as an argument and performs the payment operation:
+
+```ts
+async function pay(ticket: ReservedTicket, paymentMethod: PaymentMethod): Promise<void> {
+  const updateResult = await ticketRepository.update({ state: 'paid' }, { where: { id: ticket.id, state: 'reserved' }});
+  if (updateResult.affected === 0) throw new Error('State conflict: marking ticket as paid failed due to outer changes');
+}
+```
+
+The method now avoids most of the checks, as they are expressed within the parameter that says, "I accept only reserved tickets".
+And it is up to the caller to find how to construct this type when payment is needed.
+
+### Let's add a bit of the system
+
+Since we are controlling a very eager junior developer, LLMs, we need to add a bit of the system, to be able to implement minimal guard rails to use it correctly.
+
+I was trying to find appropriate layers from the clean architecture, or other architectural patterns, like entity component system (ECS) but didn't find one that would fit freely, so then I'd define the following terminology for these layers
+
+* Entities - are left as is, it is our ground to map data model
+* Repositories - are responsible for persisting and retrieving entities from the data store. Pretty much common, do not see a need to invent anything special here.
+* Variants - more precise shapes of domain states, like `ReservedTicket` in the example above. It could be a more narrow type on top of entities, or custom state that represents domain state, or technical primitive. I think it could be even a compound type from different states, which are tied together because they are atomic for a specific business operations
+* Resolvers - a layer on top of variants and repositories, or other data sources (API clients) that construct variant, being safe that raw data complies with a defined variant. For example `TicketsBag` in the example.
+* Capabilities - a layer on top of variants and repositories, that could describe capabilities available to execute within broad domain terms. It could be a class that groups such actions like `PaymentCapabilities { markTicketAsPaid, refundTicket }` or one time capability like `ReserveConferenceTicket { performReservation }`. What is important is that it works mostly with variants as input, instead of entities directly, which facilitates to choose a variant and resolver to construct it, and state correctness validations before operations.
+
+As you might see, those layers define rules of communication, so it is something we can use to build around validation, that rules are followed. Which will help LLMs to self-correct in case of mistakes.
+
+### Conclusion
+
+This domain type system approach provides a middle ground between the purity of traditional DDD aggregates and the pragmatic flexibility of service layers. By leveraging TypeScript's type system to encode domain states and business rules directly into the type definitions, we create natural guard rails that both guide human developers and constrain AI code generation.
+
+The key benefits I've observed during my limited tests in the real world:
+
+**For AI-assisted development**: LLMs are forced to construct the correct variant types before performing operations (at least try to do it :P), which significantly reduces logic errors like mixing up entity IDs or somehow reduces errors of applying operations to invalid states. The type system acts as a compile-time safety net that catches many issues that would otherwise require careful bio-brain review or re-work.
+
+**For human maintainability**: The code becomes more self-documenting. When you see a function signature like `pay(ticket: ReservedTicket)`, you immediately understand the preconditions. The business logic is encoded in the types rather than buried in runtime checks scattered throughout service methods.
+
+**For performance and reliability**: Unlike traditional DDD aggregates, this approach doesn't force you into pessimistic locking or loading entire object graphs. You can still use database-level constraints, optimistic concurrency control, and efficient queries while maintaining domain modeling benefits.
+
+Is this approach perfect? Certainly not. It requires more upfront investment in type modeling, and teams need to understand the conventions around variant construction and capability design. But for teams working with AI code generation at scale, or those who want domain modeling benefits without traditional DDD's performance overhead, it offers a compelling alternative.
+
+The real test will be how well this scales in larger codebases and whether the type-driven constraints actually improve AI code quality in practice. But early results suggest that when you make invalid states unrepresentable in the type system, both humans and AIs write more correct code by default.
