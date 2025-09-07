@@ -4,19 +4,18 @@
 
 .headline,
 .article h1 {
-    @apply text-3xl leading-9 pb-4 text-gray-900 tracking-tight sm:text-4xl sm:leading-10 md:text-6xl
+    @apply text-3xl leading-9 pb-4 text-gray-900 dark:text-white tracking-tight sm:text-4xl sm:leading-10 md:text-6xl;
 }
 
 .secondary-h,
 .article h2 {
-    @apply text-2xl leading-8 tracking-tight text-yellow-600 hover:text-gray-600 pt-7;
+    @apply text-2xl leading-8 tracking-tight text-yellow-600 dark:text-yellow-400 hover:text-gray-600 dark:hover:text-gray-300 pt-7;
 }
 
 .sub-h,
 .article h3,
-.article-summary h2
-{
-    @apply text-xl leading-5 text-gray-500 pt-6;
+.article-summary h2 {
+    @apply text-xl leading-5 text-gray-500 dark:text-gray-400 pt-6;
 }
 
 .article h3 {
@@ -24,38 +23,42 @@
 }
 
 .article h4 {
-    @apply leading-4 text-gray-400 pt-4;
+    @apply leading-4 text-gray-400 dark:text-gray-500 pt-4;
 }
 
 .article p,
 .article table {
-    @apply mt-3;
+    @apply mt-3 text-gray-700 dark:text-gray-300;
 }
 
 .article ul {
-    @apply list-disc ml-6;
+    @apply list-disc ml-6 text-gray-700 dark:text-gray-300;
 }
 
 .article ol {
-    @apply list-decimal ml-6;
+    @apply list-decimal ml-6 text-gray-700 dark:text-gray-300;
 }
 
 .link-default,
 .article a {
-    @apply text-yellow-600 hover:text-gray-600;
+    @apply text-yellow-600 dark:text-yellow-400 hover:text-gray-600 dark:hover:text-gray-300;
 }
 
 .article table {
-    @apply border-separate border border-yellow-400 border-collapse table-auto w-full;
+    @apply border-separate border border-yellow-400 dark:border-yellow-600 border-collapse table-auto w-full;
     border-spacing: 0;
 }
 
 .article table th {
-    @apply bg-yellow-100 text-left;
+    @apply bg-yellow-100 dark:bg-yellow-900 text-left text-gray-900 dark:text-gray-100;
 }
 
 .article table th,
-.article table td
-{
-    @apply border-separate border border-yellow-300 border-collapse px-3 py-1.5;
+.article table td {
+    @apply border-separate border border-yellow-300 dark:border-yellow-700 border-collapse px-3 py-1.5;
+}
+
+/* Dark mode body background */
+body {
+    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100;
 }

@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a technical blog called "Блог обучающегося архитектора" (Learning Architect's Blog) hosted at https://learning-architect.blog. The blog focuses on software architecture, modern development practices, AI/LLM usage in development, DevOps, and technical design patterns.
+This is a technical blog called "Learning Architect's Blog" hosted at https://learning-architect.blog. The blog focuses on software architecture, modern development practices, AI/LLM usage in development, DevOps, and technical design patterns.
 
 ## Tech Stack
 
 - **Gatsby v5.14.5** - Static site generator
-- **React v18.2.0** - UI framework  
+- **React v18.2.0** - UI framework
 - **MDX v2.3.0** - Markdown with JSX for content authoring
 - **TypeScript** - For component development (.tsx files)
 - **Tailwind CSS v3.4.15** - Utility-first CSS framework
@@ -43,7 +43,7 @@ keywords:
 Article excerpts are defined using `{/* cut */}` JSX comments in the MDX content. The excerpt system works as follows:
 
 - **Two `{/* cut */}` markers**: Content between the first and second `{/* cut */}` becomes the excerpt
-- **One `{/* cut */}` marker**: Content before the first `{/* cut */}` becomes the excerpt  
+- **One `{/* cut */}` marker**: Content before the first `{/* cut */}` becomes the excerpt
 - **No markers**: Falls back to Gatsby's default excerpt
 
 The excerpt is automatically converted from Markdown to HTML and displayed in the article summary section on the homepage.
@@ -87,7 +87,7 @@ The excerpt is automatically converted from Markdown to HTML and displayed in th
 ## Important Configurations
 
 - `gatsby-config.mjs` - Main Gatsby configuration (uses ESM syntax for MDX plugin compatibility)
-- `tailwind.config.js` - Tailwind CSS configuration  
+- `tailwind.config.js` - Tailwind CSS configuration
 - `postcss.config.js` - PostCSS configuration for Tailwind processing
 - `gatsby-browser.js` - Browser-specific imports (CSS and Prism theme)
 - `gatsby-ssr.js` - Server-side rendering setup with critical CSS to prevent FOUC
@@ -111,5 +111,5 @@ The site uses GitHub Actions for automated deployment:
 
 ### GitHub Pages Setup Required:
 1. Enable GitHub Pages in repository settings
-2. Set source to "GitHub Actions" 
+2. Set source to "GitHub Actions"
 3. Ensure `GITHUB_TOKEN` has write permissions for Pages
