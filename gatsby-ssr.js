@@ -18,8 +18,11 @@ export const wrapPageElement = ({ element, props }) => {
   return element;
 };
 
-// Add preload hints for critical CSS
-export const onRenderBody = ({ setHeadComponents }) => {
+// Add preload hints for critical CSS and set dark mode class for SSR
+export const onRenderBody = ({ setHeadComponents, setHtmlAttributes }) => {
+  // Set dark class on html element during SSR to match default theme
+  setHtmlAttributes({ className: "dark" });
+
   setHeadComponents([
     <style
       key="critical-css"

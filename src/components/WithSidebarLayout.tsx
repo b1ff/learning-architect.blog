@@ -38,7 +38,7 @@ export function WithSidebarLayout({
   };
 
   return (
-    <div className="container bg-white dark:bg-gray-900 max-w-5xl mx-auto px-4 sm:px-6 xl:max-w-7xl xl:px-0 py-16">
+    <div className="container max-w-5xl mx-auto px-4 sm:px-6 xl:max-w-7xl xl:px-0 py-16">
       <Heading additionalKeywords={additionalKeywords} />
 
       <div className="relative">
