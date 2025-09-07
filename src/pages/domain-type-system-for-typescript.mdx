@@ -19,6 +19,8 @@ Here's what I mean by logical errors: In one code review, I missed that AI had c
 
 These are exactly the kinds of problems that linters can't catch - they're logical, not syntactic. This got me thinking about applying Domain-Driven Design (DDD) principles to make the code more "sound" and restrictive, ideally improving the LLM's ability to self-correct.
 
+{/* cut */}
+
 The example with regular user and admin user is relatively easy to fix, especially in TypeScript by introducing [brand types](https://www.learningtypescript.com/articles/branded-types) for user ids.
 
 ```typescript
@@ -39,8 +41,6 @@ As you can see, now it's impossible to accidentally mix admin and user IDs - the
 This brand types approach works well for simple cases, but there are bigger, more complex logical structures that remain problematic. In typical architectures, once an LLM has access to repositories and databases, it can construct operations that fetch anything from anywhere, bypassing business rules entirely.
 
 Traditional DDD with aggregates and synchronous business rules offers a solution, but it's not well-suited for distributed systems where you need high performance, clear transactional boundaries, and operational reliability. This led me to explore whether I could combine DDD modeling principles while maintaining these quality attributes.
-
-{/* cut */}
 
 ### Problem Example
 
