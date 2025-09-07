@@ -46,7 +46,7 @@ export function WithSidebarLayout({
         {isMobile && isSidebarCollapsed && (
           <div className="mb-4 flex justify-between items-center">
             <div className="text-xl font-semibold text-gray-900 dark:text-white">
-              Learning Architect's Blog
+              DevLoop Blog
             </div>
             <button
               onClick={toggleSidebar}

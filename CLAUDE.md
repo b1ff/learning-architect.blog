@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a technical blog called "Learning Architect's Blog" hosted at https://learning-architect.blog. The blog focuses on software architecture, modern development practices, AI/LLM usage in development, DevOps, and technical design patterns.
+This is a technical blog called "DevLoop Blog" hosted at https://devloop.blog. The blog focuses on software architecture, modern development practices, AI/LLM usage in development, DevOps, and technical design patterns.
 
 ## Tech Stack
 
@@ -106,7 +106,7 @@ The site uses GitHub Actions for automated deployment:
 - **Workflow**: `.github/workflows/build-deploy-site.yaml`
 - **Node.js version**: 20.x LTS
 - **Triggers**: Push to main branch, pull requests
-- **Deployment**: Automatically deploys to GitHub Pages at learning-architect.blog
+- **Deployment**: Automatically deploys to GitHub Pages at devloop.blog
 - **Build command**: `npm run build` (production optimized)
 
 ### GitHub Pages Setup Required:

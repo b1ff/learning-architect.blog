@@ -1,9 +1,9 @@
-import remarkGfm from 'remark-gfm';
+import remarkGfm from "remark-gfm";
 
 const config = {
 	siteMetadata: {
-		title: "Learning architect blog",
-		siteUrl: `https://learning-architect.blog`,
+		title: "DevLoop blog",
+		siteUrl: `https://devloop.blog`,
 	},
 	plugins: [
 		{
@@ -20,8 +20,8 @@ const config = {
 		{
 			resolve: "gatsby-plugin-sitemap",
 			options: {
-				output: '/sitemap'
-			}
+				output: "/sitemap",
+			},
 		},
 		"gatsby-transformer-remark",
 		{
@@ -29,11 +29,8 @@ const config = {
 			options: {
 				extensions: [`.mdx`, `.md`],
 				mdxOptions: {
-					remarkPlugins: [
-						remarkGfm,
-					],
-					rehypePlugins: [
-					],
+					remarkPlugins: [remarkGfm],
+					rehypePlugins: [],
 				},
 				gatsbyRemarkPlugins: [
 					{
@@ -44,11 +41,10 @@ const config = {
 					},
 					{
 						resolve: `gatsby-remark-prismjs`,
-						options: {
-						},
+						options: {},
 					},
 				],
-			}
+			},
 		},
 		`gatsby-remark-images`,
 		"gatsby-plugin-sharp",
@@ -68,7 +64,7 @@ const config = {
 			},
 			__key: "pages",
 		},
-		'gatsby-plugin-robots-txt',
+		"gatsby-plugin-robots-txt",
 		{
 			resolve: `gatsby-plugin-feed`,
 			options: {
@@ -87,17 +83,23 @@ const config = {
 				feeds: [
 					{
 						serialize: ({query: {site, allMdx}}) => {
-							return allMdx.nodes.map(node => {
-								const slug = node.internal.contentFilePath.replace(/^.*\/src\/pages\//, '').replace(/\.mdx?$/, '')
-								const title = slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+							return allMdx.nodes.map((node) => {
+								const slug = node.internal.contentFilePath
+									.replace(/^.*\/src\/pages\//, "")
+									.replace(/\.mdx?$/, "");
+								const title = slug
+									.replace(/-/g, " ")
+									.replace(/\b\w/g, (l) => l.toUpperCase());
 								return Object.assign({}, node.frontmatter, {
-									description: node.fields ? node.fields.articleCut : node.excerpt,
+									description: node.fields
+										? node.fields.articleCut
+										: node.excerpt,
 									date: node.frontmatter.date,
 									title: title,
 									url: `${site.siteMetadata.siteUrl}/${slug}/`,
-									guid: `${site.siteMetadata.siteUrl}/${slug}/`
-								})
-							})
+									guid: `${site.siteMetadata.siteUrl}/${slug}/`,
+								});
+							});
 						},
 						query: `
               {
@@ -123,11 +125,11 @@ const config = {
               }
             `,
 						output: "/rss.xml",
-						title: "Learning Architect blog RSS Feed",
+						title: "DevLoop blog RSS Feed",
 					},
 				],
 			},
-		}
+		},
 	],
 };
 

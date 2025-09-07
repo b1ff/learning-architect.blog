@@ -1,8 +1,8 @@
 {
-  "name": "learning-architect.blog",
+  "name": "devloop.blog",
   "version": "1.0.0",
   "private": true,
-  "description": "learning-architect.blog",
+  "description": "devloop.blog",
   "author": "Evgeniy Moroz",
   "keywords": [
     "gatsby"

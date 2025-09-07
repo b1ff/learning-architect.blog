@@ -18,11 +18,8 @@ export function About() {
         figuring out what it means and how to deal with it.
         <br />
         You can write to me here{" "}
-        <a
-          className="link-default"
-          href={"mailto:admin@learning-architect.blog"}
-        >
-          admin@learning-architect.blog
+        <a className="link-default" href={"mailto:admin@devloop.blog"}>
+          admin@devloop.blog
         </a>
       </p>
     </section>
