@@ -7,21 +7,24 @@ keywords: typescript,ddd for typescript,application architecture,backend
 # Domain Type System for TypeScript
 
 {/* cut */}
-As everything that happens nowadays in tech, this article starts from AI :)
+Like everything that happens nowadays in tech, this article starts from AI :)
 
-As I've been experimenting extensively with AI-augmented development, I've been searching for ways to structure code that can act as a "cage" for AI - constraining it to reduce bugs and minimize the time I spend manually correcting its output.
+Lately I have to output a lot of code, specifically using LLMs and agents for that.
+Raw result is done, but now during the maintenance phase, if I find the resulting code and understandability of the code base are not ideal, so to say.
+That leads me to try to search for ways to structure code that can act as a "cage" for AI - constraining it to reduce bugs and minimize the time I spend manually correcting its output.
 
 LLMs can output tremendous amounts of code per iteration, but as soon as we need quality and workability acceptable for development goals, the only "tool" we can rely on is human review. Which has low speed. The more AI output noise in the result, the more detours the human brain should take, the more is missed in the code.
 
-I built custom linters and additional codebase checks, which partially improved the situation, but still, they could not cover issues in logic, especially in projects that are logic-heavy.
+I built custom linters and additional codebase checks, which act as automated feedback for AI agents during the generation loop.
+Which partially improved the situation, but still, they could not cover issues in logic, especially in projects that are logic-heavy.
 
-Here's what I mean by logical errors: In one code review, I missed that AI had confused entity IDs deep within the business logic, leading to very annoying and hard-to-debug issues. In another case, AI treated admin users and public users as interchangeable, attempting to fetch public user profiles for admin users :facepalm:
+Here's what I mean by logical errors: In one code review, I missed that AI had confused entity IDs deep within the business logic, leading to very annoying and hard-to-debug issues. In another case, AI treated admin users and public users as interchangeable, attempting to fetch public user profiles for admin users 🤦
 
 These are exactly the kinds of problems that linters can't catch - they're logical, not syntactic. This got me thinking about applying Domain-Driven Design (DDD) principles to make the code more "sound" and restrictive, ideally improving the LLM's ability to self-correct.
 
 {/* cut */}
 
-The example with regular user and admin user is relatively easy to fix, especially in TypeScript by introducing [brand types](https://www.learningtypescript.com/articles/branded-types) for user ids.
+The example with regular user and admin user is relatively easy to fix, especially in TypeScript by introducing value types, through to utilize so called [brand types in TypeScript](https://www.learningtypescript.com/articles/branded-types) for user ids.
 
 ```typescript
 type UserId = string & { readonly brand: unique symbol };
@@ -146,7 +149,7 @@ But. The real world would then knock on the door and say,
 Or "Hey, customers complain that we have lost their tickets"
 Or "Our database is at capacity of the read throughput"
 
-And here is where the dance begins. Because we can clearly see that the pattern here forced us to read in memory, make modifications, and then write the database changes. Or load all the related tickets with the conference, to be able to calculate the uniqueness of attendees rule.
+And here is where the dance begins. Because we can clearly see that the pattern here forced us to read in memory, make modifications, and then write the database changes. Or load all the related tickets with the conference to be able to calculate the uniqueness of attendees rule.
 
 The typical senior developer response? "We need locking." For performance issues: "We'll add lazy loading to the ticket entity relations - let me write a few hundred lines of ORM configuration."
 
@@ -156,14 +159,14 @@ Because of that, many, I'd guess the majority, don't use such an approach. And i
 
 ### Domain Services Layers
 
-Here would be nice to have a rant in the style of Uncle Bob.. Sitting in the robe on terrace, ranting about those 1200 lines of code in the ConferenceService and 3000 lines of code in the ConferenceServiceTests. With big masses of code that reads, saves, validates, changes, locks, handles errors, grrr, grrr, grrr.
+Here would be nice to have a rant in the style of Uncle Bob.. Sitting in the robe on the terrace, ranting about those 1200 lines of code in the ConferenceService and 3000 lines of code in the ConferenceServiceTests. With big masses of code that reads, saves, validates, changes, locks, handles errors, grrr, grrr, grrr.
 
-I think many who worked in the industry, have seen that and understand what I'm talking about here and we've seen that code a lot.
-Here how could the above handler look like using this services approach:
+I think many who worked in the industry have seen that and understand what I'm talking about here, and we've seen that code a lot.
+Here is how could the above handler look like using this service approach:
 
 ```ts
 class ConferenceService {
-  async function handleReserveRequest(conferenceId: ConferenceId) {
+  async handleReserveRequest(conferenceId: ConferenceId) {
     return await unitOfWork.wrap(() => {
       await conferenceService.trackReservation(conferenceId);
       const ticket = await ticketsService.reserveTicket(conferenceId, auth.currentUser.id);
@@ -192,25 +195,25 @@ The answer is LLMs... Trying to keep this approach with large-scale output gener
 
 And when I'm talking about LLMs, I mean here scaled output generation, usually using LLM agents, like claude code, trying to achieve a complete feature or a complete fix as result, rather than step-by-step augmented generation like pieces of code in the chats, or AI completions. With those instruments that focus on isolated context, the issues are most likely to appear as the human developer is heavily in the loop and able to do micro corrections on the go.
 
-But all the twitter people are saying that we need to perform X10..0..0..0? faster now and I think without autonomous or semi-autonomous agents, it is not so easy to achieve this goal.
+But all the Twitter people are saying that we need to perform X10..0..0..0? faster now and I think without autonomous or semi-autonomous agents, it is not so easy to achieve this goal.
 
-And I started to think, apart from custom lint rules and code scanning with focus on building a "cage" for LLM.
+And I started to think, apart from custom lint rules and code scanning with a focus on building a "cage" for LLM.
 
-By the "cage" I mean set of rules or constraints, that from one side do not limitate LLM on the outputing the code, but from the another side, guide it automatically to the right approach for this particular project.
+By the "cage" I mean set of rules or constraints that from one side do not limit LLM on the outputting the code, but from the another side, guide it automatically to the right approach for this particular project.
 
-Think about as set lint rules, code verifications, tests that force architectural patterns, that are run automatically and report problems that must have a solution.
-For instance: duplication detection, which after specific treshold of duplications fails the tool, and LLM is forced to de-duplicate the code which has been added.
+Think about as set lint rules, code verifications, tests that force architectural patterns that are run automatically and report problems that must have a solution.
+For instance: duplication detection, which after a specific threshold of duplications fails the tool, and LLM is forced to de-duplicate the code which has been added.
 
-The question is if I can utilize the compiler, from one standpoint forcing LLM to follow it, and from another standpoint help bio-organisms to read and support code easier, or at least does not make it harder.
-And we need to keep in mind all of those technical characteristics, that are required to meet because we build distributed systems.
+The question is if I can use the compiler, from one standpoint forcing LLM to follow it, and from another standpoint help bio-organisms to read and support code easier.
+And we need to keep in mind all of those technical characteristics that are required to meet because we build distributed systems.
 
 So I was trying to build a middle-ground approach, which would not require a lot of quirks to keep the "purity" but at the same time, would model the domain a little bit better than with `xxService` architecture.
 
 ### Requirements for results
 
 Stricter architecture, with bigger separation of concerns than typical xxService architecture has.
-Clearly defined system, that would empower automating architecture following rules (aka fitness functions). For instance if I want to write a lint rule that would enforce usage of specific layer of types as parameters to another layer, and protect others from being there. Typical example is to avoid usage of entities for API layer, but here I'd like to have more low-level code rules.
-Utilization of typing system to guide and control code generation.
+Clearly defined system that would empower automating architecture following rules (aka fitness functions). For instance, if I want to write a lint rule, that would enforce usage of a specific layer of types as parameters to another layer and protect others from being there. A typical example is to avoid usage of entities for the API layer, but here I'd like to have more low-level code rules.
+Utilization of a typing system to guide and control code generation.
 More "sound" domain modeling. Improve how domain is expressed in code, to the degree that tradeoffs with complexity and quality attributes are not needed.
 
 ### State-based models
@@ -219,11 +222,11 @@ The main idea, is to have a layer in the model that represents not only high-lev
 
 Let's say a user wants to pay for the `Ticket`. We know that we can pay only for a ticket in `reserved` state, but we should not allow to pay for the ticket if it is already `paid`.
 
-In the service layered approach we would do something like this:
+In the service-layered approach we would do something like this:
 
 ```ts
 class TicketService {
-  async function pay(ticketId: ticketId, paymentMethod: PaymentMethod): Promise<void> {
+  async pay(ticketId: ticketId, paymentMethod: PaymentMethod): Promise<void> {
     const ticket = await ticketRepository.findById(ticketId);
     if (!ticket) throw new Error('Ticket not found');
     if (ticket.state === 'paid') throw new Error('Ticket is already paid');
@@ -236,7 +239,7 @@ class TicketService {
 
 If we need to implement some other operation, with a ticket that could be paid, the upper part of the method would be pretty much the same. Of course as good developers, we won't copy-paste it, but rather extract it to a function, something like `ensureTicketIsPayable()` and call it everywhere where needed.
 
-And when we implement such logic, we just need not to forget to put a call to `ensureTicketIsPayable()` before any operation that requires the ticket to be in `reserved` state.
+And when we implement such logic, we just need not forget to put a call to `ensureTicketIsPayable()` before any operation that requires the ticket to be in `reserved` state.
 
 So what if we instead derive a type that represents a ticket that is in `reserved` state?
 TypeScript is very handy here, as it could help us to express it almost effortlessly.
@@ -245,7 +248,7 @@ TypeScript is very handy here, as it could help us to express it almost effortle
 type ReservedTicket = Ticket & { state: 'reserved' };
 ```
 
-Now we can create a function that constructs such ticket:
+Now we can create a function that constructs such a ticket:
 
 ```ts
 class TicketsBag {
@@ -272,17 +275,17 @@ And it is up to the caller to find how to construct this type when payment is ne
 
 ### Let's add a bit of the system
 
-Since we are controlling a very eager junior developer, LLMs, we need to add a bit of the system, to be able to implement minimal guard rails to use it correctly.
+Since we are controlling a very eager junior developer, LLMs, we need to add a bit of the system to be able to implement minimal guard rails to use it correctly.
 
-I was trying to find appropriate layers from the clean architecture, or other architectural patterns, like entity component system (ECS) but didn't find one that would fit freely, so then I'd define the following terminology for these layers
+I was trying to find appropriate layers from the clean architecture, or other architectural patterns, like an entity component system (ECS) but didn't find one that would fit freely, so then I'd define the following terminology for these layers
 
-* Entities - are left as is, it is our ground to map data model
+* Entities - are left as is, it is our ground to map a data model
 * Repositories - are responsible for persisting and retrieving entities from the data store. Pretty much common, do not see a need to invent anything special here.
-* Variants - more precise shapes of domain states, like `ReservedTicket` in the example above. It could be a more narrow type on top of entities, or custom state that represents domain state, or technical primitive. I think it could be even a compound type from different states, which are tied together because they are atomic for a specific business operations
+* Variants - more precise shapes of domain states, like `ReservedTicket` in the example above. It could be a more narrow type on top of entities, or custom state that represents domain state, or technical primitive. I think it could be even a compound type from different states, which are tied together because they are atomic for a specific business operation
 * Resolvers - a layer on top of variants and repositories, or other data sources (API clients) that construct variant, being safe that raw data complies with a defined variant. For example `TicketsBag` in the example.
-* Capabilities - a layer on top of variants and repositories, that could describe capabilities available to execute within broad domain terms. It could be a class that groups such actions like `PaymentCapabilities { markTicketAsPaid, refundTicket }` or one time capability like `ReserveConferenceTicket { performReservation }`. What is important is that it works mostly with variants as input, instead of entities directly, which facilitates to choose a variant and resolver to construct it, and state correctness validations before operations.
+* Capabilities - a layer on top of variants and repositories that could describe capabilities available to execute within broad domain terms. It could be a class that groups such actions like `PaymentCapabilities { markTicketAsPaid, refundTicket }` or one time capability like `ReserveConferenceTicket { performReservation }`. What is important is that it works mostly with variants as input, instead of entities directly, which facilitates choosing a variant and resolver to construct it, and state correctness validations before operations.
 
-As you might see, those layers define rules of communication, so it is something we can use to build around validation, that rules are followed. Which will help LLMs to self-correct in case of mistakes.
+As you might see, those layers define rules of communication, so it is something we can use to build around validation, that rule is followed. Which will help LLMs to self-correct in case of mistakes.
 
 ### Conclusion
 
@@ -290,7 +293,7 @@ This domain type system approach provides a middle ground between the purity of 
 
 The key benefits I've observed during my limited tests in the real world:
 
-**For AI-assisted development**: LLMs are forced to construct the correct variant types before performing operations (at least try to do it :P), which significantly reduces logic errors like mixing up entity IDs or somehow reduces errors of applying operations to invalid states. The type system acts as a compile-time safety net that catches many issues that would otherwise require careful bio-brain review or re-work.
+**For AI-assisted development**: LLMs are forced to construct the correct variant types before performing operations (at least try to do it 😛), which significantly reduces logic errors like mixing up entity IDs or somehow reduces errors of applying operations to invalid states. The type system acts as a compile-time safety net that catches many issues that would otherwise require careful bio-brain review or re-work.
 
 **For human maintainability**: The code becomes more self-documenting. When you see a function signature like `pay(ticket: ReservedTicket)`, you immediately understand the preconditions. The business logic is encoded in the types rather than buried in runtime checks scattered throughout service methods.
 
