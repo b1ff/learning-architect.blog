@@ -9,11 +9,10 @@ keywords: typescript,ddd for typescript,application architecture,backend
 {/* cut */}
 Like everything that happens nowadays in tech, this article starts from AI :)
 
-Lately I have to output a lot of code, specifically using LLMs and agents for that.
-Raw result is done, but now during the maintenance phase, if I find the resulting code and understandability of the code base are not ideal, so to say.
-That leads me to try to search for ways to structure code that can act as a "cage" for AI - constraining it to reduce bugs and minimize the time I spend manually correcting its output.
+Lately, I've been generating a lot of code using LLMs and agents. The raw output gets the job done, but during the maintenance phase, I've found that the resulting code and overall codebase understandability are... let's say, not ideal.
+This led me to search for ways to structure code that can act as a "cage" for AI - constraining it to reduce bugs and minimize the time I spend manually correcting its output.
 
-LLMs can output tremendous amounts of code per iteration, but as soon as we need quality and workability acceptable for development goals, the only "tool" we can rely on is human review. Which has low speed. The more AI output noise in the result, the more detours the human brain should take, the more is missed in the code.
+LLMs can output tremendous amounts of code per iteration, but when we need quality and workability that meets our development goals, the only "tool" we can rely on is human review - which is inherently slow. The more noise there is in the AI's output, the more mental detours our brains must take, and the more issues slip through unnoticed.
 
 I built custom linters and additional codebase checks, which act as automated feedback for AI agents during the generation loop.
 Which partially improved the situation, but still, they could not cover issues in logic, especially in projects that are logic-heavy.
@@ -24,7 +23,7 @@ These are exactly the kinds of problems that linters can't catch - they're logic
 
 {/* cut */}
 
-The example with regular user and admin user is relatively easy to fix, especially in TypeScript by introducing value types, through to utilize so called [brand types in TypeScript](https://www.learningtypescript.com/articles/branded-types) for user ids.
+Now, the example with regular users and admin users is relatively straightforward to fix in TypeScript. We can introduce value types by utilizing so-called [brand types in TypeScript](https://www.learningtypescript.com/articles/branded-types) for user IDs.
 
 ```typescript
 type UserId = string & { readonly brand: unique symbol };
@@ -41,9 +40,9 @@ function getAdminProfile(adminId: AdminId): AdminProfile {
 
 As you can see, now it's impossible to accidentally mix admin and user IDs - the type system prevents it at compile time.
 
-This brand types approach works well for simple cases, but there are bigger, more complex logical structures that remain problematic. In typical architectures, once an LLM has access to repositories and databases, it can construct operations that fetch anything from anywhere, bypassing business rules entirely.
+While this brand types approach works beautifully for simple cases, there are bigger, more complex logical structures that remain problematic. In typical architectures, once an LLM gains access to repositories and databases, it can construct operations that fetch anything from anywhere, completely bypassing business rules.
 
-Traditional DDD with aggregates and synchronous business rules offers a solution, but it's not well-suited for distributed systems where you need high performance, clear transactional boundaries, and operational reliability. This led me to explore whether I could combine DDD modeling principles while maintaining these quality attributes.
+Traditional DDD with aggregates and synchronous business rules offers a solution, but it's poorly suited for distributed systems where you need high performance, clear transactional boundaries, and operational reliability. This tension led me to explore whether I could combine DDD modeling principles while preserving these critical quality attributes.
 
 ### Problem Example
 
@@ -142,14 +141,14 @@ async function handleReserveRequest(conferenceId: ConferenceId) {
 
 Nice and clean. The logic is sound, pure, and independent - it could work with different interfaces like APIs, UIs, CLIs, or even LLM tools nowadays. Business rules are explicit and encapsulated, modeling real domain requirements. Testing is straightforward.
 
-I wish I could write systems using this pattern.
+I wish I could write systems using this pattern exclusively.
 
-But. The real world would then knock on the door and say,
-"Hey, we have overbooking, conference had 2000 seats, but 2023 were registered"
-Or "Hey, customers complain that we have lost their tickets"
-Or "Our database is at capacity of the read throughput"
+But then the real world knocks on the door with messages like:
+"Hey, we have overbooking - the conference had 2000 seats, but 2023 people got registered"
+Or "Hey, customers are complaining that we've lost their tickets"
+Or "Our database has hit its read throughput capacity"
 
-And here is where the dance begins. Because we can clearly see that the pattern here forced us to read in memory, make modifications, and then write the database changes. Or load all the related tickets with the conference to be able to calculate the uniqueness of attendees rule.
+This is where the complexity begins. The pattern forces us to load entire aggregates into memory, make modifications, then write all changes back to the database. For our conference example, we'd need to load all related tickets just to enforce the attendee uniqueness rule.
 
 The typical senior developer response? "We need locking." For performance issues: "We'll add lazy loading to the ticket entity relations - let me write a few hundred lines of ORM configuration."
 
@@ -159,10 +158,10 @@ Because of that, many, I'd guess the majority, don't use such an approach. And i
 
 ### Domain Services Layers
 
-Here would be nice to have a rant in the style of Uncle Bob.. Sitting in the robe on the terrace, ranting about those 1200 lines of code in the ConferenceService and 3000 lines of code in the ConferenceServiceTests. With big masses of code that reads, saves, validates, changes, locks, handles errors, grrr, grrr, grrr.
+This would be a perfect spot for an Uncle Bob-style rant... Picture him sitting in his robe on the terrace, ranting about those 1,200 lines of code in ConferenceService and 3,000 lines in ConferenceServiceTests. Massive chunks of code that read, save, validate, change, lock, handle errors - grrr, grrr, grrr.
 
-I think many who worked in the industry have seen that and understand what I'm talking about here, and we've seen that code a lot.
-Here is how could the above handler look like using this service approach:
+Anyone who's worked in the industry has seen this pattern and knows exactly what I'm talking about.
+Here's how our handler might look using this service approach:
 
 ```ts
 class ConferenceService {
@@ -180,32 +179,31 @@ For the sake of keeping the code size sane I'm not going to demonstrate the impl
 It should be pretty straightforward, and nowadays it is pretty simple to get the implementation from LLMs if needed.
 The approach itself is used pretty often, so I think a picture of a possible implementation here should quickly appear in the head.
 
-Don't get me wrong, this approach works. And the concept is simple to understand.
-Group work in the ServiceClass, try to keep it free from the input / output information (like API request responses).
-Inside use abstractions over storages, external APIs, queues, etc. to get the work done.
-It is re-usable, so once an operation is implemented, it can be called in other places, so it is SOLID as well.
-To some degree it is testable, not perfect, but it is testable. We can either create 1-20 mocks and verify that everything is called with needed parameters under test conditions.
-Or we can go with integration tests, where we most likely have most of the code not mocked, but maybe some low-level mock of third-party dependencies, like APIs.
+Don't get me wrong - this approach works, and the concept is straightforward to understand.
+You group related work in a ServiceClass, trying to keep it free from input/output concerns (like API request/response handling).
+Inside, you use abstractions over storage, external APIs, queues, etc. to get the work done.
+It's reusable - once an operation is implemented, it can be called from other places, making it SOLID-compliant.
+It's testable to some degree - not perfect, but testable. You can either create 1-20 mocks and verify that everything is called with the right parameters, or go with integration tests where most code isn't mocked, except perhaps some low-level third-party dependencies.
 
-And most likely, I'd use it, sighing from time to time about the sizes of those services and mix of the responsibilities in it. But generically speaking it is not so bad for common day-to-day work.
+Honestly, I'd probably use this approach myself, occasionally sighing about the size of those services and the mixed responsibilities within them. But generally speaking, it's not terrible for everyday development work.
 
 ### So why not use this service approach?
 
-The answer is LLMs... Trying to keep this approach with large-scale output generation by LLM could result in a situation even worse than was described above. This approach is very unconstrained, so without proper human evaluation and rework after LLM it will end up in total mess.
+The answer is LLMs. Trying to maintain this service approach with large-scale code generation by LLMs could result in something even worse than what I described above. This approach is highly unconstrained, so without proper human evaluation and rework after each LLM iteration, you end up with a total mess.
 
-And when I'm talking about LLMs, I mean here scaled output generation, usually using LLM agents, like claude code, trying to achieve a complete feature or a complete fix as result, rather than step-by-step augmented generation like pieces of code in the chats, or AI completions. With those instruments that focus on isolated context, the issues are most likely to appear as the human developer is heavily in the loop and able to do micro corrections on the go.
+When I talk about LLMs here, I mean scaled output generation - typically using LLM agents like claude code or codex cli trying to deliver complete features or fixes, rather than step-by-step augmented generation like code snippets in chat conversations or IDE completions. With those interactive tools that focus on isolated context, issues are less likely to compound since the human developer stays heavily in the loop, making micro-corrections as they go.
 
 But all the Twitter people are saying that we need to perform X10..0..0..0? faster now and I think without autonomous or semi-autonomous agents, it is not so easy to achieve this goal.
 
 And I started to think, apart from custom lint rules and code scanning with a focus on building a "cage" for LLM.
 
-By the "cage" I mean set of rules or constraints that from one side do not limit LLM on the outputting the code, but from the another side, guide it automatically to the right approach for this particular project.
+By "cage" I mean a set of rules or constraints that don't limit the LLM's ability to generate code but automatically guide it toward the right approach for the specific project.
 
-Think about as set lint rules, code verifications, tests that force architectural patterns that are run automatically and report problems that must have a solution.
-For instance: duplication detection, which after a specific threshold of duplications fails the tool, and LLM is forced to de-duplicate the code which has been added.
+Think of it as a combination of lint rules, code verifications, and tests that enforce architectural patterns - all running automatically and reporting problems that demand solutions.
+For instance: duplication detection that fails the build after a specific threshold, forcing the LLM to refactor and de-duplicate any code it has added.
 
-The question is if I can use the compiler, from one standpoint forcing LLM to follow it, and from another standpoint help bio-organisms to read and support code easier.
-And we need to keep in mind all of those technical characteristics that are required to meet because we build distributed systems.
+The key question is whether I can leverage the compiler to both force LLMs to follow good patterns while also helping human developers (bio-organisms) read and maintain code more easily.
+All while keeping in mind the technical characteristics required for building distributed systems.
 
 So I was trying to build a middle-ground approach, which would not require a lot of quirks to keep the "purity" but at the same time, would model the domain a little bit better than with `xxService` architecture.
 
@@ -237,9 +235,9 @@ class TicketService {
 }
 ```
 
-If we need to implement some other operation, with a ticket that could be paid, the upper part of the method would be pretty much the same. Of course as good developers, we won't copy-paste it, but rather extract it to a function, something like `ensureTicketIsPayable()` and call it everywhere where needed.
+If we need to implement other operations that work with payable tickets, the validation logic would be nearly identical. As good developers, we wouldn't copy-paste this code - we'd extract it into a function like `ensureTicketIsPayable()` and call it wherever needed.
 
-And when we implement such logic, we just need not forget to put a call to `ensureTicketIsPayable()` before any operation that requires the ticket to be in `reserved` state.
+The challenge becomes remembering to call `ensureTicketIsPayable()` before every operation that requires the ticket to be in a `reserved` state. This is exactly the kind of thing that's easy to miss - especially for an LLM generating code at scale.
 
 So what if we instead derive a type that represents a ticket that is in `reserved` state?
 TypeScript is very handy here, as it could help us to express it almost effortlessly.
@@ -279,26 +277,26 @@ Since we are controlling a very eager junior developer, LLMs, we need to add a b
 
 I was trying to find appropriate layers from the clean architecture, or other architectural patterns, like an entity component system (ECS) but didn't find one that would fit freely, so then I'd define the following terminology for these layers
 
-* Entities - are left as is, it is our ground to map a data model
-* Repositories - are responsible for persisting and retrieving entities from the data store. Pretty much common, do not see a need to invent anything special here.
-* Variants - more precise shapes of domain states, like `ReservedTicket` in the example above. It could be a more narrow type on top of entities, or custom state that represents domain state, or technical primitive. I think it could be even a compound type from different states, which are tied together because they are atomic for a specific business operation
-* Resolvers - a layer on top of variants and repositories, or other data sources (API clients) that construct variant, being safe that raw data complies with a defined variant. For example `TicketsBag` in the example.
-* Capabilities - a layer on top of variants and repositories that could describe capabilities available to execute within broad domain terms. It could be a class that groups such actions like `PaymentCapabilities { markTicketAsPaid, refundTicket }` or one time capability like `ReserveConferenceTicket { performReservation }`. What is important is that it works mostly with variants as input, instead of entities directly, which facilitates choosing a variant and resolver to construct it, and state correctness validations before operations.
+* **Entities** - are left as is, it is our ground to map a data model
+* **Repositories** - are responsible for persisting and retrieving entities from the data store. Pretty much common, do not see a need to invent anything special here.
+* **Variants** - more precise shapes of domain states, like `ReservedTicket` in the example above. It could be a more narrow type on top of entities, or custom state that represents domain state, or technical primitive. I think it could be even a compound type from different states, which are tied together because they are atomic for a specific business operation
+* **Resolvers** - a layer on top of variants and repositories, or other data sources (API clients) that construct variant, being safe that raw data complies with a defined variant. For example `TicketsBag` in the example.
+* **Capabilities** - a layer on top of variants and repositories that could describe capabilities available to execute within broad domain terms. It could be a class that groups such actions like `PaymentCapabilities { markTicketAsPaid, refundTicket }` or one time capability like `ReserveConferenceTicket { performReservation }`. What is important is that it works mostly with variants as input, instead of entities directly, which facilitates choosing a variant and resolver to construct it, and state correctness validations before operations.
 
 As you might see, those layers define rules of communication, so it is something we can use to build around validation, that rule is followed. Which will help LLMs to self-correct in case of mistakes.
 
 ### Conclusion
 
-This domain type system approach provides a middle ground between the purity of traditional DDD aggregates and the pragmatic flexibility of service layers. By leveraging TypeScript's type system to encode domain states and business rules directly into the type definitions, we create natural guard rails that both guide human developers and constrain AI code generation.
+This domain type system approach offers a middle ground between the purity of traditional DDD aggregates and the pragmatic flexibility of service layers. By leveraging TypeScript's type system to encode domain states and business rules directly into type definitions, we create natural guard rails that guide human developers and constrain AI code generation alike.
 
-The key benefits I've observed during my limited tests in the real world:
+Here are the key benefits I've observed in my real-world experiments:
 
-**For AI-assisted development**: LLMs are forced to construct the correct variant types before performing operations (at least try to do it 😛), which significantly reduces logic errors like mixing up entity IDs or somehow reduces errors of applying operations to invalid states. The type system acts as a compile-time safety net that catches many issues that would otherwise require careful bio-brain review or re-work.
+**For AI-assisted development**: LLMs are forced to construct the correct variant types before performing operations (well, at least they try to 😛), which significantly reduces logic errors like mixing up entity IDs or applying operations to invalid states. The type system becomes a compile-time safety net, catching many issues that would otherwise require careful human review and rework.
 
-**For human maintainability**: The code becomes more self-documenting. When you see a function signature like `pay(ticket: ReservedTicket)`, you immediately understand the preconditions. The business logic is encoded in the types rather than buried in runtime checks scattered throughout service methods.
+**For human maintainability**: The code becomes genuinely self-documenting. When you see a function signature like `pay(ticket: ReservedTicket)`, the preconditions are immediately clear. Business logic lives in the types rather than being buried in runtime checks scattered throughout service methods.
 
-**For performance and reliability**: Unlike traditional DDD aggregates, this approach doesn't force you into pessimistic locking or loading entire object graphs. You can still use database-level constraints, optimistic concurrency control, and efficient queries while maintaining domain modeling benefits.
+**For performance and reliability**: Unlike traditional DDD aggregates, this approach doesn't lock you into pessimistic locking or force you to load entire object graphs. You can still leverage database-level constraints, optimistic concurrency control, and efficient queries while retaining the benefits of domain modeling.
 
-Is this approach perfect? Certainly not. It requires more upfront investment in type modeling, and teams need to understand the conventions around variant construction and capability design. But for teams working with AI code generation at scale, or those who want domain modeling benefits without traditional DDD's performance overhead, it offers a compelling alternative.
+Is this approach perfect? Absolutely not. It requires more upfront investment in type modeling, and teams need to understand the conventions around variant construction and capability design. But for teams working with AI code generation at scale - or those who want domain modeling benefits without traditional DDD's performance penalties - it presents a compelling alternative.
 
-The real test will be how well this scales in larger codebases and whether the type-driven constraints actually improve AI code quality in practice. But early results suggest that when you make invalid states unrepresentable in the type system, both humans and AIs write more correct code by default.
+The real test will be whether this scales in larger codebases and whether these type-driven constraints actually improve AI code quality in practice. But early results are promising: when you make invalid states unrepresentable in the type system, both humans and AIs tend to write more correct code by default.
